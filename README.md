@@ -8,4 +8,10 @@ Use npm to install swmmreact-ops into your projects:
 ```
 npm install swmmreact-ops
 ```
+## Core functions
 
+Some of the core functions of swmmreact-ops are detailed below:
+
+### Load a .out file into memory
+
+load_out(filename): Loads a .out file into memory.
