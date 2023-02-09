@@ -1,7 +1,7 @@
 {
   "name": "swmmreact-ops",
-  "version": "0.2.2",
-  "description": "",
+  "version": "0.0.1",
+  "description": "TypeScript package for performing data operations on EPA-SWMM and swmmReact files.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "umd:main": "dist/umd/index.js",
@@ -28,27 +28,24 @@
     "dist"
   ],
   "keywords": [
-    "example",
+    "swmmReact",
+    "swmm",
+    "javascript",
     "typescript",
-    "npm",
-    "package",
-    "sample",
-    "boilerplate",
-    "starter",
-    "demo",
-    "cjs",
-    "esm",
-    "umd"
+    "environment",
+    "rainfall",
+    "data",
+    "file"
   ],
-  "author": "Tom Chen <tomchen.org@gmail.com>",
+  "author": "Issac Gardner <issac@swmmreact.org>",
   "license": "MIT",
-  "homepage": "https://github.com/tomchen/example-typescript-package",
+  "homepage": "https://github.com/swmm-js/swmmreact-ops",
   "repository": {
     "type": "git",
-    "url": "git@github.com:tomchen/example-typescript-package.git"
+    "url": "git@github.com:swmm-js/swmmreact-ops.git"
   },
   "bugs": {
-    "url": "https://github.com/tomchen/example-typescript-package/issues"
+    "url": "https://github.com/swmm-js/swmmreact-ops/issues"
   },
   "dependencies": {},
   "devDependencies": {
