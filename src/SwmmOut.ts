@@ -1,4 +1,8 @@
-export class SwmmOut {
+  /**
+  * Class for storing .out file contents.
+  * This class can also be used to create simluated .out file contents.
+  */
+ export class SwmmOut {
   value: ArrayBuffer
   // Because RECORDSIZE is not variable and may need 
   // to be requested without initializing a SwmmOut object, it is static. 
@@ -44,6 +48,11 @@ export class SwmmOut {
     return this.readInt(SwmmOut.RECORDSIZE * 2)
   }
 
+
+
+
+
+  
   /**
   * Reads a 32-bit signed integer from a position in SwmmOut.
   *

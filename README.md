@@ -1,17 +1,17 @@
-# swmmReact-ops info
+# swmmNode info
 
-swmmreact-ops is a TypeScript package for performing operations on EPA-SWMM files via Node.js or through websites built with swmmReact.
+swmmNode is a TypeScript package for performing operations on EPA-SWMM files via Node.js or through websites built with swmmReact, swmmVue or swmmLink.
 
 ## How to link to your project
 
 Use npm to install swmmreact-ops into your projects:
 ```
-npm install swmmreact-ops
+npm install swmm-node
 ```
 ## Core functions
 
-Some of the core functions of swmmreact-ops are detailed below:
+Some of the core elements of swmmNode are detailed below:
 
-### Load a .out file into memory
+### swmmOut
 
-load_out(filename): Loads a .out file into memory.
+swmmOut(ArrayBuffer): Creates an interactive class instance for .out files.
