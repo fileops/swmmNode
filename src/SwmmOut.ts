@@ -96,19 +96,64 @@
   *
   * @return {number} Integer. byte position of Object ID names.
   */
-  ObjectIDNames(): number{
+  objectIDNames(): number{
     return this.readInt(this.value.byteLength - SwmmOut.RECORDSIZE * 6)
   }
-  
-  /*
-  r.ClosingRecords.ObjectIDNames = readInt(arrayBuffer, size-6*RECORDSIZE, RECORDSIZE)
-  r.ClosingRecords.ObjectProperties = readInt(arrayBuffer, size-5*RECORDSIZE, RECORDSIZE)
-  r.ClosingRecords.ComputedResults = readInt(arrayBuffer, size-4*RECORDSIZE, RECORDSIZE)
-  r.ClosingRecords.ReportingPeriods = readInt(arrayBuffer, size-3*RECORDSIZE, RECORDSIZE)
-  r.ClosingRecords.ErrorCode = readInt(arrayBuffer, size-2*RECORDSIZE, RECORDSIZE)
-  r.ClosingRecords.IDNumber = readInt(arrayBuffer, size-RECORDSIZE, RECORDSIZE)
-  r.OpeningRecords.IDNumber = readInt(arrayBuffer, 0, RECORDSIZE)
+
+  /**
+  * Returns the memory position of the Object properties, 
+  * relative to the start of the SwmmOut object.
+  *
+  * @return {number} Integer. byte position of Object properties.
   */
+  objectProperties(): number{
+    return this.readInt(this.value.byteLength - SwmmOut.RECORDSIZE * 5)
+  }
+  
+  /**
+  * Returns the memory position of the computed results, 
+  * relative to the start of the SwmmOut object.
+  *
+  * @return {number} Integer. byte position of computed results.
+  */
+  computedResults(): number{
+    return this.readInt(this.value.byteLength - SwmmOut.RECORDSIZE * 4)
+  }
+    
+  /**
+  * Returns the count of reporting periods.
+  *
+  * @return {number} Integer. Count of reporting periods.
+  */
+  reportingPeriods(): number{
+    return this.readInt(this.value.byteLength - SwmmOut.RECORDSIZE * 3)
+  }
+    
+  /**
+  * Returns the error code.
+  *
+  * @return {number} Integer. Error code of the SwmmOut object.
+  */
+  errorCode(): number{
+    return this.readInt(this.value.byteLength - SwmmOut.RECORDSIZE * 2)
+  }
+      
+  /**
+  * Returns the object's second magic number, 
+  * should be equal to the object's first magic number (magic1).
+  *
+  * @return {number} Integer. Object's second magic number.
+  */
+  magic2(): number{
+    return this.readInt(this.value.byteLength - SwmmOut.RECORDSIZE * 2)
+  }
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// HELPER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////////////
 
   /**
   * Reads a 32-bit signed integer from a position in SwmmOut.

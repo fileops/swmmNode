@@ -24,10 +24,34 @@ test('magic1', () =>{
   expect((global as any).example1.magic1()).toBe(516114522)
 })
 
+test('flowUnitCode', () =>{
+  expect((global as any).example1.flowUnitCode()).toBe(0)
+})
+
+test('subcatchmentCount', () =>{
+  expect((global as any).example1.subcatchmentCount()).toBe(8)
+})
+
+test('nodeCount', () =>{
+  expect((global as any).example1.nodeCount()).toBe(14)
+})
+
+test('linkCount', () =>{
+  expect((global as any).example1.linkCount()).toBe(13)
+})
+
+test('pollutantCount', () =>{
+  expect((global as any).example1.pollutantCount()).toBe(2)
+})
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // CLOSING RECORDS
 ////////////////////////////////////////////////////////////////////////////////////////
   
-test('ObjectIDNames', () =>{
-  expect((global as any).example1.ObjectIDNames()).toBe(28)
+test('objectIDNames', () =>{
+  expect((global as any).example1.objectIDNames()).toBe(28)
+})
+
+test('objectProperties', () =>{
+  expect((global as any).example1.objectProperties()).toBe(246)
 })
