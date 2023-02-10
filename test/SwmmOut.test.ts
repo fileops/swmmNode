@@ -17,7 +17,7 @@ beforeAll(async () => {
 ////////////////////////////////////////////////////////////////////////////////////////
 
 test('version_alt', () =>{
-  expect((global as any).example1.version()).toBe(52002)
+  expect((global as any).example1.version()).toBe(52001)
 })
 
 test('magic1', () =>{
@@ -54,4 +54,42 @@ test('objectIDNames', () =>{
 
 test('objectProperties', () =>{
   expect((global as any).example1.objectProperties()).toBe(246)
+})
+
+test('computedResults', () =>{
+  expect((global as any).example1.computedResults()).toBe(942)
+})
+
+test('reportingPeriods', () =>{
+  expect((global as any).example1.reportingPeriods()).toBe(36)
+})
+
+test('errorCode', () =>{
+  expect((global as any).example1.errorCode()).toBe(0)
+})
+
+test('magic2', () =>{
+  expect((global as any).example1.magic2()).toBe(516114522)
+})
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Object IDs (names)
+////////////////////////////////////////////////////////////////////////////////////////
+    
+test('subcatchmentName', () =>{
+  expect((global as any).example1.subcatchmentName(2)).toBe('3')
+})
+
+test('nodeName', () =>{
+  expect((global as any).example1.nodeName(1)).toBe('10')
+})
+
+test('linkName', () =>{
+  expect((global as any).example1.linkName(5)).toBe('8')
+})
+
+test('pollutantName', () =>{
+  expect((global as any).example1.pollutantName(1)).toBe('Lead')
 })
