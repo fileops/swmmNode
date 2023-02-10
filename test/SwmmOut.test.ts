@@ -20,3 +20,21 @@ test('magic1', () =>{
   })
 })
 
+////////////////////////////////////////////////////////////////////////////////////////
+// CLOSING RECORDS
+////////////////////////////////////////////////////////////////////////////////////////
+  
+  /**
+  * Returns the memory position of the Object ID names, 
+  * relative to the start of the SwmmOut object.
+  *
+  * @return {number} Integer. byte position of Object ID names.
+  */
+  test('ObjectIDNames', () =>{
+    // Read a .out file and initialize swmmOut with it
+    let outFile = './test/data/Example1.out'
+    fs.readFile(outFile, (err:any, data:any) => {
+      if(err) throw err
+      expect(new SwmmOut(data.buffer).ObjectIDNames()).toBe(516114522)
+    })
+  })

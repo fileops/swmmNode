@@ -11,7 +11,9 @@
   constructor(n: ArrayBuffer) {
     this.value = n
   }
-
+////////////////////////////////////////////////////////////////////////////////////////
+// OPENING RECORDS
+////////////////////////////////////////////////////////////////////////////////////////
   /**
   * Returns the object's core value.
   *
@@ -47,12 +49,67 @@
   flowUnitCode(): number{
     return this.readInt(SwmmOut.RECORDSIZE * 2)
   }
-
-
-
-
-
   
+  /**
+  * Returns the count of subcatchments.
+  *
+  * @return {number} Integer. Count of subcatchments.
+  */
+  subcatchmentCount(): number{
+    return this.readInt(SwmmOut.RECORDSIZE * 3)
+  }
+
+  /**
+  * Returns the count of nodes.
+  *
+  * @return {number} Integer. Count of nodes.
+  */
+  nodeCount(): number{
+    return this.readInt(SwmmOut.RECORDSIZE * 4)
+  }
+
+  /**
+  * Returns the count of links.
+  *
+  * @return {number} Integer. Count of links.
+  */
+  linkCount(): number{
+    return this.readInt(SwmmOut.RECORDSIZE * 5)
+  }
+
+  /**
+  * Returns the count of pollutants.
+  *
+  * @return {number} Integer. Count of pollutants.
+  */
+  pollutantCount(): number{
+    return this.readInt(SwmmOut.RECORDSIZE * 6)
+  }
+
+////////////////////////////////////////////////////////////////////////////////////////
+// CLOSING RECORDS
+////////////////////////////////////////////////////////////////////////////////////////
+  
+  /**
+  * Returns the memory position of the Object ID names, 
+  * relative to the start of the SwmmOut object.
+  *
+  * @return {number} Integer. byte position of Object ID names.
+  */
+  ObjectIDNames(): number{
+    return this.readInt(this.value.byteLength - SwmmOut.RECORDSIZE * 6)
+  }
+  
+  /*
+  r.ClosingRecords.ObjectIDNames = readInt(arrayBuffer, size-6*RECORDSIZE, RECORDSIZE)
+  r.ClosingRecords.ObjectProperties = readInt(arrayBuffer, size-5*RECORDSIZE, RECORDSIZE)
+  r.ClosingRecords.ComputedResults = readInt(arrayBuffer, size-4*RECORDSIZE, RECORDSIZE)
+  r.ClosingRecords.ReportingPeriods = readInt(arrayBuffer, size-3*RECORDSIZE, RECORDSIZE)
+  r.ClosingRecords.ErrorCode = readInt(arrayBuffer, size-2*RECORDSIZE, RECORDSIZE)
+  r.ClosingRecords.IDNumber = readInt(arrayBuffer, size-RECORDSIZE, RECORDSIZE)
+  r.OpeningRecords.IDNumber = readInt(arrayBuffer, 0, RECORDSIZE)
+  */
+
   /**
   * Reads a 32-bit signed integer from a position in SwmmOut.
   *
