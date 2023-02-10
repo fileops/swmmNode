@@ -1,3 +1,3 @@
-import { Num } from './Num'
+import { SwmmOut } from './SwmmOut'
 
-export { Num }
+export { SwmmOut }
