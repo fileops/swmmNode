@@ -215,3 +215,15 @@ test('startTime', () =>{
 test('startTime to date', () =>{
   expect(new Date((global as any).example1.startTime())).toEqual(new Date("1998-01-01T00:00:00.000Z"))
 })
+
+// Output Section
+
+test('dateStep_swmmFormat', () =>{
+  expect((global as any).example1.dateStep_swmmFormat(10)).toBe(35796.41666667824)
+})
+
+test('get_result', () =>{
+  expect((global as any).example1.
+    get_result(3, 11, 6, 7))
+    .toBe(5.061554431915283)
+})

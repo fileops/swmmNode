@@ -4,6 +4,13 @@
 */
 export class SwmmOut {
 value: ArrayBuffer
+bytesPerPeriod: number
+totalSubcatchments: number
+subcatchmentOutputVars: number
+totalNodes: number
+nodeOutputVars: number
+totalLinks: number
+linkOutputVars: number
 // Because RECORD_SIZE is not variable and may need 
 // to be requested without initializing a SwmmOut object, it is static. 
 static RECORD_SIZE: number = 4
@@ -14,10 +21,22 @@ static SUBCATCHMENT_OUTPUT_VARIABLE_COUNT: number = 8
 static NODE_OUTPUT_VARIABLE_COUNT: number = 6
 static LINK_OUTPUT_VARIABLE_COUNT: number = 5
 static SYSTEM_OUTPUT_VARIABLE_COUNT: number = 15
+static SUBCATCH = 1
+static NODE = 2
+static LINK = 3  
+static SYS = 4   
+static POLLUT = 5
 
 
 constructor(n: ArrayBuffer) {
   this.value = n
+  this.bytesPerPeriod = this.bytesPerPeriod_func()
+  this.totalSubcatchments = this.subcatchmentCount()
+  this.subcatchmentOutputVars = this.subcatchmentOutputCount()
+  this.totalNodes = this.nodeCount()
+  this.nodeOutputVars = this.nodeOutputCount()
+  this.totalLinks = this.linkCount()
+  this.linkOutputVars = this.linkOutputCount()
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 // OPENING RECORDS
@@ -797,37 +816,136 @@ static doubleToDate_swmmFormat(theDouble:number): Date{
 ////////////////////////////////////////////////////////////////////////////////////////
 
 /**
-* Returns the date of a given time step.
+* Returns the count of days since 12/30/1899 a given time step.
 *
 * @param {number} timeStep The index of the time step (1-based, also 1 time-step ahead of StartDate).
 * @return {number} Float64. Date & time in count of days since 12/30/1899.
 */
-dateStep_swmmFormat(timeStep): number{
-  let memoryPosition = this.computedResults() + timeStep *
+dateStep_swmmFormat(timeStep:number): number{
+  let memoryPosition = this.computedResults() + ( timeStep - 1) * this.bytesPerPeriod
   return this.readDouble(memoryPosition)
 }
 
+/**
+* Returns the value stored as a result from a given object.
+*
+* @param {number} iType  The type of the object (SUBCATCHMENT, NODE, LINK, SYS).
+* @param {number} iIndex The index of the object.
+* @param {number} vIndex The index of the variable.
+* @param {number} period The index of the time period.
+* @return {number} Float32. value stored as a result.
+*/
+get_result(iType:number, iIndex:number, vIndex:number, period:number): number{
+  let memoryPosition = this.getswmmresultoffset(iType, iIndex, vIndex, period)
+  return this.readFloat(memoryPosition)
+}
+
+/**
+* Returns the value stored as a result from a subcatchment.
+*
+* @param {number} iIndex The index of the subcatchment.
+* @param {number} vIndex The index of the variable.
+* @param {number} period The index of the time period.
+* @return {number} Float32. value stored as a result.
+*/
+subcatchmentOutput(iIndex:number, vIndex:number, period:number): number{
+  let memoryPosition = this.getswmmresultoffset(SwmmOut.SUBCATCH, iIndex, vIndex, period)
+  return this.readFloat(memoryPosition)
+}
+
+/**
+* Returns the value stored as a result from a node.
+*
+* @param {number} iIndex The index of the node.
+* @param {number} vIndex The index of the variable.
+* @param {number} period The index of the time period.
+* @return {number} Float32. value stored as a result.
+*/
+nodeOutput(iIndex:number, vIndex:number, period:number): number{
+  let memoryPosition = this.getswmmresultoffset(SwmmOut.NODE, iIndex, vIndex, period)
+  return this.readFloat(memoryPosition)
+}
+
+/**
+* Returns the value stored as a result from a link.
+*
+* @param {number} iIndex The index of the node.
+* @param {number} vIndex The index of the variable.
+* @param {number} period The index of the time period.
+* @return {number} Float32. value stored as a result.
+*/
+linkOutput(iIndex:number, vIndex:number, period:number): number{
+  let memoryPosition = this.getswmmresultoffset(SwmmOut.LINK, iIndex, vIndex, period)
+  return this.readFloat(memoryPosition)
+}
+
+/**
+* Returns the value stored as a result from a system variable.
+*
+* @param {number} vIndex The index of the system variable.
+* @param {number} period The index of the time period.
+* @return {number} Float32. value stored as a result.
+*/
+sysOutput(vIndex:number, period:number): number{
+  let iIndex = 0
+  let memoryPosition = this.getswmmresultoffset(SwmmOut.SYS, iIndex, vIndex, period)
+  return this.readFloat(memoryPosition)
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// returns data locations for .out parsing
-/*getswmmresultoffset (iType, iIndex, vIndex, period, modelIndex ) {
-  var offset1, offset2;
-  offset1 = modelIndex.StartPosResult + (period-1)*modelIndex.BytesPerPeriod 
+/**
+* Returns the total count of bytes per time period.
+*
+* @return {number} Integer. The total count of bytes per time period.
+*/
+bytesPerPeriod_func() {
+  let val = SwmmOut.RECORD_SIZE * (
+              2 + 
+              this.subcatchmentCount() * this.subcatchmentOutputCount() +
+              this.nodeCount()         * this.nodeOutputCount() +
+              this.linkCount()         * this.linkOutputCount() +
+              this.systemOutputCount()
+            ) 
+  return val
+}
+
+/**
+* Returns the memory location of a result value in SwmmOut.
+*
+* @param {number} iType The type of the object.
+* @param {number} iIndex The index of the object.
+* @param {number} vIndex The index of the variable.
+* @param {number} period The index of the time period.
+* @return {number} Float32. value stored as a result.
+*/
+getswmmresultoffset (iType:number, iIndex:number, vIndex:number, period:number ) {
+  var offset1, offset2 = 0
+  offset1 = this.computedResults() 
+                + (period - 1)         * this.bytesPerPeriod
   
-  if ( iType === SUBCATCH ) 
-    offset2 = (iIndex*(modelIndex.SubcatchVars) + vIndex);
-  else if (iType === NODE) 
-    offset2 = (modelIndex.SWMM_Nsubcatch*modelIndex.SubcatchVars + iIndex*modelIndex.NodeVars + vIndex);
-  else if (iType === LINK)
-    offset2 = (modelIndex.SWMM_Nsubcatch*modelIndex.SubcatchVars + modelIndex.SWMM_Nnodes*modelIndex.NodeVars + iIndex*modelIndex.LinkVars + vIndex);
-  else if (iType === SYS) 
-      offset2 = (modelIndex.SWMM_Nsubcatch*modelIndex.SubcatchVars + modelIndex.SWMM_Nnodes*modelIndex.NodeVars + modelIndex.SWMM_Nlinks*modelIndex.LinkVars + vIndex);
+  if ( iType === SwmmOut.SUBCATCH) 
+    offset2 = iIndex                   * this.subcatchmentOutputVars
+                + vIndex
+  else if (iType === SwmmOut.NODE) 
+    offset2 = this.totalSubcatchments  * this.subcatchmentOutputVars
+                + iIndex               * this.nodeOutputVars
+                + vIndex
+  else if (iType === SwmmOut.LINK)
+    offset2 = this.totalSubcatchments  * this.subcatchmentOutputVars
+                + this.totalNodes      * this.nodeOutputVars
+                + iIndex               * this.linkOutputVars 
+                + vIndex
+  else if (iType === SwmmOut.SYS) 
+    offset2 = this.totalSubcatchments  * this.subcatchmentOutputVars
+                + this.totalNodes      * this.nodeOutputVars 
+                + this.totalLinks      * this.linkOutputVars
+                + vIndex
   
-  return offset1 + RECORDSIZE * offset2;
-}*/
+  return offset1 + SwmmOut.RECORD_SIZE * offset2 + 2 * SwmmOut.RECORD_SIZE
+}
 
 /**
 * Reads a 32-bit signed integer from a position in SwmmOut.
