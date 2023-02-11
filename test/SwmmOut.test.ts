@@ -196,10 +196,22 @@ test('linkOutputVariable', () =>{
 
 // Start time, time step, time-related functions
 
-test('startTime', () =>{
-  expect((global as any).example1.startTime()).toBe(35796)
+test('startTime_swmmFormat', () =>{
+  expect((global as any).example1.startTime_swmmFormat()).toBe(35796)
 })
 
 test('timeStep', () =>{
   expect((global as any).example1.timeStep()).toBe(3600)
+})
+
+test('doubleToDate', () =>{
+  expect(SwmmOut.doubleToDate_swmmFormat((global as any).example1.startTime_swmmFormat())).toEqual(new Date("1998-01-01T00:00:00.000Z"))
+})
+
+test('startTime', () =>{
+  expect((global as any).example1.startTime()).toBe(883612800000)
+})
+
+test('startTime to date', () =>{
+  expect(new Date((global as any).example1.startTime())).toEqual(new Date("1998-01-01T00:00:00.000Z"))
 })

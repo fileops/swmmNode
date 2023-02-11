@@ -751,13 +751,25 @@ systemOutputVariable(index:number): number|undefined{
 ////////////////////////////////////////////////////////////////////////////////////////
 
 /**
-* Returns the start date & time of the simulation.
+* Returns the start date & time of the simulation in count of days since 12/30/1899.
+*
+* @return {number} Float64. Start date & time.
+*/
+startTime_swmmFormat(): number{
+  let memoryPosition = this.computedResults() - 3 * SwmmOut.RECORD_SIZE
+  return this.readDouble(memoryPosition)
+}
+
+/**
+* Returns the start date & time of the simulation in count of milliseconds since 12/31/1970.
 *
 * @return {number} Float64. Start date & time.
 */
 startTime(): number{
-  let memoryPosition = this.computedResults() - 3 * SwmmOut.RECORD_SIZE
-  return this.readDouble(memoryPosition)
+  let swmmTime = this.startTime_swmmFormat()
+  let diff = Date.UTC(0, 0, 0, 0)/(1000 * 60 * 60 * 24) - Date.UTC(1899,11,30)/(1000 * 60 * 60 * 24)
+  let newTime = swmmTime - diff
+  return Date.UTC(0, 0, newTime)
 }
 
 /**
@@ -770,9 +782,52 @@ timeStep(): number{
   return this.readInt(memoryPosition)
 }
 
+/**
+* Returns a Date version of a Float64 as passed from startTime()
+*
+* @return {Date} Date. A Javascript date object.
+*/
+static doubleToDate_swmmFormat(theDouble:number): Date{
+  let startClock = new Date(Date.UTC(1899, 11, 30 + theDouble, 0, 0, 0))
+  return startClock
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+// COMPUTED RESULTS
+////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* Returns the date of a given time step.
+*
+* @param {number} timeStep The index of the time step (1-based, also 1 time-step ahead of StartDate).
+* @return {number} Float64. Date & time in count of days since 12/30/1899.
+*/
+dateStep_swmmFormat(timeStep): number{
+  let memoryPosition = this.computedResults() + timeStep *
+  return this.readDouble(memoryPosition)
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////////////
+
+// returns data locations for .out parsing
+/*getswmmresultoffset (iType, iIndex, vIndex, period, modelIndex ) {
+  var offset1, offset2;
+  offset1 = modelIndex.StartPosResult + (period-1)*modelIndex.BytesPerPeriod 
+  
+  if ( iType === SUBCATCH ) 
+    offset2 = (iIndex*(modelIndex.SubcatchVars) + vIndex);
+  else if (iType === NODE) 
+    offset2 = (modelIndex.SWMM_Nsubcatch*modelIndex.SubcatchVars + iIndex*modelIndex.NodeVars + vIndex);
+  else if (iType === LINK)
+    offset2 = (modelIndex.SWMM_Nsubcatch*modelIndex.SubcatchVars + modelIndex.SWMM_Nnodes*modelIndex.NodeVars + iIndex*modelIndex.LinkVars + vIndex);
+  else if (iType === SYS) 
+      offset2 = (modelIndex.SWMM_Nsubcatch*modelIndex.SubcatchVars + modelIndex.SWMM_Nnodes*modelIndex.NodeVars + modelIndex.SWMM_Nlinks*modelIndex.LinkVars + vIndex);
+  
+  return offset1 + RECORDSIZE * offset2;
+}*/
 
 /**
 * Reads a 32-bit signed integer from a position in SwmmOut.
