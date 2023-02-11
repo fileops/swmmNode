@@ -167,3 +167,39 @@ test('linkMaximumDepth', () =>{
 test('linkLength', () =>{
   expect((global as any).example1.linkLength(9)).toBe(400)
 })
+
+// Output variables
+
+test('subcatchmentOutputCount', () =>{
+  expect((global as any).example1.subcatchmentOutputCount()).toBe(10)
+})
+
+test('subcatchmentOutputVariable', () =>{
+  expect((global as any).example1.subcatchmentOutputVariable(9)).toBe(9)
+})
+
+test('nodeOutputCount', () =>{
+  expect((global as any).example1.nodeOutputCount()).toBe(8)
+})
+
+test('nodeOutputVariable', () =>{
+  expect((global as any).example1.nodeOutputVariable(7)).toBe(7)
+})
+
+test('linkOutputCount', () =>{
+  expect((global as any).example1.linkOutputCount()).toBe(7)
+})
+
+test('linkOutputVariable', () =>{
+  expect((global as any).example1.linkOutputVariable(6)).toBe(6)
+})
+
+// Start time, time step, time-related functions
+
+test('startTime', () =>{
+  expect((global as any).example1.startTime()).toBe(35796)
+})
+
+test('timeStep', () =>{
+  expect((global as any).example1.timeStep()).toBe(3600)
+})

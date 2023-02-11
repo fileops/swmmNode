@@ -10,6 +10,11 @@ static RECORD_SIZE: number = 4
 static MAX_SUBCATCHMENT_INPUT_VARIABLES: number = 1
 static MAX_NODE_INPUT_VARIABLES: number = 3
 static MAX_LINK_INPUT_VARIABLES: number = 5
+static SUBCATCHMENT_OUTPUT_VARIABLE_COUNT: number = 8
+static NODE_OUTPUT_VARIABLE_COUNT: number = 6
+static LINK_OUTPUT_VARIABLE_COUNT: number = 5
+static SYSTEM_OUTPUT_VARIABLE_COUNT: number = 15
+
 
 constructor(n: ArrayBuffer) {
   this.value = n
@@ -357,16 +362,25 @@ subcatchmentArea(index:number): number|undefined{
 }
 
 /**
+* Returns the memory offset of the node input variables in the SwmmOut object.
+*
+* @return {number} Integer. Offset location of node input variables.
+*/
+nodeInputOffset(): number{
+  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
+  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
+  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()    
+  return subcaIndexPosition
+}
+
+/**
 * Returns the count of node descriptor variables.
 * Always 3.
 *
 * @return {number} Integer. Count of node descriptor variables.
 */
 nodeInputCount(): number{
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-  let memoryPosition     = subcaIndexPosition      
+  let memoryPosition = this.nodeInputOffset()      
   return this.readInt(memoryPosition)
 }
 
@@ -384,13 +398,10 @@ nodeInputType(index:number): number|undefined{
   // Do not accept indices < 0 or >= MAX_NODE_INPUT_VARIABLES
   if(index < 0 || index >= SwmmOut.MAX_NODE_INPUT_VARIABLES)
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-  let memoryPosition     = subcaIndexPosition
 
-      inputIndicesStart  = memoryPosition          + SwmmOut.RECORD_SIZE 
-  let inputIndexPosition = inputIndicesStart       + SwmmOut.RECORD_SIZE * index
+  let memoryPosition = this.nodeInputOffset()
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputIndexPosition = inputIndicesStart + SwmmOut.RECORD_SIZE * index
   return this.readInt( inputIndexPosition )
 }
 
@@ -409,14 +420,11 @@ nodeType(index:number): number|undefined{
   // Do not accept indices < 0 or >= nodeCount()
   if(index < 0 || index >= this.nodeCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-  let memoryPosition     = subcaIndexPosition
-
-      inputIndicesStart  = memoryPosition          + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount() * index
+  
+  let memoryPosition = this.nodeInputOffset()
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.nodeInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.nodeInputCount() * index
   return this.readInt( inputIndexPosition )
 }
 
@@ -430,14 +438,11 @@ nodeInvertElevation(index:number): number|undefined{
   // Do not accept indices < 0 or >= nodeCount()
   if(index < 0 || index >= this.nodeCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-  let memoryPosition     = subcaIndexPosition
-
-      inputIndicesStart  = memoryPosition          + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount() * index + SwmmOut.RECORD_SIZE
+  
+  let memoryPosition = this.nodeInputOffset()
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.nodeInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.nodeInputCount() * index + SwmmOut.RECORD_SIZE
   return this.readFloat( inputIndexPosition )
 }
 
@@ -451,15 +456,26 @@ nodeMaximumDepth(index:number): number|undefined{
   // Do not accept indices < 0 or >= nodeCount()
   if(index < 0 || index >= this.nodeCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-  let memoryPosition     = subcaIndexPosition
-
-      inputIndicesStart  = memoryPosition          + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount() * index + SwmmOut.RECORD_SIZE * 2
+  
+  let memoryPosition = this.nodeInputOffset()
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.nodeInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.nodeInputCount() * index + SwmmOut.RECORD_SIZE * 2
   return this.readFloat( inputIndexPosition )
+}
+
+/**
+* Returns the memory offset of the link input variables in the SwmmOut object.
+*
+* @return {number} Integer. Offset location of link input variables.
+*/
+linkInputOffset(): number{
+  let memoryPosition = this.nodeInputOffset()   
+  
+  let nodeIndicesStart   = memoryPosition   + SwmmOut.RECORD_SIZE 
+  let nodeValuesStart    = nodeIndicesStart + SwmmOut.RECORD_SIZE * this.nodeInputCount()
+  let nodeIndexPosition  = nodeValuesStart  + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
+  return nodeIndexPosition
 }
 
 /**
@@ -469,15 +485,7 @@ nodeMaximumDepth(index:number): number|undefined{
 * @return {number} Integer. Count of link descriptor variables.
 */
 linkInputCount(): number{
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-
-  let nodeIndicesStart   = subcaIndexPosition      + SwmmOut.RECORD_SIZE 
-  let nodeValuesStart    = nodeIndicesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let nodeIndexPosition  = nodeValuesStart         + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
-
-  let memoryPosition     = nodeIndexPosition      
+  let memoryPosition     = this.linkInputOffset()      
   return this.readInt(memoryPosition)
 }
 
@@ -497,16 +505,10 @@ linkInputType(index:number): number|undefined{
   // Do not accept indices < 0 or >= MAX_LINK_INPUT_VARIABLES
   if(index < 0 || index >= SwmmOut.MAX_LINK_INPUT_VARIABLES)
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-
-  let nodeIndicesStart   = subcaIndexPosition      + SwmmOut.RECORD_SIZE 
-  let nodeValuesStart    = nodeIndicesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let nodeIndexPosition  = nodeValuesStart         + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
-
-      inputIndicesStart  = nodeIndexPosition       + SwmmOut.RECORD_SIZE 
-  let inputIndexPosition = inputIndicesStart       + SwmmOut.RECORD_SIZE * index
+  
+  let memoryPosition     = this.linkInputOffset()  
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputIndexPosition = inputIndicesStart + SwmmOut.RECORD_SIZE * index
   return this.readInt( inputIndexPosition )
 }
 
@@ -525,17 +527,11 @@ linkType(index:number): number|undefined{
   // Do not accept indices < 0 or >= linkCount()
   if(index < 0 || index >= this.linkCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-
-  let nodeIndicesStart   = subcaIndexPosition      + SwmmOut.RECORD_SIZE 
-  let nodeValuesStart    = nodeIndicesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let nodeIndexPosition  = nodeValuesStart         + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
-
-      inputIndicesStart  = nodeIndexPosition       + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.linkInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.linkInputCount() * index
+  
+  let memoryPosition     = this.linkInputOffset()  
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.linkInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.linkInputCount() * index
   return this.readInt( inputIndexPosition )
 }
 
@@ -549,17 +545,11 @@ linkUpstreamInvertOffset(index:number): number|undefined{
   // Do not accept indices < 0 or >= linkCount()
   if(index < 0 || index >= this.linkCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-
-  let nodeIndicesStart   = subcaIndexPosition      + SwmmOut.RECORD_SIZE 
-  let nodeValuesStart    = nodeIndicesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let nodeIndexPosition  = nodeValuesStart         + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
-
-      inputIndicesStart  = nodeIndexPosition       + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.linkInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 1
+  
+  let memoryPosition     = this.linkInputOffset()  
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.linkInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 1
   return this.readFloat( inputIndexPosition )
 }
 
@@ -573,17 +563,11 @@ linkDownstreamInvertOffset(index:number): number|undefined{
   // Do not accept indices < 0 or >= linkCount()
   if(index < 0 || index >= this.linkCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-
-  let nodeIndicesStart   = subcaIndexPosition      + SwmmOut.RECORD_SIZE 
-  let nodeValuesStart    = nodeIndicesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let nodeIndexPosition  = nodeValuesStart         + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
-
-      inputIndicesStart  = nodeIndexPosition       + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.linkInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 2
+  
+  let memoryPosition     = this.linkInputOffset()  
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.linkInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 2
   return this.readFloat( inputIndexPosition )
 }
 
@@ -597,17 +581,11 @@ linkMaximumDepth(index:number): number|undefined{
   // Do not accept indices < 0 or >= linkCount()
   if(index < 0 || index >= this.linkCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-
-  let nodeIndicesStart   = subcaIndexPosition      + SwmmOut.RECORD_SIZE 
-  let nodeValuesStart    = nodeIndicesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let nodeIndexPosition  = nodeValuesStart         + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
-
-      inputIndicesStart  = nodeIndexPosition       + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.linkInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 3
+  
+  let memoryPosition     = this.linkInputOffset()  
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.linkInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 3
   return this.readFloat( inputIndexPosition )
 }
 
@@ -621,20 +599,176 @@ linkLength(index:number): number|undefined{
   // Do not accept indices < 0 or >= linkCount()
   if(index < 0 || index >= this.linkCount())
     return undefined
-  let inputIndicesStart  = this.objectProperties() + SwmmOut.RECORD_SIZE 
-  let subcaValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount()
-  let subcaIndexPosition = subcaValuesStart        + SwmmOut.RECORD_SIZE * this.subcatchmentInputCount() * this.subcatchmentCount()
-
-  let nodeIndicesStart   = subcaIndexPosition      + SwmmOut.RECORD_SIZE 
-  let nodeValuesStart    = nodeIndicesStart        + SwmmOut.RECORD_SIZE * this.nodeInputCount()
-  let nodeIndexPosition  = nodeValuesStart         + SwmmOut.RECORD_SIZE * this.nodeInputCount() * this.nodeCount()
-
-      inputIndicesStart  = nodeIndexPosition       + SwmmOut.RECORD_SIZE 
-  let inputValuesStart   = inputIndicesStart       + SwmmOut.RECORD_SIZE * this.linkInputCount()
-  let inputIndexPosition = inputValuesStart        + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 4
+  
+  let memoryPosition     = this.linkInputOffset()  
+  let inputIndicesStart  = memoryPosition    + SwmmOut.RECORD_SIZE 
+  let inputValuesStart   = inputIndicesStart + SwmmOut.RECORD_SIZE * this.linkInputCount()
+  let inputIndexPosition = inputValuesStart  + SwmmOut.RECORD_SIZE * this.linkInputCount() * index + SwmmOut.RECORD_SIZE * 4
   return this.readFloat( inputIndexPosition )
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Output variables
+////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* Returns the memory offset of the subcatchment output variables in the SwmmOut object.
+*
+* @return {number} Integer. Offset location of subcatchment output variables.
+*/
+outputVariablesOffset(): number{
+  let memoryPosition = this.linkInputOffset()   
+  
+  let nodeIndicesStart   = memoryPosition   + SwmmOut.RECORD_SIZE 
+  let nodeValuesStart    = nodeIndicesStart + SwmmOut.RECORD_SIZE * this.linkInputCount()
+  let nodeIndexPosition  = nodeValuesStart  + SwmmOut.RECORD_SIZE * this.linkInputCount() * this.linkCount()
+  return nodeIndexPosition
+}
+
+/**
+* Returns the count of subcatchment output variables.
+* Always 8 + pollutant count.
+*
+* @return {number} Integer. Count of subcatchment output variables.
+*/
+subcatchmentOutputCount(): number{
+  let memoryPosition = this.outputVariablesOffset()
+  return this.readInt(memoryPosition)
+}
+
+/**
+* Returns the index of subcatchment output variables.
+* This part of the .out file doesn't make sense.
+*
+* @param {number} index The index of the subcatchment output variable index.
+* @return {number} Integer. Index of the subcatchment output variable index.
+*/
+subcatchmentOutputVariable(index:number): number|undefined{
+  // Do not accept indices < 0 or >= SwmmOut.SUBCATCHMENT_OUTPUT_VARIABLE_COUNT + this.pollutantCount()
+  if(index < 0 || index >= SwmmOut.SUBCATCHMENT_OUTPUT_VARIABLE_COUNT + this.pollutantCount())
+    return undefined
+  let memoryPosition = this.outputVariablesOffset() + SwmmOut.RECORD_SIZE
+    + index * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
+
+/**
+* Returns the count of node output variables.
+* Always 6 + pollutant count.
+*
+* @return {number} Integer. Count of node output variables.
+*/
+nodeOutputCount(): number{
+  let memoryPosition = this.outputVariablesOffset() + SwmmOut.RECORD_SIZE 
+    + (SwmmOut.SUBCATCHMENT_OUTPUT_VARIABLE_COUNT + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
+
+/**
+* Returns the index of node output variables.
+* This part of the .out file doesn't make sense.
+*
+* @param {number} index The index of the node output variable index.
+* @return {number} Integer. Index of the node output variable index.
+*/
+nodeOutputVariable(index:number): number|undefined{
+  // Do not accept indices < 0 or >= SwmmOut.NODE_OUTPUT_VARIABLE_COUNT + this.pollutantCount()
+  if(index < 0 || index >= SwmmOut.NODE_OUTPUT_VARIABLE_COUNT + this.pollutantCount())
+    return undefined
+  let memoryPosition = this.outputVariablesOffset() + SwmmOut.RECORD_SIZE * 2
+    + (SwmmOut.SUBCATCHMENT_OUTPUT_VARIABLE_COUNT + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + index * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
+
+/**
+* Returns the count of link output variables.
+* Always 5 + pollutant count.
+*
+* @return {number} Integer. Count of link output variables.
+*/
+linkOutputCount(): number{
+  let memoryPosition = this.outputVariablesOffset() + SwmmOut.RECORD_SIZE * 2
+    + (SwmmOut.SUBCATCHMENT_OUTPUT_VARIABLE_COUNT + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + (SwmmOut.NODE_OUTPUT_VARIABLE_COUNT         + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
+
+/**
+* Returns the index of link output variables.
+* This part of the .out file doesn't make sense.
+*
+* @param {number} index The index of the link output variable index.
+* @return {number} Integer. Index of the link output variable index.
+*/
+linkOutputVariable(index:number): number|undefined{
+  // Do not accept indices < 0 or >= SwmmOut.LINK_OUTPUT_VARIABLE_COUNT + this.pollutantCount()
+  if(index < 0 || index >= SwmmOut.LINK_OUTPUT_VARIABLE_COUNT + this.pollutantCount())
+    return undefined
+  let memoryPosition = this.outputVariablesOffset() + SwmmOut.RECORD_SIZE * 3
+    + (SwmmOut.SUBCATCHMENT_OUTPUT_VARIABLE_COUNT + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + (SwmmOut.NODE_OUTPUT_VARIABLE_COUNT         + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + index * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
+
+/**
+* Returns the count of system output variables.
+* Always 15.
+*
+* @return {number} Integer. Count of system output variables.
+*/
+systemOutputCount(): number{
+  let memoryPosition = this.outputVariablesOffset() + SwmmOut.RECORD_SIZE * 3
+    + (SwmmOut.SUBCATCHMENT_OUTPUT_VARIABLE_COUNT + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + (SwmmOut.NODE_OUTPUT_VARIABLE_COUNT         + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + (SwmmOut.LINK_OUTPUT_VARIABLE_COUNT         + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
+
+/**
+* Returns the index of system output variables.
+* This part of the .out file doesn't make sense.
+*
+* @param {number} index The index of the system output variable index.
+* @return {number} Integer. Index of the system output variable index.
+*/
+systemOutputVariable(index:number): number|undefined{
+  // Do not accept indices < 0 or >= this.systemOutputCount()
+  if(index < 0 || index >= this.systemOutputCount())
+    return undefined
+  let memoryPosition = this.outputVariablesOffset() + SwmmOut.RECORD_SIZE * 4
+    + (this.subcatchmentCount() + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + (this.nodeCount()         + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + (this.linkCount()         + this.pollutantCount()) * SwmmOut.RECORD_SIZE
+    + index * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+// START TIME & TIME STEP
+////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* Returns the start date & time of the simulation.
+*
+* @return {number} Float64. Start date & time.
+*/
+startTime(): number{
+  let memoryPosition = this.computedResults() - 3 * SwmmOut.RECORD_SIZE
+  return this.readDouble(memoryPosition)
+}
+
+/**
+* Returns the time step duration of the simulation, in seconds.
+*
+* @return {number} Integer. Time step duration, seconds.
+*/
+timeStep(): number{
+  let memoryPosition = this.computedResults() - 1 * SwmmOut.RECORD_SIZE
+  return this.readInt(memoryPosition)
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -658,6 +792,16 @@ readInt(offset:number) {
 */
 readFloat(offset:number) {
   return new Float32Array(this.value.slice(offset, offset + SwmmOut.RECORD_SIZE))[0]
+}
+
+/**
+* Reads a 64-bit signed float from a position in SwmmOut.
+*
+* @param {number} offset The position of the readable float, in number of bytes from the start of the SwmmOut object.
+* @return {number} A 64-bit float (double)read from SwmmOut.
+*/
+readDouble(offset:number) {
+  return new Float64Array(this.value.slice(offset, offset + SwmmOut.RECORD_SIZE * 2))[0]
 }
 
 /**
