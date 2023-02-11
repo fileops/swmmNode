@@ -1,3 +1,5 @@
+// SwmmOut.ts
+
 /**
 * Class for storing .out file contents.
 * This class can also be used to create simluated .out file contents.
@@ -27,7 +29,636 @@ static LINK = 3
 static SYS = 4   
 static POLLUT = 5
 
+/**
+* @type {JSON}
+* Description strings structure for documenting output.
+*/
+static sections = [
+  {
+    "name":"OPENING RECORDS",
+    "contents":[
+      {
+        "name": "File authentication value 1",
+        "description": "Value that identifes this as a valid swmm file. Should match 'File authentication value 2' in CLOSING RECORDS'."
+      },
+      {
+        "name": "SWMM version number",
+        "description": "Version of EPA-SWMM that was used to generate this file."
+      },
+      {
+        "name": "Flow unit values",
+        "description": "The unit system that describes the variables in this file."
+      },
+      {
+        "name": "Subcatchment count",
+        "description": "Count of subcatchments in the model."
+      },
+      {
+        "name": "Node count",
+        "description": "Count of nodes in the model."
+      },
+      {
+        "name": "Link count",
+        "description": "Count of links in the model."
+      },
+      {
+        "name": "Pollutant count",
+        "description": "Count of pollutants in the model."
+      }
+    ]
+  },
+  {
+    "name":"OBJECT ID NAMES",
+    "contents":[
+      [
+        {
+          "name": "Subcatchment ID Length",
+          "description": "Count of bytes, or number of characters in this subcatchment ID."
+        },
+        {
+          "name": "Subcatchment ID",
+          "description": "The name of this subcatchment."
+        },
+      ],
+      [
+        {
+          "name": "Node ID Length",
+          "description": "Count of bytes, or number of characters in this node ID."
+        },
+        {
+          "name": "Node ID",
+          "description": "The name of this node."
+        },
+      ],
+      [
+        {
+          "name": "Link ID Length",
+          "description": "Count of bytes, or number of characters in this link ID."
+        },
+        {
+          "name": "Link ID",
+          "description": "The name of this link."
+        },
+      ],
+      [
+        {
+          "name": "Pollutant ID Length",
+          "description": "Count of bytes, or number of characters in this pollutant ID."
+        },
+        {
+          "name": "Pollutant ID",
+          "description": "The name of this pollutant."
+        },
+      ],
+      
+    ]
+  },
+  {
+    "name":"OBJECT PROPERTIES",
+    "contents":[
+      [
+        {
+          "name": "Subcatchment inputs count",
+          "description": "Count of input variables for subcatchments."
+        },
+        {
+          "name": "Subcatchment input descriptor (area)",
+          "description": "Identifies the type of input in this position per subcatchment."
+        },
+        {
+          "name": "Area",
+          "description": "Area of this subcatchment."
+        },
+      ],
+      [
+        {
+          "name": "Node inputs count",
+          "description": "Count of input variables for nodes."
+        },
+        {
+          "name": "Node input descriptor (type)",
+          "description": "Identifies the type of input in position 1 per node."
+        },
+        {
+          "name": "Node input descriptor (invert elevation)",
+          "description": "Identifies the type of input in position 2 per node."
+        },
+        {
+          "name": "Node input descriptor (maximum depth)",
+          "description": "Identifies the type of input in position 3 per node."
+        },
+        {
+          "name": "Type",
+          "description": "Type of node."
+        },
+        {
+          "name": "Invert Elevation",
+          "description": "Invert elevation of node."
+        },
+        {
+          "name": "Maximum Depth",
+          "description": "Maximum depth of node."
+        }
+      ],
+      [
+        {
+          "name": "Link inputs count",
+          "description": "Count of input variables for links."
+        },
+        {
+          "name": "Link input descriptor (type)",
+          "description": "Identifies the type of input in position 1 per link."
+        },
+        {
+          "name": "Link input descriptor (upstream invert offset)",
+          "description": "Identifies the type of input in position 2 per link."
+        },
+        {
+          "name": "Link input descriptor (downstream invert offset)",
+          "description": "Identifies the type of input in position 3 per link."
+        },
+        {
+          "name": "Link input descriptor (maximum depth)",
+          "description": "Identifies the type of input in position 4 per link."
+        },
+        {
+          "name": "Link input descriptor (length)",
+          "description": "Identifies the type of input in position 5 per link."
+        },
+        {
+          "name": "Type",
+          "description": "Type of link."
+        },
+        {
+          "name": "Upstream Invert Offset",
+          "description": "Upstream invert offset of link."
+        },
+        {
+          "name": "Downstream Invert Offset",
+          "description": "Downstream invert offset of link."
+        },
+        {
+          "name": "Maximum Depth",
+          "description": "The maximum depth of the link."
+        },
+        {
+          "name": "Length",
+          "description": "The length of the link."
+        }
+      ],
+    ]
+  },
+  {
+    "name":"REPORTING VARIABLES",
+    "contents":[
+      [
+        {
+          "name": "Subcatchment outputs count",
+          "description": "Count of output variables for subcatchments."
+        },
+        {
+          "name": "Subcatchment output descriptor (rainfall)",
+          "description": "Identifies the type of output in position 1 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (snow depth)",
+          "description": "Identifies the type of output in position 2 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (evap loss)",
+          "description": "Identifies the type of output in position 3 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (infiltration loss)",
+          "description": "Identifies the type of output in position 4 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (runoff flow rate)",
+          "description": "Identifies the type of output in position 5 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (groundwater flow rate to node)",
+          "description": "Identifies the type of output in position 6 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (elevation of saturated groundwater table)",
+          "description": "Identifies the type of output in position 7 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (soil moisture)",
+          "description": "Identifies the type of output in position 8 per subcatchment."
+        },
+        {
+          "name": "Subcatchment output descriptor (pollutant washoff)",
+          "description": "Identifies the type of output in position 9+ per subcatchment."
+        }
+      ],
+      [
+        {
+          "name": "Node outputs count",
+          "description": "Count of output variables for nodes."
+        },
+        {
+          "name": "Node output descriptor (depth)",
+          "description": "Identifies the type of output in position 1 per node."
+        },
+        {
+          "name": "Node output descriptor (head)",
+          "description": "Identifies the type of output in position 2 per node."
+        },
+        {
+          "name": "Node output descriptor (volume stored & ponded)",
+          "description": "Identifies the type of output in position 3 per node."
+        },
+        {
+          "name": "Node output descriptor (lateral inflow rate)",
+          "description": "Identifies the type of output in position 4 per node."
+        },
+        {
+          "name": "Node output descriptor (total inflow rate)",
+          "description": "Identifies the type of output in position 5 per node."
+        },
+        {
+          "name": "Node output descriptor (overflow rate)",
+          "description": "Identifies the type of output in position 6 per node."
+        },
+        {
+          "name": "Node output descriptor (pollutant concentration)",
+          "description": "Identifies the type of output in position 7+ per node."
+        }
+      ],
+      [
+        {
+          "name": "Link outputs count",
+          "description": "Count of output variables for links."
+        },
+        {
+          "name": "Link output descriptor (flow)",
+          "description": "Identifies the type of output in position 1 per link."
+        },
+        {
+          "name": "Link output descriptor (depth)",
+          "description": "Identifies the type of output in position 2 per link."
+        },
+        {
+          "name": "Link output descriptor (velocity)",
+          "description": "Identifies the type of output in position 3 per link."
+        },
+        {
+          "name": "Link output descriptor (volume)",
+          "description": "Identifies the type of output in position 4 per link."
+        },
+        {
+          "name": "Link output descriptor (capacity, ratio of area to full area)",
+          "description": "Identifies the type of output in position 5 per link."
+        },
+        {
+          "name": "Link output descriptor (pollutant concentration)",
+          "description": "Identifies the type of output in position 6+ per node."
+        }
+      ],
+      [
+        {
+          "name": "System outputs count",
+          "description": "Count of output variables for the system."
+        },
+        {
+          "name": "System output descriptor (temperature)",
+          "description": "Identifies the type of system output in position 1."
+        },
+        {
+          "name": "System output descriptor (rainfall)",
+          "description": "Identifies the type of system output in position 2."
+        },
+        {
+          "name": "System output descriptor (snow depth)",
+          "description": "Identifies the type of system output in position 3."
+        },
+        {
+          "name": "System output descriptor (infiltration)",
+          "description": "Identifies the type of system output in position 4."
+        },
+        {
+          "name": "System output descriptor (runoff)",
+          "description": "Identifies the type of system output in position 5."
+        },
+        {
+          "name": "System output descriptor (dry weather inflow)",
+          "description": "Identifies the type of system output in position 6."
+        },
+        {
+          "name": "System output descriptor (groundwater inflow)",
+          "description": "Identifies the type of system output in position 7."
+        },
+        {
+          "name": "System output descriptor (RDII inflow)",
+          "description": "Identifies the type of system output in position 8."
+        },
+        {
+          "name": "System output descriptor (external inflow)",
+          "description": "Identifies the type of system output in position 9."
+        },
+        {
+          "name": "System output descriptor (total lateral inflow)",
+          "description": "Identifies the type of system output in position 10."
+        },
+        {
+          "name": "System output descriptor (system flooding)",
+          "description": "Identifies the type of system output in position 11."
+        },
+        {
+          "name": "System output descriptor (outfall outflow)",
+          "description": "Identifies the type of system output in position 12."
+        },
+        {
+          "name": "System output descriptor (storage volume)",
+          "description": "Identifies the type of system output in position 13."
+        },
+        {
+          "name": "System output descriptor (evaporation)",
+          "description": "Identifies the type of system output in position 14."
+        },
+        {
+          "name": "System output descriptor (potential ET)",
+          "description": "Identifies the type of system output in position 15."
+        }
+      ]
+    ]
+  },
+  {
+    "name":"REPORTING INTERVAL",
+    "contents":[
+      [
+        {
+          "name": "Report Start Date",
+          "description": "The start date/time of the report."
+        },
+        {
+          "name": "Reporting interval",
+          "description": "The interval between report steps, in secods."
+        }
+      ]
+    ]
+  },
+  {
+    "name":"COMPUTED RESULTS",
+    "contents":[
+      [
+        {
+          "name": "Rainfall",
+          "description": "Subcatchment rainfall"
+        },
+        {
+          "name": "Snow depth",
+          "description": "Subcatchment snow depth."
+        },
+        {
+          "name": "Evap loss",
+          "description": "Subcatchment evap loss."
+        },
+        {
+          "name": "Infil loss",
+          "description": "Subcatchment infiltration loss."
+        },
+        {
+          "name": "Runoff",
+          "description": "Subcatchment runoff flow rate."
+        },
+        {
+          "name": "GW flow",
+          "description": "Subcatchment groundwater flow rate to node."
+        },
+        {
+          "name": "GW elevation",
+          "description": "Elevation of saturated groundwater table."
+        },
+        {
+          "name": "Soil moisture",
+          "description": "Soil moisture."
+        },
+        {
+          "name": "Washoff",
+          "description": "Subcatchment pollutant washoff concentration."
+        }
+      ],
+      [
+        {
+          "name": "Depth",
+          "description": "Water depth above invert."
+        },
+        {
+          "name": "Head",
+          "description": "Hydraulic head."
+        },
+        {
+          "name": "Volume",
+          "description": "Volume stored and ponded."
+        },
+        {
+          "name": "Lat. Inflow",
+          "description": "Lateral inflow rate."
+        },
+        {
+          "name": "Node inflow",
+          "description": "Total inflow rate."
+        },
+        {
+          "name": "Node overflow",
+          "description": "Overlfow rate."
+        },
+        {
+          "name": "Washoff",
+          "description": "Node pollutant washoff concentration."
+        }
+      ],
+      [
+        {
+          "name": "Flow",
+          "description": "Flow rate."
+        },
+        {
+          "name": "Depth",
+          "description": "Flow depth."
+        },
+        {
+          "name": "Velocity",
+          "description": "Flow velocity."
+        },
+        {
+          "name": "Volume",
+          "description": "Link Volume."
+        },
+        {
+          "name": "Capacity",
+          "description": "Ratio of area to full area."
+        },
+        {
+          "name": "Washoff",
+          "description": "Link pollutant washoff concentration."
+        }
+      ],
+      [
+        {
+          "name": "Temperature",
+          "description": "Air temperature."
+        },
+        {
+          "name": "Rainfall",
+          "description": "Rainfall intensity."
+        },
+        {
+          "name": "Snow depth",
+          "description": "System snow depth."
+        },
+        {
+          "name": "Infiltration",
+          "description": "System infiltration."
+        },
+        {
+          "name": "Runoff",
+          "description": "Runoff flow."
+        },
+        {
+          "name": "DWF",
+          "description": "Dry weather inflow."
+        },
+        {
+          "name": "GWF",
+          "description": "Ground water inflow."
+        },
+        {
+          "name": "RDII",
+          "description": "RDII Inflow."
+        },
+        {
+          "name": "Ex. inflow)",
+          "description": "External inflow."
+        },
+        {
+          "name": "Inflow",
+          "description": "Total lateral inflow."
+        },
+        {
+          "name": "Flooding",
+          "description": "Flooding outflow."
+        },
+        {
+          "name": "Outflow",
+          "description": "Outfall outflow."
+        },
+        {
+          "name": "Storage",
+          "description": "Storage volume."
+        },
+        {
+          "name": "Evap.",
+          "description": "Evaporation"
+        },
+        {
+          "name": "PET",
+          "description": "Potential ET."
+        }
+      ]
+    ]
+  },
+  {
+    "name":"CLOSING RECORDS",
+    "contents":[
+      {
+        "name": "Object IDs",
+        "description": "Byte position of object IDs."
+      },
+      {
+        "name": "Object data",
+        "description": "Byte position of object data."
+      },
+      {
+        "name": "Output data",
+        "description": "Byte position of time-based output."
+      },
+      {
+        "name": "Periods",
+        "description": "Count of time periods in the model."
+      },
+      {
+        "name": "Error code",
+        "description": "Error code for model analysis."
+      },
+      {
+        "name": "File authentication value 2",
+        "description": "Value that identifes this as a valid swmm file. Should match 'File authentication value 1' in OPENING RECORDS'."
+      },
+    ]
+  },
+]
 
+/**
+* @type {Array}
+* Description strings for flow units.
+*/
+static FLOW_UNIT_VALUES = [
+  "CFS", "GPM", "MGD", "CMS", "LPS", "LPD"
+]
+
+/**
+* @type {Array}
+* Description strings for subcatchment types.
+*/
+static SUBCATCHMENT_TYPE_CODES = [
+  "Area"
+]
+
+/**
+* @type {Array}
+* Description strings structure for node types.
+*/
+static NODE_TYPE_CODES = [
+  "Junction", "Outfall", "Storage", "Divider"
+]
+
+/**
+* @type {Array}
+* Description strings structure for link types.
+*/
+static LINK_TYPE_CODES = [
+  "Conduit", "Pump", "Orifice", "Weir", "Outlet"
+]
+
+/**
+* @type {Array}
+* Description strings structure for subcatchment results.
+*/
+static SUBCATCHENT_RESULTS = [
+  "Rainfall", "Snow Depth", "Evap", "Infiltration", "Runoff", "GW Flow", "GW Elev", "Soil Moisture", "Washoff"
+]
+
+/**
+* @type {Array}
+* Description strings structure for node results.
+*/
+static NODE_RESULTS = [
+  "Depth", "Head", "Volume", "Lat. Flow", "Inflow", "Overflow", "Quality"
+]
+
+/**
+* @type {Array}
+* Description strings structure for link results.
+*/
+static LINK_RESULTS = [
+  "Flow", "Depth", "Velocity", "Volume", "Capacity", "Quality"
+]
+
+/**
+* @type {Array}
+* Description strings structure for system results.
+*/
+static SYS_RESULTS = [
+  "Temperature", "Rainfall", "Snow Depth", "Infil", "Runoff", "DW Flow", "GW Flow", "RDII", "External Inflow", "Lateral Inflow", "Flooding", "Outflow", "Storage", "Evap", "Potential ET"
+]
+
+/**
+* Constructor for the SwmmOut class.
+*/
 constructor(n: ArrayBuffer) {
   this.value = n
   this.bytesPerPeriod = this.bytesPerPeriod_func()
