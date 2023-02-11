@@ -227,3 +227,27 @@ test('get_result', () =>{
     get_result(3, 11, 6, 7))
     .toBe(5.061554431915283)
 })
+
+test('subcatchmentOutput', () =>{
+  expect((global as any).example1.
+   subcatchmentOutput(3, 6, 7))
+    .toBe(0)
+})
+
+test('nodeOutput', () =>{
+  expect((global as any).example1.
+  nodeOutput(11, 6, 7))
+    .toBe(147.02984619140625)
+})
+
+test('linkOutput', () =>{
+  expect((global as any).example1.
+  linkOutput(11, 6, 7))
+    .toBe(5.061554431915283)
+})
+
+test('sysOutput', () =>{
+  expect((global as any).example1.
+  sysOutput(11, 6, 7))
+    .toBe(4.341998100280762)
+})
