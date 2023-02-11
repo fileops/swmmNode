@@ -1442,6 +1442,51 @@ static doubleToDate_swmmFormat(theDouble:number): Date{
   return startClock
 }
 
+/**
+* Returns a human-readable string version of a Float64 date as passed from startTime()
+*
+* @return {string} string. A Javascript string object.
+*/
+static doubleDateToString_swmmFormat(theDouble:number): string{
+  var seconds = Math.round(24*3600*(theDouble%1))
+
+  let clock = new Date('12/30/1899')
+  clock     = new Date(clock.setDate(clock.getDate() + theDouble))
+  clock.setSeconds(seconds)
+  let clockStr = (clock.getMonth()+1).toString().padStart(2, '0') + '/' +
+                 clock.getDate()     .toString().padStart(2, '0')  + '/' +
+                 clock.getFullYear() +
+                 ' ' +
+                 clock.getHours()    .toString().padStart(2, '0') + ':' +
+                 clock.getMinutes()  .toString().padStart(2, '0') + ':' +
+                 clock.getSeconds()  .toString().padStart(2, '0')
+  
+  return clockStr
+}
+
+/**
+* Returns a human-readable string version of an integer time step
+*
+* @return {string} string. A Javascript string object.
+*/
+swmmStepToDate(timeStep:number): string{
+
+  let theDouble = this.startTime()/1000 + timeStep * 3600
+
+  let clock = new Date(0)
+  clock.setSeconds(theDouble + clock.getTimezoneOffset()/3600)
+  //let clockStr = clock.toDateString()
+  let clockStr = 
+    (clock.getUTCMonth()+1).toString().padStart(2, '0') + '/' +
+    clock.getUTCDate()     .toString().padStart(2, '0')  + '/' +
+    clock.getUTCFullYear() +
+    ' ' +
+    clock.getUTCHours()    .toString().padStart(2, '0') + ':' +
+    clock.getUTCMinutes()  .toString().padStart(2, '0') + ':' +
+    clock.getUTCSeconds()  .toString().padStart(2, '0') 
+  return clockStr
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // COMPUTED RESULTS
 ////////////////////////////////////////////////////////////////////////////////////////

@@ -208,6 +208,15 @@ test('doubleToDate', () =>{
   expect(SwmmOut.doubleToDate_swmmFormat((global as any).example1.startTime_swmmFormat())).toEqual(new Date("1998-01-01T00:00:00.000Z"))
 })
 
+test('doubleDateToString_swmmFormat', () =>{
+  expect(SwmmOut.doubleDateToString_swmmFormat((global as any).example1.dateStep_swmmFormat(10))).toEqual("01/01/1998 10:00:00")
+})
+
+test('swmmStepToDate', () =>{
+  expect((global as any).example1.swmmStepToDate(10)).toEqual("01/01/1998 10:00:00")
+})
+
+
 test('startTime', () =>{
   expect((global as any).example1.startTime()).toBe(883612800000)
 })
