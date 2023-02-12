@@ -866,13 +866,14 @@ nodeName(objectIndex:number): string {
   let maxNodes = this.nodeCount()
   let memoryPosition = this.objectIDNames()
   let objectName = ''
-  let nameLength = 0;
+  let nameLength = 0
+  // If the objectIndex is less than 0 or greater than
+  // the count of nodes, throw error.
+  if(objectIndex < 0 || objectIndex >= maxNodes)
+    throw new Error("Index is out of bounds")
+
   // True objectIndex for nodes is objectIndex + maxSubcatchments
   objectIndex = objectIndex + maxSubcatchments
-  // If the objectIndex is less than 0 or greater than the count of
-  // subcatchments + the count of nodes, throw error.
-  if(objectIndex < 0 || objectIndex >= maxNodes + maxSubcatchments)
-    throw new Error("Index is out of bounds")
 
   // Determine the memory position of the object at objectIndex.
   for(let i = 0; i <= objectIndex; i++){
@@ -900,12 +901,14 @@ linkName(objectIndex:number): string {
   let memoryPosition = this.objectIDNames()
   let objectName = ''
   let nameLength = 0;
-  // True objectIndex for nodes is objectIndex + maxSubcatchments + maxNodes
-  objectIndex = objectIndex + maxSubcatchments + maxNodes
-  // If the objectIndex is less than 0 or greater than the count of
-  // subcatchments + the count of links + the count of nodes, throw error.
-  if(objectIndex < 0 || objectIndex >= maxNodes + maxSubcatchments + maxLinks)
+  
+  // If the objectIndex is less than 0 or greater than 
+  // the count of nodes, throw error.
+  if(objectIndex < 0 || objectIndex >= maxLinks)
     throw new Error("Index is out of bounds")
+
+  // True objectIndex for links is objectIndex + maxSubcatchments + maxNodes
+  objectIndex = objectIndex + maxSubcatchments + maxNodes
 
   // Determine the memory position of the object at objectIndex.
   for(let i = 0; i <= objectIndex; i++){
@@ -934,12 +937,14 @@ pollutantName(objectIndex:number): string {
   let memoryPosition = this.objectIDNames()
   let objectName = ''
   let nameLength = 0;
+  
+  // If the objectIndex is less than 0 or greater than
+  // the count of pollutants, throw error.
+  if(objectIndex < 0 || objectIndex >= maxPollutants)
+    throw new Error("Index is out of bounds")
+
   // True objectIndex for nodes is objectIndex + maxSubcatchments + maxNodes + maxLinks
   objectIndex = objectIndex + maxSubcatchments + maxNodes + maxLinks
-  // If the objectIndex is less than 0 or greater than the count of
-  // subcatchments + the count of links + the count of pollutants + the count of nodes, throw error.
-  if(objectIndex < 0 || objectIndex >= maxNodes + maxSubcatchments + maxLinks + maxPollutants)
-    throw new Error("Index is out of bounds")
 
   // Determine the memory position of the object at objectIndex.
   for(let i = 0; i <= objectIndex; i++){
@@ -967,13 +972,15 @@ pollutantConcentrationUnits(objectIndex:number): string{
   let maxNodes = this.nodeCount()
   let maxPollutants = this.pollutantCount()
   let memoryPosition = this.objectIDNames()
-  let nameLength = 0;
+  let nameLength = 0
+  
+  // If the objectIndex is less than 0 or greater than
+  // the count of pollutants, throw error.
+  if(objectIndex < 0 || objectIndex >= maxPollutants)
+    throw new Error("Index is out of bounds")
+
   // Get maxNamesIndex for the pollutantConcentrationUnits maxPollutants + maxSubcatchments + maxNodes + maxLinks
   let maxNamesIndex = maxPollutants + maxSubcatchments + maxNodes + maxLinks
-  // If the objectIndex is less than 0 or greater than the count of
-  // subcatchments + the count of links + the count of pollutants*2 + the count of nodes, throw error.
-  if(objectIndex < 0 || objectIndex >= maxNamesIndex + maxPollutants)
-    throw new Error("Index is out of bounds")
 
   // Move to the end of the Object ID set (names)
   for(let i = 0; i < maxNamesIndex; i++){
