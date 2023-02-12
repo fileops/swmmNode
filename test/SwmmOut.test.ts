@@ -95,7 +95,7 @@ test('pollutantName', () =>{
 })
 
 test('pollutantConcentrationUnits', () =>{
-  expect((global as any).example1.pollutantConcentrationUnits(1)).toBe(1)
+  expect((global as any).example1.pollutantConcentrationUnits(0)).toBe('mg/L')
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +110,10 @@ test('subcatchmentInputCount', () =>{
 
 test('subcatchmentInputType', () =>{
   expect((global as any).example1.subcatchmentInputType(0)).toBe(1)
+})
+
+test('subcatchmentInputType index out of bounds', () =>{
+  expect(()=>(global as any).example1.subcatchmentInputType(-1)).toThrow(Error)
 })
 
 test('subcatchmentArea', () =>{
@@ -128,6 +132,10 @@ test('nodeInputType', () =>{
 
 test('nodeType', () =>{
   expect((global as any).example1.nodeType(1)).toBe(0)
+})
+
+test('nodeTypeString', () =>{
+  expect((global as any).example1.nodeTypeString(1)).toBe('Junction')
 })
 
 test('nodeInvertElevation', () =>{
@@ -150,6 +158,10 @@ test('linkInputType', () =>{
 
 test('linkType', () =>{
   expect((global as any).example1.linkType(10)).toBe(0)
+})
+
+test('linkTypeString', () =>{
+  expect((global as any).example1.linkTypeString(10)).toBe('Conduit')
 })
 
 test('linkUpstreamInvertOffset', () =>{
@@ -217,12 +229,12 @@ test('swmmStepToDate', () =>{
 })
 
 
-test('startTime', () =>{
-  expect((global as any).example1.startTime()).toBe(883612800000)
+test('startTime_Unix', () =>{
+  expect((global as any).example1.startTime_Unix()).toBe(883612800000)
 })
 
-test('startTime to date', () =>{
-  expect(new Date((global as any).example1.startTime())).toEqual(new Date("1998-01-01T00:00:00.000Z"))
+test('startTime_Unix to date', () =>{
+  expect(new Date((global as any).example1.startTime_Unix())).toEqual(new Date("1998-01-01T00:00:00.000Z"))
 })
 
 // Output Section
