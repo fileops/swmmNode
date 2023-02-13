@@ -1606,7 +1606,7 @@ dateStep_swmmFormat(timeStep:number): number{
 * @param {number} iType  The type of the object (SUBCATCHMENT, NODE, LINK, SYS).
 * @param {number} iIndex The index of the object.
 * @param {number} vIndex The index of the variable.
-* @param {number} period The index of the time period.
+* @param {number} period The index of the time period. (1-based)
 * @returns {number} Float32. value stored as a result.
 */
 get_result(iType:number, iIndex:number, vIndex:number, period:number): number{
@@ -1620,7 +1620,7 @@ get_result(iType:number, iIndex:number, vIndex:number, period:number): number{
 *
 * @param {number} iIndex The index of the subcatchment.
 * @param {number} vIndex The index of the variable.
-* @param {number} period The index of the time period.
+* @param {number} period The index of the time period. (1-based)
 * @returns {number} Float32. value stored as a result.
 */
 subcatchmentOutput(iIndex:number, vIndex:number, period:number): number{
@@ -1634,7 +1634,7 @@ subcatchmentOutput(iIndex:number, vIndex:number, period:number): number{
 *
 * @param {number} iIndex The index of the node.
 * @param {number} vIndex The index of the variable.
-* @param {number} period The index of the time period.
+* @param {number} period The index of the time period. (1-based)
 * @returns {number} Float32. value stored as a result.
 */
 nodeOutput(iIndex:number, vIndex:number, period:number): number{
@@ -1648,7 +1648,7 @@ nodeOutput(iIndex:number, vIndex:number, period:number): number{
 *
 * @param {number} iIndex The index of the node.
 * @param {number} vIndex The index of the variable.
-* @param {number} period The index of the time period.
+* @param {number} period The index of the time period. (1-based)
 * @returns {number} Float32. value stored as a result.
 */
 linkOutput(iIndex:number, vIndex:number, period:number): number{
@@ -1661,7 +1661,7 @@ linkOutput(iIndex:number, vIndex:number, period:number): number{
 * Returns the value stored as a result from a system variable.
 *
 * @param {number} vIndex The index of the system variable.
-* @param {number} period The index of the time period.
+* @param {number} period The index of the time period. (1-based)
 * @returns {number} Float32. value stored as a result.
 */
 sysOutput(vIndex:number, period:number): number{

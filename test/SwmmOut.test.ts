@@ -448,3 +448,21 @@ test('sysOutput', () =>{
   sysOutput(11, 6, 7))
     .toBe(4.341998100280762)
 })
+
+test('linkOutput compare test 1', () =>{
+  expect((global as any).example1.
+  linkOutput(2, 0, 0))
+    .toBe(1.24)
+})
+
+test('linkOutput out of bounds 1', () =>{
+  expect((global as any).example1.
+  linkOutput(36, 0, 0))
+    .toBe(5.061554431915283)
+})
+
+test('linkOutput out of bounds 2', () =>{
+  expect((global as any).example1.
+  linkOutput(36, 0, 1))
+    .toBe(5.061554431915283)
+})
