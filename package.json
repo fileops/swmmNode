@@ -1,6 +1,6 @@
 {
-  "name": "@swmm-js/swmmNode",
-  "version": "0.0.1",
+  "name": "@swmm-js/swmm-node",
+  "version": "0.0.2",
   "description": "TypeScript package for performing data operations on EPA-SWMM and swmmReact files.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -18,7 +18,7 @@
     "package": "npm run build && npm pack",
     "test": "jest --no-cache --runInBand",
     "test:cov": "jest --coverage --no-cache --runInBand",
-    "addscope": "node tools/packagejson name @swmm-js/swmmNode"
+    "addscope": "node tools/packagejson name @swmm-js/swmm-node"
   },
   "publishConfig": {
     "access": "public"
