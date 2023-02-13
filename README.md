@@ -6,7 +6,7 @@ swmmNode is a TypeScript package for performing operations on EPA-SWMM files via
 
 Use npm to install swmmNode (swmm-node) into your projects:
 ```
-npm install swmm-js/swmm-node
+npm install @swmm-js/swmm-node
 ```
 ## Core functions
 
