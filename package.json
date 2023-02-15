@@ -1,5 +1,5 @@
 {
-  "name": "@swmm-js/swmm-node",
+  "name": "@fileops/swmm-node",
   "version": "0.0.6",
   "description": "TypeScript package for performing data operations on EPA-SWMM and swmmReact files.",
   "main": "dist/cjs/index.js",
@@ -18,7 +18,7 @@
     "package": "npm run build && npm pack",
     "test": "jest --no-cache --runInBand",
     "test:cov": "jest --coverage --no-cache --runInBand",
-    "addscope": "node tools/packagejson name @swmm-js/swmm-node"
+    "addscope": "node tools/packagejson name @fileops/swmm-node"
   },
   "publishConfig": {
     "access": "public"
@@ -38,13 +38,13 @@
   ],
   "author": "Issac Gardner <issac@swmmreact.org>",
   "license": "MIT",
-  "homepage": "https://github.com/swmm-js/swmmNode",
+  "homepage": "https://github.com/fileops/swmmNode",
   "repository": {
     "type": "git",
-    "url": "git@github.com:swmm-js/swmmNode.git"
+    "url": "git@github.com:fileops/swmmNode.git"
   },
   "bugs": {
-    "url": "https://github.com/swmm-js/swmmNode/issues"
+    "url": "https://github.com/fileops/swmmNode/issues"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",

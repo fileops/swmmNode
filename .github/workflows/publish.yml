@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: '14.x'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@swmm-js'
+          scope: '@fileops'
       - name: Publish to GitHub Packages
         run: npm publish
         env:
