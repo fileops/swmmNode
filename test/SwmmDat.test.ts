@@ -16,11 +16,55 @@ beforeAll(async () => {
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Contents retrieval
+// Object creation
 ////////////////////////////////////////////////////////////////////////////////////////
 
 test('construct from .dat file (contents)', () =>{
   expect((global as any).rg_data01.contents).toEqual({"RG_X": [{"dateTime": 883612800000, "val": 0}, {"dateTime": 883616400000, "val": 0.25}, {"dateTime": 883620000000, "val": 0.5}, {"dateTime": 883623600000, "val": 0.8}, {"dateTime": 883627200000, "val": 1.6}, {"dateTime": 883630800000, "val": 0.1}, {"dateTime": 883634400000, "val": 0}, {"dateTime": 883710000000, "val": 0}, {"dateTime": 883713600000, "val": 0.4}, {"dateTime": 883717200000, "val": 0.2}, {"dateTime": 883720800000, "val": 0}], "RG_Y": [{"dateTime": 883612800000, "val": 0}, {"dateTime": 883616400000, "val": 1.25}, {"dateTime": 883620000000, "val": 1.5}, {"dateTime": 883623600000, "val": 1.8}, {"dateTime": 883627200000, "val": 2.6}, {"dateTime": 883630800000, "val": 1.1}, {"dateTime": 883634400000, "val": 0}, {"dateTime": 883710000000, "val": 0}, {"dateTime": 883713600000, "val": 1.4}, {"dateTime": 883717200000, "val": 1.2}, {"dateTime": 883720800000, "val": 0}]})
+})
+
+test('stringify', () =>{
+  expect((global as any).rg_data01.stringify()).toEqual(`;;Notes go here
+;;; here's a second line of notes.RG_X 1998 01 01 00 00 0
+RG_X 1998 01 01 01 00 0.25
+RG_X 1998 01 01 02 00 0.5
+RG_X 1998 01 01 03 00 0.8
+RG_X 1998 01 01 04 00 1.6
+RG_X 1998 01 01 05 00 0.1
+RG_X 1998 01 01 06 00 0
+RG_X 1998 02 01 03 00 0
+RG_X 1998 02 01 04 00 0.4
+RG_X 1998 02 01 05 00 0.2
+RG_X 1998 02 01 06 00 0
+RG_Y 1998 01 01 00 00 0
+RG_Y 1998 01 01 01 00 1.25
+RG_Y 1998 01 01 02 00 1.5
+RG_Y 1998 01 01 03 00 1.8
+RG_Y 1998 01 01 04 00 2.6
+RG_Y 1998 01 01 05 00 1.1
+RG_Y 1998 01 01 06 00 0
+RG_Y 1998 02 01 03 00 0
+RG_Y 1998 02 01 04 00 1.4
+RG_Y 1998 02 01 05 00 1.2
+RG_Y 1998 02 01 06 00 0
+`)
+})
+
+test('subGage RG_Y', () => {
+  expect((global as any).rg_data01.subGage("RG_Y").stringify()).toEqual(`;Notes go here
+; here's a second line of notes.
+RG_Y 1998 01 01 00 00 0
+RG_Y 1998 01 01 01 00 1.25
+RG_Y 1998 01 01 02 00 1.5
+RG_Y 1998 01 01 03 00 1.8
+RG_Y 1998 01 01 04 00 2.6
+RG_Y 1998 01 01 05 00 1.1
+RG_Y 1998 01 01 06 00 0
+RG_Y 1998 01 02 03 00 0
+RG_Y 1998 01 02 04 00 1.4
+RG_Y 1998 01 02 05 00 1.2
+RG_Y 1998 01 02 06 00 0
+`)
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -38,3 +82,5 @@ test('findStorms RG1', () => {
 test('findStormsPretty RG1', () => {
   expect((global as any).rg_data02.findStormsPretty((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"begin": "01/01/1998 00:00:00", "end": "01/02/1998 00:00:00"}, {"begin": "01/04/1998 00:00:00", "end": "01/06/1998 00:00:00"}, {"begin": "01/07/1998 00:00:00", "end": "01/10/1998 00:00:00"}, {"begin": "01/11/1998 00:00:00", "end": "01/12/1998 00:00:00"}])
 })
+
+

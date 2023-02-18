@@ -7,9 +7,8 @@
  * @property {string} id Name of the gage
  * @property {Array<IDatRecord>} records Array of records for the gage
  */
-interface IDatGage {
-  id: string
-  records: Array<IDatRecord>
+interface IDatGages {
+  [P: string]: Array<IDatRecord>
 }
 
 /**
@@ -20,7 +19,7 @@ interface IDatGage {
  * @property {number}  val The amount of rainfall
  */
 interface IDatRecord {
-  dateTime: Date
+  dateTime: number
   val: number
 }
 
@@ -32,14 +31,14 @@ interface IDatRecord {
 */
 export class SwmmDat {
 /**
- * @type {string} the header of a .dat file.
+ * @type {Array<string>} the header of a .dat file.
  */
 header: Array<string>;
 
 /**
- * @type {Array<Date, number>} the formatted contents of a .dat file.
+ * @type {IDatGages} date as number, then val. the formatted contents of a .dat file.
  */
-contents: Array<IDatGage>
+contents: IDatGages
 
 /**
 * Constructor for the SwmmDat class.
@@ -72,7 +71,8 @@ prepContents(fileContents:string): Array<string>{
 parseHeader(fileContents:string): Array<string> {
   let headerArray: Array<string> = []
   return headerArray = this.prepContents(fileContents)
-    .filter(v=>v[0]===';'?v.replace(/^;+/g, ''):null)
+    .filter(v=>v[0]===';')
+    .map(v=>v.replace(/^;+/g, ''))
 }
 
 /**
@@ -89,10 +89,10 @@ getHeader(): Array<string> {
  * IDatRecord array containing each line of data from a representative .dat file.
  * 
  * @param {string} fileContents The contents of a .dat file.
- * @returns {Array<IDatGage>} The contents of a .dat file in an array of IDatGage objects.
+ * @returns {IDatGages} The contents of a .dat file in an array of IDatGage objects.
  */
-createDatGageArray(fileContents:string): Array<any> {
-  let outArray: any = {}
+createDatGageArray(fileContents:string): IDatGages {
+  let outArray: IDatGages = {}
   let processedString: Array<string> = []
   try{
     processedString = this.prepContents(fileContents)
@@ -249,6 +249,92 @@ static unixTime_toDate(unixTime:number): string{
     clock.getUTCSeconds()  .toString().padStart(2, '0') 
   
     return clockStr
+}
+
+/**
+* Returns a Dat-readable string version of an integer time step.
+* Use this to make strings that can be written to Dat files.
+* 
+* @param {number} timeStep An integer representing the time step of 
+* the model. Does not need to be within the bounds of the model.
+* @returns {string} A Javascript string object.
+*/
+static unixTime_toDate_Dat(unixTime:number): string{
+  let clock = new Date(unixTime)
+
+  let clockStr = [
+      clock.getUTCFullYear(),
+      clock.getUTCDate()     .toString().padStart(2, '0'),
+      (clock.getUTCMonth()+1).toString().padStart(2, '0'),
+
+      clock.getUTCHours()    .toString().padStart(2, '0'),
+      clock.getUTCMinutes()  .toString().padStart(2, '0')
+    ].join(' ')
+  
+    return clockStr
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Recreating a file from data
+/////////////////////////////////////////////////////////////////////////
+// If a storm is detected, there should be an option to export as a .dat file
+
+/**
+ * Returns a subset of the current .dat file. This is used to create substorms
+ * and substorm sets. This should not create the actual
+ * .dat file, no general swmmNode object should provide it's own file support.
+ * Input should describe the data that you would want to make substorms from,
+ * and output should be another swmmDat object.
+ * because I already have string translators, I just need separators.
+ * !!!! Should this actually be a set of functions?:
+ * ONE - create a swmmDat from one raingage from a swmmDat object.
+ * TWO - select specific date ranges from a single-gage swmmDat object.
+ * THREE - a generalizer that allows this to happen for all gages in a swmmDat object.
+ * FOUR - a recompressor that puts storms back into a swmmDat object
+ * FIVE - a recompressor that puts gages back into a swmmDat object.
+ * @param {string} gage name of the raingage to separate from the swmmDat object.
+ * @returns {swmmDat} A swmmDat object with just one raingage in it.
+ */
+
+subGage(gage:string){
+  // Translate the old SwmmDat object to a string, s.
+  let s:string = this.stringify()
+
+  // Create a new SwmmDat object by passing the string s:
+  let newDat = new SwmmDat(s)
+
+  // Delete all of the contents that do not match key 'gage'
+  Object.keys(this.contents).forEach((k:string)=>{
+    if(k !== gage){
+      delete newDat.contents[k]
+    }
+  })
+
+  return newDat
+}
+
+/**
+ * Translates the SwmmDat object to a string. Use this for  
+ * - Copying the object
+ * - Preparing to save the object to a file.
+ * @returns {string} a string in the format of a raingage.dat file
+ */
+stringify(){
+  let s:string = ''
+  // Add the header by prepending each header element with ';' and appending with '\n'
+  s += this.header.map((v:string)=>{
+     return ';' + v
+  }).join('\n') + '\n'
+
+  // Add all of the gage records:
+  // For each gage record
+  Object.keys(this.contents).forEach((k:string)=>{
+    (this.contents[k]).forEach((v)=>{
+      s += [k, SwmmDat.unixTime_toDate_Dat(v.dateTime), v.val].join(' ') + '\n'
+    })
+  })
+
+  return s
 }
 
 }
