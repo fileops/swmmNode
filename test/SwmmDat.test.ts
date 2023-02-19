@@ -24,8 +24,9 @@ test('construct from .dat file (contents)', () =>{
 })
 
 test('stringify', () =>{
-  expect((global as any).rg_data01.stringify()).toEqual(`;;Notes go here
-;;; here's a second line of notes.RG_X 1998 01 01 00 00 0
+  expect((global as any).rg_data01.stringify()).toEqual(`;Notes go here
+; here's a second line of notes.
+RG_X 1998 01 01 00 00 0
 RG_X 1998 01 01 01 00 0.25
 RG_X 1998 01 01 02 00 0.5
 RG_X 1998 01 01 03 00 0.8
@@ -64,6 +65,22 @@ RG_Y 1998 01 02 03 00 0
 RG_Y 1998 01 02 04 00 1.4
 RG_Y 1998 01 02 05 00 1.2
 RG_Y 1998 01 02 06 00 0
+`)
+})
+
+test('subRange 1998 01 01 02 00 to 1998 01 01 06 00', () => {
+  expect((global as any).rg_data01.subRange(883620000000, 883713600000).stringify()).toEqual(`;Notes go here
+; here's a second line of notes.
+RG_X 1998 01 01 02 00 0.5
+RG_X 1998 01 01 03 00 0.8
+RG_X 1998 01 01 04 00 1.6
+RG_X 1998 01 01 05 00 0.1
+RG_X 1998 01 01 06 00 0
+RG_Y 1998 01 01 02 00 1.5
+RG_Y 1998 01 01 03 00 1.8
+RG_Y 1998 01 01 04 00 2.6
+RG_Y 1998 01 01 05 00 1.1
+RG_Y 1998 01 01 06 00 0
 `)
 })
 

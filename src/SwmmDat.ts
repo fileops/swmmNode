@@ -57,9 +57,10 @@ constructor(n: string) {
  */
 prepContents(fileContents:string): Array<string>{
   let outArray: Array<string> = []
-  return outArray = fileContents.split(/\r?\n/)
+  outArray = fileContents.split(/\r?\n/)
     .filter(v=>v.trim().length>0)
     .map(v=>v.trim())
+  return outArray
 }
 
 /**
@@ -70,9 +71,10 @@ prepContents(fileContents:string): Array<string>{
  */
 parseHeader(fileContents:string): Array<string> {
   let headerArray: Array<string> = []
-  return headerArray = this.prepContents(fileContents)
+  headerArray = this.prepContents(fileContents)
     .filter(v=>v[0]===';')
     .map(v=>v.replace(/^;+/g, ''))
+  return headerArray
 }
 
 /**
@@ -192,7 +194,8 @@ findStormsPretty(dataArray: Array<IDatRecord>, IEP: number, MSV:number):Array<an
 }
 
 /**
- * 
+ * Find the rainfall elements that classify as a storm due to having a volume that
+ * meets or exceeds the MSV and has a length of IEP.
  * @param dataArray 
  * @param IEP 
  * @param MSV 
@@ -255,8 +258,7 @@ static unixTime_toDate(unixTime:number): string{
 * Returns a Dat-readable string version of an integer time step.
 * Use this to make strings that can be written to Dat files.
 * 
-* @param {number} timeStep An integer representing the time step of 
-* the model. Does not need to be within the bounds of the model.
+* @param {number} unixTime Unix time, in milliseconds since January 1st, 1970.
 * @returns {string} A Javascript string object.
 */
 static unixTime_toDate_Dat(unixTime:number): string{
@@ -275,28 +277,18 @@ static unixTime_toDate_Dat(unixTime:number): string{
 }
 
 /////////////////////////////////////////////////////////////////////////
-// Recreating a file from data
+// Trimming and combining SwmmDat objects
 /////////////////////////////////////////////////////////////////////////
-// If a storm is detected, there should be an option to export as a .dat file
-
 /**
- * Returns a subset of the current .dat file. This is used to create substorms
- * and substorm sets. This should not create the actual
- * .dat file, no general swmmNode object should provide it's own file support.
- * Input should describe the data that you would want to make substorms from,
- * and output should be another swmmDat object.
- * because I already have string translators, I just need separators.
- * !!!! Should this actually be a set of functions?:
- * ONE - create a swmmDat from one raingage from a swmmDat object.
- * TWO - select specific date ranges from a single-gage swmmDat object.
- * THREE - a generalizer that allows this to happen for all gages in a swmmDat object.
- * FOUR - a recompressor that puts storms back into a swmmDat object
- * FIVE - a recompressor that puts gages back into a swmmDat object.
+ * Returns a copy of the current swmmDat object, but with only one gage.
  * @param {string} gage name of the raingage to separate from the swmmDat object.
  * @returns {swmmDat} A swmmDat object with just one raingage in it.
  */
-
 subGage(gage:string){
+  // Check if the gage is in the list. If not, return error.
+  if(!Object.keys(this.contents).includes(gage)){
+    throw new Error("No gage named " + gage + " in this object.")
+  }
   // Translate the old SwmmDat object to a string, s.
   let s:string = this.stringify()
 
@@ -304,7 +296,7 @@ subGage(gage:string){
   let newDat = new SwmmDat(s)
 
   // Delete all of the contents that do not match key 'gage'
-  Object.keys(this.contents).forEach((k:string)=>{
+  Object.keys(newDat.contents).forEach((k:string)=>{
     if(k !== gage){
       delete newDat.contents[k]
     }
@@ -314,8 +306,39 @@ subGage(gage:string){
 }
 
 /**
- * Translates the SwmmDat object to a string. Use this for  
- * - Copying the object
+ * Creates a copy of the current swmmDat object, trimmed down to a specific date range.
+ * This is used to reduce file sizes and focus on specific storms.
+ * @param {number} startTime a unix time, milliseconds since Jan 1st, 1970
+ * @param {number} endTime a unix time, milliseconds since Jan 1st, 1970
+ * @returns {swmmDat} a swmmDat object trimmed down to a specific date range.
+ */
+subRange(startTime:number, endTime:number){
+  // Translate the SwmmDat object to a string, s.
+  let s:string = this.stringify()
+
+  // Create a new swmmDat object by passing the string s:
+  let newDat = new SwmmDat(s)
+
+  // For every gage
+  Object.keys(newDat.contents).forEach((el:string) =>{
+    // For every record
+    newDat.contents[el].forEach((record:IDatRecord, i:number) => {
+      // If the record is outside of the given date range
+      if(record.dateTime < startTime || record.dateTime > endTime){
+        // delete that record.
+        delete newDat.contents[el][i]
+      }
+    })
+  })
+
+  return newDat
+}
+
+
+/**
+ * Translates the SwmmDat object to a string. 
+ * Use this for  
+ * - Copying swmmDat objects
  * - Preparing to save the object to a file.
  * @returns {string} a string in the format of a raingage.dat file
  */
