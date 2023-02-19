@@ -34,7 +34,7 @@ Searches the .dat file for storm patterns, returns results in human-readable for
 
 #### subGage
 
-Gets the data for just one gage from a .dat file
+Gets the data for just one gage from a .dat file.
 
 #### mergeGages
 
