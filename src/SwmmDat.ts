@@ -313,15 +313,6 @@ subGage(gage:string){
  * in the parameter object will be overwritten with the records of the 
  * parameter object.
  * 
- * This function really tells me that the structure of a swmmDat object should look like:
- * SwmmDat
- * - header
- * - contents : {
- *                [gageID:string]: {
- *                            [unix_dateTime:int]: value:float
- *                          }
- *              }
- * 
  * @param {SwmmDat} objToInsert Object containing new or updated records and
  * gages.
  * @returns {SwmmDat} A new SwmmDat object that combines the records of objToInsert and this object.
