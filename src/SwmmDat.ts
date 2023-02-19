@@ -3,24 +3,21 @@
 /**
  * Interface for working with .dat gages
  * 
- * @typedef IDatGage
- * @property {string} id Name of the gage
- * @property {Array<IDatRecord>} records Array of records for the gage
+ * @typedef IDatGages
+ * @property {IDatRecords} [id:string] records for the gage
  */
 interface IDatGages {
-  [P: string]: Array<IDatRecord>
+  [id: string]: IDatRecords
 }
 
 /**
  * Interface for working with .dat records for a gage.
  * 
- * @typedef IDatRecord
- * @property {Date} dateTime The Unix timestamp of the date and time of rainfall
- * @property {number}  val The amount of rainfall
+ * @typedef IDatRecords
+ * @property {number} [dateTime:string] The Unix timestamp of the date and time of rainfall
  */
-interface IDatRecord {
-  dateTime: number
-  val: number
+interface IDatRecords {
+  [dateTime: string]:number
 }
 
 /**
@@ -36,7 +33,8 @@ export class SwmmDat {
 header: Array<string>;
 
 /**
- * @type {IDatGages} date as number, then val. the formatted contents of a .dat file.
+ * @type {IDatGages} an object keyed with gage names, which are in turn keyed with unix timestamps, with
+ * values of rainfall. the formatted contents of a .dat file.
  */
 contents: IDatGages
 
@@ -45,7 +43,7 @@ contents: IDatGages
 */
 constructor(n: string) {
   this.header = this.parseHeader(n)
-  this.contents = this.createDatGageArray(n)
+  this.contents = this.createDatGages(n)
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 // READING RECORDS
@@ -91,9 +89,10 @@ getHeader(): Array<string> {
  * IDatRecord array containing each line of data from a representative .dat file.
  * 
  * @param {string} fileContents The contents of a .dat file.
- * @returns {IDatGages} The contents of a .dat file in an array of IDatGage objects.
+ * @returns {IDatGages} The contents of a .dat file in an object with keys of gage names,
+ * which are in turn objects with keys of unix times, and values of rainfall.
  */
-createDatGageArray(fileContents:string): IDatGages {
+createDatGages(fileContents:string): IDatGages {
   let outArray: IDatGages = {}
   let processedString: Array<string> = []
   try{
@@ -113,11 +112,8 @@ createDatGageArray(fileContents:string): IDatGages {
       
       let rain = parseFloat(vals[6])
 
-      if(!Object.keys(outArray).includes(id)) outArray[id] = [];
-      outArray[id].push({
-        dateTime: date,
-        val: rain
-      })
+      if(!Object.keys(outArray).includes(id)) outArray[id] = {};
+      outArray[id][date] = rain
     })
   } catch {
     throw new Error("Could not parse .dat file")
@@ -133,7 +129,7 @@ createDatGageArray(fileContents:string): IDatGages {
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-findStorms(dataArray: Array<IDatRecord>, IEP: number, MSV:number):Array<any> {
+findStorms(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
   let storms = this.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
@@ -158,12 +154,12 @@ findStorms(dataArray: Array<IDatRecord>, IEP: number, MSV:number):Array<any> {
 
 /**
  * 
- * @param {Array<IDatRecord>} dataArray  An array of IDatRecords, the data for a gage in a .dat file.
+ * @param {IDatRecords} dataArray  An instance of IDatRecords, the data for a gage in a .dat file.
  * @param {number} IEP The inter-event period, maximum time between MSV sums. A unix time in milliseconds.
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-findStormsPretty(dataArray: Array<IDatRecord>, IEP: number, MSV:number):Array<any> {
+findStormsPretty(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
   let storms = this.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
@@ -201,28 +197,31 @@ findStormsPretty(dataArray: Array<IDatRecord>, IEP: number, MSV:number):Array<an
  * @param MSV 
  * @returns 
  */
-findSubStorms(dataArray: Array<IDatRecord>, IEP: number, MSV:number):Array<any> {
+findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
   let outArray: any = []
   // for every entry 
-  for (let i = 0; i < dataArray.length; i++){
+  let theKeys = Object.keys(dataArray)
+  let theLength = theKeys.length
+  for (let i = 0; i < theLength; i++){
     // if there is rainfall
-    if(dataArray[i].val > 0){
+    let key:string = theKeys[i]
+    if(dataArray[key] > 0){
       // sum all the rainfall over the following IEP periods
       let rainSum = 0
-      let thisTime = new Date(dataArray[i].dateTime).getTime()
+      let thisTime = new Date(parseInt(key)).getTime()
       let n = i
       for(; 
-        n < dataArray.length && 
-        new Date(dataArray[n].dateTime).getTime() - thisTime <= IEP; 
+        n < theKeys.length && 
+        new Date(parseInt(theKeys[n])).getTime() - thisTime <= IEP; 
         n++){
-          rainSum = rainSum + dataArray[n].val
+          rainSum = rainSum + dataArray[theKeys[n]]
       }
 
       // If rainSum > MSV, push the start and end into outArray
       if(rainSum > MSV){
         outArray.push({
-          start: dataArray[i].dateTime, 
-          end:   dataArray[n-1].dateTime
+          start: parseInt(theKeys[i]), 
+          end:   parseInt(theKeys[n-1])
         })
       }
     }
@@ -306,6 +305,38 @@ subGage(gage:string){
 }
 
 /**
+ * Creates a new SwmmDat object by copying the calling swmmDat object and then 
+ * inserts the records of the passed object (parameter) into the records
+ * of a copy of the calling (this) object. If a key exists in the this object and
+ * also in the passed object, both sets of records will merge. Any records in the
+ * this object that have the same gage and occur at time same time
+ * in the parameter object will be overwritten with the records of the 
+ * parameter object.
+ * 
+ * This function really tells me that the structure of a swmmDat object should look like:
+ * SwmmDat
+ * - header
+ * - contents : {
+ *                [gageID:string]: {
+ *                            [unix_dateTime:int]: value:float
+ *                          }
+ *              }
+ * 
+ * @param {SwmmDat} objToInsert Object containing new or updated records and
+ * gages.
+ * @returns {SwmmDat} A new SwmmDat object that combines the records of objToInsert and this object.
+ */
+mergeGages(objToInsert:SwmmDat){
+  // Translate the SwmmDat object to a string, s.
+  let s:string = this.stringify()
+
+  // Create a new swmmDat object by passing the string s:
+  let newDat = new SwmmDat(s)
+
+  return newDat
+}
+
+/**
  * Creates a copy of the current swmmDat object, trimmed down to a specific date range.
  * This is used to reduce file sizes and focus on specific storms.
  * @param {number} startTime a unix time, milliseconds since Jan 1st, 1970
@@ -322,11 +353,11 @@ subRange(startTime:number, endTime:number){
   // For every gage
   Object.keys(newDat.contents).forEach((el:string) =>{
     // For every record
-    newDat.contents[el].forEach((record:IDatRecord, i:number) => {
+    Object.keys(newDat.contents[el]).forEach((record:string, i:number) => {
       // If the record is outside of the given date range
-      if(record.dateTime < startTime || record.dateTime > endTime){
+      if(parseInt(record) < startTime || parseInt(record) > endTime){
         // delete that record.
-        delete newDat.contents[el][i]
+        delete newDat.contents[el][record]
       }
     })
   })
@@ -352,8 +383,8 @@ stringify(){
   // Add all of the gage records:
   // For each gage record
   Object.keys(this.contents).forEach((k:string)=>{
-    (this.contents[k]).forEach((v)=>{
-      s += [k, SwmmDat.unixTime_toDate_Dat(v.dateTime), v.val].join(' ') + '\n'
+    (Object.keys(this.contents[k])).forEach((v)=>{
+      s += [k, SwmmDat.unixTime_toDate_Dat(parseInt(v)), this.contents[k][v]].join(' ') + '\n'
     })
   })
 
