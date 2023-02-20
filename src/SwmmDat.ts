@@ -99,6 +99,8 @@ getHeader(): Array<string> {
 createDatGages(fileContents:string, fileType:string): IDatGages {
   let outArray: IDatGages = {}
   let processedString: Array<string> = []
+  let id: string = ""
+  let index: number = 0
   try{
     // Get all of the lines that do not start with ';'
     processedString = this.prepContents(fileContents)
@@ -107,16 +109,20 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
     // Split every line on space characters, 
     processedString.map(v=>{
       let vals = v.trim().split(/\s+/)
-      let id = vals[0]
+
+      // If this is a TimeSeries .dat file, use TS as id and set index = 0
+      if(fileType==='TS') {id ="TS"; index = 0}
+      // If this is a Raingage .dat file, use the RG id and set index = 1
+      else {id = vals[0]; index = 1}
 
       let date = Date.UTC(
-        parseInt(vals[1]),     // Year
-        parseInt(vals[2]) - 1, // Month - 1
-        parseInt(vals[3]),     // Date
-        parseInt(vals[4]),     // Hour
-        parseInt(vals[5]))     // Minute
+        parseInt(vals[index    ]),     // Year
+        parseInt(vals[index + 1]) - 1, // Month - 1
+        parseInt(vals[index + 2]),     // Date
+        parseInt(vals[index + 3]),     // Hour
+        parseInt(vals[index + 4]))     // Minute
       
-      let rain = parseFloat(vals[6])
+      let rain = parseFloat(vals[index + 5])
 
       if(!Object.keys(outArray).includes(id)) outArray[id] = {};
       outArray[id][date] = rain
@@ -130,7 +136,7 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
 
 /**
  * 
- * @param {Array<IDatRecord>} dataArray  An array of IDatRecords, the data for a gage in a .dat file.
+ * @param {IDatRecord} dataArray An instance of IDatRecords, the data for a gage in a .dat file.
  * @param {number} IEP The inter-event period, maximum time between MSV sums. A unix time in milliseconds.
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
@@ -198,9 +204,9 @@ findStormsPretty(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
 /**
  * Find the rainfall elements that classify as a storm due to having a volume that
  * meets or exceeds the MSV and has a length of IEP.
- * @param dataArray 
- * @param IEP 
- * @param MSV 
+ * @param {IDatRecords} dataArray An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {number} IEP Inter-event period, minimum time between classified storms
+ * @param {number} MSV Minimum storm volume, the least amount of rain that can classify a storm
  * @returns 
  */
 findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
@@ -368,9 +374,16 @@ subRange(startTime:number, endTime:number){
  * Use this for  
  * - Copying swmmDat objects
  * - Preparing to save the object to a file.
+ * @param {string} fileType use "RG" if you wish to save all gages, use "TS" if you only 
+ * want to strip all gage names. Returns error if you use "TS" with more than one gage.
  * @returns {string} a string in the format of a raingage.dat file
  */
-stringify(){
+stringify(fileType="RG"){
+  // Throw errors for invalid fileTypes or TS with more than one gage:
+  if(!["RG","TS"].includes(fileType))
+    throw new Error("Invalid fileType: " + fileType)
+  if(fileType === "TS" && Object.keys(this.contents).length > 1)
+    throw new Error("TS fileType must contain only one gage.")
   let s:string = ''
   // Add the header by prepending each header element with ';' and appending with '\n'
   s += this.header.map((v:string)=>{
@@ -381,7 +394,10 @@ stringify(){
   // For each gage record
   Object.keys(this.contents).forEach((k:string)=>{
     (Object.keys(this.contents[k])).forEach((v)=>{
-      s += [k, SwmmDat.unixTime_toDate_Dat(parseInt(v)), this.contents[k][v]].join(' ') + '\n'
+      if(fileType==="RG")
+        s += [k, SwmmDat.unixTime_toDate_Dat(parseInt(v)), this.contents[k][v]].join(' ') + '\n'
+      else
+        s += [SwmmDat.unixTime_toDate_Dat(parseInt(v)), this.contents[k][v]].join(' ') + '\n'
     })
   })
 
