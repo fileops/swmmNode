@@ -39,11 +39,14 @@ header: Array<string>;
 contents: IDatGages
 
 /**
-* Constructor for the SwmmDat class.
+* Constructor for the SwmmDat class. Pass fileType="TS" if the .dat file is a timeSeries
+*
+* @param {string} n The contents of a .dat file.
+* @param {string} fileType "RG" for raingage .dat file, "TS" for TimeSeries .dat file.
 */
-constructor(n: string) {
+constructor(n: string, fileType="RG") {
   this.header = this.parseHeader(n)
-  this.contents = this.createDatGages(n)
+  this.contents = this.createDatGages(n, fileType)
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 // READING RECORDS
@@ -89,18 +92,21 @@ getHeader(): Array<string> {
  * IDatRecord array containing each line of data from a representative .dat file.
  * 
  * @param {string} fileContents The contents of a .dat file.
+ * @param {string} fileType Either "RG" or "TS", the format of the .dat file.
  * @returns {IDatGages} The contents of a .dat file in an object with keys of gage names,
  * which are in turn objects with keys of unix times, and values of rainfall.
  */
-createDatGages(fileContents:string): IDatGages {
+createDatGages(fileContents:string, fileType:string): IDatGages {
   let outArray: IDatGages = {}
   let processedString: Array<string> = []
   try{
+    // Get all of the lines that do not start with ';'
     processedString = this.prepContents(fileContents)
       .filter(v=>v[0]!==';'?v:null)
 
+    // Split every line on space characters, 
     processedString.map(v=>{
-      let vals = v.split(' ')
+      let vals = v.trim().split(/\s+/)
       let id = vals[0]
 
       let date = Date.UTC(
