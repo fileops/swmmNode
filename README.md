@@ -42,7 +42,7 @@ Merges gage info from another .dat file or object into the current .dat object.
 
 #### subRange
 
-Gets the data for a specific date range from the .dat object/file.
+Gets the data for a specific date range from the .dat object/file
 
 #### stringify
 
