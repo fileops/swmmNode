@@ -143,7 +143,7 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
  */
 findStorms(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
-  let storms = this.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
+  let storms = SwmmDat.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
   for (let i = 0; i < storms.length; i++) {
     if (i === 0 || storms[i].start - storms[i - 1].end >= IEP) {
@@ -173,7 +173,7 @@ findStorms(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
  */
 findStormsPretty(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
-  let storms = this.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
+  let storms = SwmmDat.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
   for (let i = 0; i < storms.length; i++) {
     if (i === 0 || storms[i].start - storms[i - 1].end >= IEP) {
@@ -204,12 +204,14 @@ findStormsPretty(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
 /**
  * Find the rainfall elements that classify as a storm due to having a volume that
  * meets or exceeds the MSV and has a length of IEP.
+ * The results will exclude values that are exactly
+ * Event Time + IEP, because Events are not considered instantaneous.
  * @param {IDatRecords} dataArray An instance of IDatRecords, the data for a gage in a .dat file.
  * @param {number} IEP Inter-event period, minimum time between classified storms
  * @param {number} MSV Minimum storm volume, the least amount of rain that can classify a storm
  * @returns 
  */
-findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
+static findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
   let outArray: any = []
   // for every entry 
   let theKeys = Object.keys(dataArray)
@@ -224,7 +226,7 @@ findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
       let n = i
       for(; 
         n < theKeys.length && 
-        new Date(parseInt(theKeys[n])).getTime() - thisTime <= IEP; 
+        new Date(parseInt(theKeys[n])).getTime() - thisTime < IEP; 
         n++){
           rainSum = rainSum + dataArray[theKeys[n]]
       }
@@ -233,7 +235,8 @@ findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
       if(rainSum > MSV){
         outArray.push({
           start: parseInt(theKeys[i]), 
-          end:   parseInt(theKeys[n-1])
+          end:   parseInt(theKeys[n-1]),
+          vol:   rainSum
         })
       }
     }
@@ -247,32 +250,83 @@ findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
 ////////////////////////////////////////////////////////////
 
 /**
- * Find the sum inches of rainfall between two dates.
+ * Find the sum inches of rainfall between two points in time,
+ * Inclusive of the start date and exclusive of the end date.
+ * This can be used to sum yearly, monthly, daily, or 
+ * storm-specific rainfall.
  * 
  * @param {IDatRecords} dataArray  An instance of IDatRecords, the data for a gage in a .dat file.
  * @param {number} startDate The start date to measure from.
  * @param {number} endDate The end date to measure to.
  * @returns {number} 
  */
-stormVol(dataArray:IDatRecords, startDate:number, endDate:number):number {
-  let outArray: any = []
+static stormVol(dataArray:IDatRecords, startDate:number, endDate:number):number {
   // Get all of the records that occur between startDate and endDate, inclusive
   let theKeys = Object.keys(dataArray)
   let theLength = theKeys.length
-  // For every key, check to see if it exists between the
-  // times given and then sum the values of the matching keys.
+  // For every key, 
   let outVol: number = 0
   for (let i = 0; i < theLength; i++){
     let key:string = theKeys[i]
     let keyNum:number = parseInt(theKeys[i])
-    //outArray.push([keyNum])
-    if(keyNum >= startDate && keyNum <= endDate){
-      // sum all the rainfall over the following IEP periods
+    // check to see if the key exists between the
+    // times given. 
+    if(keyNum >= startDate && keyNum < endDate){
+      // Sum all the rainfall in the qualifying times.
       outVol = outVol + dataArray[key]
     }
   }
 
   return outVol
+}
+
+/**
+ * Find the maximum volume and start time of an n-period 
+ * rainfall between two points in time, inclusive of the start date and exclusive of the end date.
+ * This can be used to find the maximum 1-hr, 2-hr, 24-hr, 48-hr
+ * rainfall in a storm or in a year/month. 
+ * 
+ * @param {IDatRecords} records  An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {number} startDate The start date to measure from.
+ * @param {number} endDate The end date to measure to.
+ * @param {number} nPeriod number of milliseconds that define the period: 1 hour is 3600000 milliseconds.
+ * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event.
+ */
+static maxEvent(records:IDatRecords, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
+  // Get a trimmed set of records
+  let trimRecords = SwmmDat.trimIDatRecords(records, startDate, endDate)
+
+  // Call findSubStorms on the trimmed records
+  let events = SwmmDat.findSubStorms(trimRecords, nPeriod, 0)
+  
+  // Find the largest, first events.vol value and return the start, end, and vol of that object.
+  const max = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
+
+  return max
+}
+
+/**
+ * Get a set of IDatRecords that are between two dates, inclusive of the start date and exclusive of the end date.
+ * Use this function inside of maxEvent to trim down a
+ * passed set of IDatRecords
+ * 
+ * @param {IDatRecords} records usually the full set of IDatRecords from a gage
+ * @param {number} startDate start time, inclusive, in milliseconds
+ * @param {number} endDate end time, exclusive, in milliseconds
+ * @returns {IDatRecords} trimmed set of IDatRecords
+ */
+static trimIDatRecords(records: IDatRecords, startDate:number, endDate:number):IDatRecords{
+  let newDat:IDatRecords = {}
+
+  Object.keys(records).forEach((record:string, i:number) => {
+    // If the record is inside of the given date range
+    if(parseInt(record) >= startDate && parseInt(record) < endDate){
+      // Add the record
+      newDat[record] = records[record]
+    }
+  })
+
+  return newDat
 }
 
 ////////////////////////////////////////////////////////////
