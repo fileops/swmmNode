@@ -5,14 +5,17 @@ import fs from 'fs'
 
 let test_Example1 = './test/data/rg_data01.dat'
 let test_Example2 = './test/data/rg_data02.dat'
+let test_Example3 = './test/data/rg_data03.dat'
 
 // Prior to running tests, open files and set objects.
 beforeAll(async () => {
   const readFile = util.promisify(fs.readFile)
   const file01 = await readFile(test_Example1, { encoding: 'utf8' });
   const file02 = await readFile(test_Example2, { encoding: 'utf8' });
+  const file03 = await readFile(test_Example3, { encoding: 'utf8' });
   (global as any).rg_data01 = new SwmmDat(file01);
   (global as any).rg_data02 = new SwmmDat(file02);
+  (global as any).rg_data03 = new SwmmDat(file03);
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -33,10 +36,10 @@ RG_X 1998 01 01 03 00 0.8
 RG_X 1998 01 01 04 00 1.6
 RG_X 1998 01 01 05 00 0.1
 RG_X 1998 01 01 06 00 0
-RG_X 1998 02 01 03 00 0
-RG_X 1998 02 01 04 00 0.4
-RG_X 1998 02 01 05 00 0.2
-RG_X 1998 02 01 06 00 0
+RG_X 1998 01 02 03 00 0
+RG_X 1998 01 02 04 00 0.4
+RG_X 1998 01 02 05 00 0.2
+RG_X 1998 01 02 06 00 0
 RG_Y 1998 01 01 00 00 0
 RG_Y 1998 01 01 01 00 1.25
 RG_Y 1998 01 01 02 00 1.5
@@ -44,10 +47,10 @@ RG_Y 1998 01 01 03 00 1.8
 RG_Y 1998 01 01 04 00 2.6
 RG_Y 1998 01 01 05 00 1.1
 RG_Y 1998 01 01 06 00 0
-RG_Y 1998 02 01 03 00 0
-RG_Y 1998 02 01 04 00 1.4
-RG_Y 1998 02 01 05 00 1.2
-RG_Y 1998 02 01 06 00 0
+RG_Y 1998 01 02 03 00 0
+RG_Y 1998 01 02 04 00 1.4
+RG_Y 1998 01 02 05 00 1.2
+RG_Y 1998 01 02 06 00 0
 `)
 })
 
@@ -69,7 +72,7 @@ RG_Y 1998 01 02 06 00 0
 })
 
 test('subRange 1998 01 01 02 00 to 1998 01 01 06 00', () => {
-  expect((global as any).rg_data01.subRange(883620000000, 883713600000).stringify()).toEqual(`;Notes go here
+  expect((global as any).rg_data01.subRange(883620000000, 883634400000).stringify()).toEqual(`;Notes go here
 ; here's a second line of notes.
 RG_X 1998 01 01 02 00 0.5
 RG_X 1998 01 01 03 00 0.8
@@ -100,4 +103,8 @@ test('findStormsPretty RG1', () => {
   expect((global as any).rg_data02.findStormsPretty((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"begin": "01/01/1998 00:00:00", "end": "01/02/1998 00:00:00"}, {"begin": "01/04/1998 00:00:00", "end": "01/06/1998 00:00:00"}, {"begin": "01/07/1998 00:00:00", "end": "01/10/1998 00:00:00"}, {"begin": "01/11/1998 00:00:00", "end": "01/12/1998 00:00:00"}])
 })
 
+
+test('stormVol RG3', () => {
+  expect(Math.round((global as any).rg_data03.stormVol((global as any).rg_data03.contents[127069], 0, new Date(2014, 0, 1, 0, 0, 0))*10)/10).toEqual(1296.7)
+})
 
