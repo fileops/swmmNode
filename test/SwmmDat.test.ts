@@ -5,14 +5,17 @@ import fs from 'fs'
 
 let test_Example1 = './test/data/rg_data01.dat'
 let test_Example2 = './test/data/rg_data02.dat'
+let test_Example3 = './test/data/rg_data03.dat'
 
 // Prior to running tests, open files and set objects.
 beforeAll(async () => {
   const readFile = util.promisify(fs.readFile)
   const file01 = await readFile(test_Example1, { encoding: 'utf8' });
   const file02 = await readFile(test_Example2, { encoding: 'utf8' });
+  const file03 = await readFile(test_Example3, { encoding: 'utf8' });
   (global as any).rg_data01 = new SwmmDat(file01);
   (global as any).rg_data02 = new SwmmDat(file02);
+  (global as any).rg_data03 = new SwmmDat(file03);
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -100,4 +103,8 @@ test('findStormsPretty RG1', () => {
   expect((global as any).rg_data02.findStormsPretty((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"begin": "01/01/1998 00:00:00", "end": "01/02/1998 00:00:00"}, {"begin": "01/04/1998 00:00:00", "end": "01/06/1998 00:00:00"}, {"begin": "01/07/1998 00:00:00", "end": "01/10/1998 00:00:00"}, {"begin": "01/11/1998 00:00:00", "end": "01/12/1998 00:00:00"}])
 })
 
+
+test('stormVol RG3', () => {
+  expect(Math.round((global as any).rg_data03.stormVol((global as any).rg_data03.contents[127069], 0, new Date(2014, 0, 1, 0, 0, 0))*10)/10).toEqual(1296.7)
+})
 

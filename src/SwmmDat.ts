@@ -242,6 +242,43 @@ findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
   return outArray
 }
 
+////////////////////////////////////////////////////////////
+// Descriptive stats
+////////////////////////////////////////////////////////////
+
+/**
+ * Find the sum inches of rainfall between two dates.
+ * 
+ * @param {IDatRecords} dataArray  An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {number} startDate The start date to measure from.
+ * @param {number} endDate The end date to measure to.
+ * @returns {number} 
+ */
+stormVol(dataArray:IDatRecords, startDate:number, endDate:number):number {
+  let outArray: any = []
+  // Get all of the records that occur between startDate and endDate, inclusive
+  let theKeys = Object.keys(dataArray)
+  let theLength = theKeys.length
+  // For every key, check to see if it exists between the
+  // times given and then sum the values of the matching keys.
+  let outVol: number = 0
+  for (let i = 0; i < theLength; i++){
+    let key:string = theKeys[i]
+    let keyNum:number = parseInt(theKeys[i])
+    //outArray.push([keyNum])
+    if(keyNum >= startDate && keyNum <= endDate){
+      // sum all the rainfall over the following IEP periods
+      outVol = outVol + dataArray[key]
+    }
+  }
+
+  return outVol
+}
+
+////////////////////////////////////////////////////////////
+// Date/Time operations
+////////////////////////////////////////////////////////////
+
 /**
 * Returns a human-readable string version of an integer time step.
 * Use this to make strings that can be written to EPA-SWMM files.
@@ -367,7 +404,6 @@ subRange(startTime:number, endTime:number){
 
   return newDat
 }
-
 
 /**
  * Translates the SwmmDat object to a string. 
