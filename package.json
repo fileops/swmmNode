@@ -1,6 +1,6 @@
 {
   "name": "@fileops/swmm-node",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "TypeScript package for performing data operations on EPA-SWMM and swmmReact files.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
