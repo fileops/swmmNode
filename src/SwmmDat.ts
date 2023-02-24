@@ -272,10 +272,10 @@ static sumEvents(dataArray:IDatRecords, startTime:number, endTime:number, period
   // Adjust function for periodType:
   switch(periodType){
     case('Hour'):
-      periodFunc = (val:Date)=>{return new Date(val.setHours(val.getHours()+periodValue))}
+      periodFunc = (val:Date)=>{return new Date(val.setUTCHours(val.getUTCHours()+periodValue))}
       break;
     case('Day'):
-      periodFunc = (val:Date)=>{return new Date(val.setDate(val.getDate()+periodValue))}
+      periodFunc = (val:Date)=>{return new Date(val.setUTCDate(val.getUTCDate()+periodValue))}
       break;
     case('Month'):
       periodFunc = (val:Date) => {
@@ -285,10 +285,10 @@ static sumEvents(dataArray:IDatRecords, startTime:number, endTime:number, period
       }
       break;
     case('Year'):
-      periodFunc = (val:Date)=>{return new Date(val.setFullYear(val.getFullYear()+periodValue))}
+      periodFunc = (val:Date)=>{return new Date(val.setUTCFullYear(val.getUTCFullYear()+periodValue))}
       break;
     default:// default to year
-      periodFunc = (val:Date)=>{return new Date(val.setFullYear(val.getFullYear()+periodValue))}
+      periodFunc = (val:Date)=>{return new Date(val.setUTCFullYear(val.getUTCFullYear()+periodValue))}
       break;
   }
 
