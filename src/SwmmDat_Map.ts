@@ -141,9 +141,9 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-/*findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<any> {
+findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
-  let storms = SwmmDat.findSubStorms(dataMap, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
+  let storms = SwmmDat_Map.findSubStorms(dataMap, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
   for (let i = 0; i < storms.length; i++) {
     if (i === 0 || storms[i].start - storms[i - 1].end >= IEP) {
@@ -162,7 +162,7 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
   }
 
   return mergedStorms
-}*/
+}
 
 /**
  * 
@@ -171,9 +171,9 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-/*findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<any> {
+findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
-  let storms = SwmmDat.findSubStorms(dataMap, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
+  let storms = SwmmDat_Map.findSubStorms(dataMap, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
   for (let i = 0; i < storms.length; i++) {
     if (i === 0 || storms[i].start - storms[i - 1].end >= IEP) {
@@ -193,13 +193,13 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
 
   mergedStorms = mergedStorms.map((o:any)=>{
     return {
-      begin: SwmmDat.unixTime_toDate(o.begin),
-      end  : SwmmDat.unixTime_toDate(o.end)
+      begin: SwmmDat_Map.unixTime_toDate(o.begin),
+      end  : SwmmDat_Map.unixTime_toDate(o.end)
     }
   })
 
   return mergedStorms
-}*/
+}
 
 /**
  * Find the rainfall elements that classify as a storm due to having a volume that
@@ -372,25 +372,27 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
  * @param {number} endDate The end date to measure to.
  * @returns {number} 
  */
-/*static stormVol(dataArray:IDatRecords, startDate:number, endDate:number):number {
+static stormVol(dataMap:Map<number, number>, startDate:number, endDate:number):number {
   // Get all of the records that occur between startDate and endDate, inclusive
-  let theKeys = Object.keys(dataArray)
+  let outArray: any = []
+  // for every entry 
+  let theKeys = Array.from(dataMap.keys())
   let theLength = theKeys.length
   // For every key, 
   let outVol: number = 0
   for (let i = 0; i < theLength; i++){
-    let key:string = theKeys[i]
-    let keyNum:number = parseInt(theKeys[i])
+    let key:number = theKeys[i]
+    let keyNum:number = theKeys[i]
     // check to see if the key exists between the
     // times given. 
     if(keyNum >= startDate && keyNum < endDate){
       // Sum all the rainfall in the qualifying times.
-      outVol = outVol + dataArray[key]
+      outVol = outVol + dataMap.get(key)!
     }
   }
 
   return outVol
-}*/
+}
 
 /**
  * Find the maximum volume and start time of an n-period 
@@ -404,18 +406,18 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
  * @param {number} nPeriod number of milliseconds that define the period: 1 hour is 3600000 milliseconds.
  * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event.
  */
-/*static maxEvent(records:IDatRecords, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
+static maxEvent(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
   // Get a trimmed set of records
-  let trimRecords = SwmmDat.trimIDatRecords(records, startDate, endDate)
+  let trimRecords = SwmmDat_Map.trimIDatRecords(records, startDate, endDate)
 
   // Call findSubStorms on the trimmed records
-  let events = SwmmDat.findSubStorms(trimRecords, nPeriod, 0)
+  let events = SwmmDat_Map.findSubStorms(trimRecords, nPeriod, 0)
   
   // Find the largest, first events.vol value and return the start, end, and vol of that object.
   const max = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
 
   return max
-}*/
+}
 
 /**
  * Get a set of IDatRecords that are between two dates, inclusive of the start date and exclusive of the end date.
