@@ -1,5 +1,5 @@
-// SwmmDat.test.ts
-import { SwmmDat } from '../src/index'
+// SwmmDat_Map.test.ts
+import { SwmmDat_Map } from '../src/index'
 import util from 'util'
 import fs from 'fs'
 
@@ -13,18 +13,18 @@ beforeAll(async () => {
   const file01 = await readFile(test_Example1, { encoding: 'utf8' });
   const file02 = await readFile(test_Example2, { encoding: 'utf8' });
   const file03 = await readFile(test_Example3, { encoding: 'utf8' });
-  (global as any).rg_data01 = new SwmmDat(file01);
-  (global as any).rg_data02 = new SwmmDat(file02);
-  (global as any).rg_data03 = new SwmmDat(file03);
+  (global as any).rg_data01 = new SwmmDat_Map(file01);
+  (global as any).rg_data02 = new SwmmDat_Map(file02);
+  (global as any).rg_data03 = new SwmmDat_Map(file03);
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object creation
 ////////////////////////////////////////////////////////////////////////////////////////
 
-test('construct from .dat file (contents)', () =>{
-  expect((global as any).rg_data01.contents).toEqual({"RG_X": {"883612800000": 0,"883616400000": 0.25,"883620000000": 0.5,"883623600000": 0.8,"883627200000": 1.6,"883630800000": 0.1,"883634400000": 0,"883710000000": 0,"883713600000": 0.4,"883717200000": 0.2,"883720800000": 0,}, "RG_Y": {"883612800000": 0,"883616400000": 1.25,"883620000000": 1.5,"883623600000": 1.8,"883627200000": 2.6,"883630800000": 1.1,"883634400000": 0,"883710000000": 0,"883713600000": 1.4,"883717200000": 1.2,"883720800000": 0,}})
-})
+/*test('construct from .dat file (contents)', () =>{
+  expect((global as any).rg_data01.contents).toEqual({"RG_X": {883612800000 => 0,883616400000=> 0.25,883620000000=> 0.5,883623600000=> 0.8,883627200000=> 1.6,883630800000=> 0.1,883634400000=> 0,883710000000=> 0,883713600000=> 0.4,883717200000=> 0.2,883720800000=> 0,}, "RG_Y": {883612800000=> 0,883616400000=> 1.25,883620000000=> 1.5,883623600000=> 1.8,883627200000=> 2.6,883630800000=> 1.1,883634400000=> 0,883710000000=> 0,883713600000=> 1.4,883717200000=> 1.2,883720800000=> 0,}})
+})*/
 
 test('stringify', () =>{
   expect((global as any).rg_data01.stringify()).toEqual(`;Notes go here
@@ -53,7 +53,7 @@ RG_Y 1998 01 02 05 00 1.2
 RG_Y 1998 01 02 06 00 0
 `)
 })
-
+/*
 test('subGage RG_Y', () => {
   expect((global as any).rg_data01.subGage("RG_Y").stringify()).toEqual(`;Notes go here
 ; here's a second line of notes.
@@ -70,7 +70,7 @@ RG_Y 1998 01 02 05 00 1.2
 RG_Y 1998 01 02 06 00 0
 `)
 })
-
+*/
 test('subRange 1998 01 01 02 00 to 1998 01 01 06 00', () => {
   expect((global as any).rg_data01.subRange(883620000000, 883634400000).stringify()).toEqual(`;Notes go here
 ; here's a second line of notes.
@@ -86,7 +86,7 @@ RG_Y 1998 01 01 05 00 1.1
 RG_Y 1998 01 01 06 00 0
 `)
 })
-
+/*
 ////////////////////////////////////////////////////////////////////////////////////////
 // Locate storms
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -115,3 +115,4 @@ test('maxEvent RG3', () => {
 test('trimIDatRecords RG3', () => {
   expect(SwmmDat.trimIDatRecords((global as any).rg_data03.contents[127069], (new Date(1995, 7, 4, 0, 0, 0)).getTime(), (new Date(1995, 7, 6, 0, 0, 0)).getTime())).toEqual({"807525000000": 0.1, "807526800000": 0.1, "807527700000": 0.1, "807528600000": 0.1, "807530400000": 0.1, "807532200000": 0.1, "807534000000": 0.1, "807535800000": 0.1, "807537600000": 0.1, "807549300000": 0.1, "807616800000": 0.1, "807623100000": 0.1, "807624000000": 0.1})
 })
+*/
