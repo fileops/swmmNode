@@ -498,7 +498,7 @@ static unixTime_toDate_Dat(unixTime:number): string{
  * @param {string} gage name of the raingage to separate from the swmmDat object.
  * @returns {swmmDat} A swmmDat object with just one raingage in it.
  */
-/*subGage(gage:string){
+subGage(gage:string){
   // Check if the gage is in the list. If not, return error.
   if(!Object.keys(this.contents).includes(gage)){
     throw new Error("No gage named " + gage + " in this object.")
@@ -507,7 +507,7 @@ static unixTime_toDate_Dat(unixTime:number): string{
   let s:string = this.stringify()
 
   // Create a new SwmmDat object by passing the string s:
-  let newDat = new SwmmDat(s)
+  let newDat = new SwmmDat_Map(s)
 
   // Delete all of the contents that do not match key 'gage'
   Object.keys(newDat.contents).forEach((k:string)=>{
@@ -517,7 +517,7 @@ static unixTime_toDate_Dat(unixTime:number): string{
   })
 
   return newDat
-}*/
+}
 
 /**
  * Creates a new SwmmDat object by copying the calling swmmDat object and then 

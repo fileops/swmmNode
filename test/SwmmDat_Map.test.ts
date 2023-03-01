@@ -53,7 +53,7 @@ RG_Y 1998 01 02 05 00 1.2
 RG_Y 1998 01 02 06 00 0
 `)
 })
-/*
+
 test('subGage RG_Y', () => {
   expect((global as any).rg_data01.subGage("RG_Y").stringify()).toEqual(`;Notes go here
 ; here's a second line of notes.
@@ -70,7 +70,7 @@ RG_Y 1998 01 02 05 00 1.2
 RG_Y 1998 01 02 06 00 0
 `)
 })
-*/
+
 test('subRange 1998 01 01 02 00 to 1998 01 01 06 00', () => {
   expect((global as any).rg_data01.subRange(883620000000, 883634400000).stringify()).toEqual(`;Notes go here
 ; here's a second line of notes.
@@ -86,19 +86,19 @@ RG_Y 1998 01 01 05 00 1.1
 RG_Y 1998 01 01 06 00 0
 `)
 })
-/*
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // Locate storms
 ////////////////////////////////////////////////////////////////////////////////////////
 
 test('findSubStorms RG1', () => {
-  expect(SwmmDat.findSubStorms((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"end": 883612800000, "start": 883612800000, "vol": 1}, {"end": 883872000000, "start": 883872000000, "vol": 1}, {"end": 883958400000, "start": 883958400000, "vol": 1}, {"end": 884131200000, "start": 884131200000, "vol": 1}, {"end": 884217600000, "start": 884217600000, "vol": 1}, {"end": 884304000000, "start": 884304000000, "vol": 1}, {"end": 884476800000, "start": 884476800000, "vol": 1}, {"end": 884563200000, "start": 884563200000, "vol": 1}])
+  expect(SwmmDat_Map.findSubStorms((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"end": 883612800000, "start": 883612800000, "vol": 1}, {"end": 883872000000, "start": 883872000000, "vol": 1}, {"end": 883958400000, "start": 883958400000, "vol": 1}, {"end": 884131200000, "start": 884131200000, "vol": 1}, {"end": 884217600000, "start": 884217600000, "vol": 1}, {"end": 884304000000, "start": 884304000000, "vol": 1}, {"end": 884476800000, "start": 884476800000, "vol": 1}, {"end": 884563200000, "start": 884563200000, "vol": 1}])
 })
 
 test('findStorms RG1', () => {
   expect((global as any).rg_data02.findStorms((global as any).rg_data02.contents.RG1, 1000*60*60*2, 0.1)).toEqual([{"begin": 883612800000, "end": 883612800000}, {"begin": 883872000000, "end": 883872000000}, {"begin": 883958400000, "end": 883958400000}, {"begin": 884131200000, "end": 884131200000}, {"begin": 884217600000, "end": 884217600000}, {"begin": 884304000000, "end": 884304000000}, {"begin": 884476800000, "end": 884476800000}, {"begin": 884563200000, "end": 884563200000}])
 })
-
+/*
 test('findStormsPretty RG1', () => {
   expect((global as any).rg_data02.findStormsPretty((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"begin": "01/01/1998 00:00:00", "end": "01/01/1998 00:00:00"}, {"begin": "01/04/1998 00:00:00", "end": "01/04/1998 00:00:00"}, {"begin": "01/05/1998 00:00:00", "end": "01/05/1998 00:00:00"},{"begin": "01/07/1998 00:00:00", "end": "01/07/1998 00:00:00"}, {"begin": "01/08/1998 00:00:00", "end": "01/08/1998 00:00:00"}, {"begin": "01/09/1998 00:00:00", "end": "01/09/1998 00:00:00"}, {"begin": "01/11/1998 00:00:00", "end": "01/11/1998 00:00:00"}, {"begin": "01/12/1998 00:00:00", "end": "01/12/1998 00:00:00"},])
 })
