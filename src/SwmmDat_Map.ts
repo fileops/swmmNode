@@ -427,19 +427,19 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
  * @param {number} endDate end time, exclusive, in milliseconds
  * @returns {IDatRecords} trimmed set of IDatRecords
  */
-/*static trimIDatRecords(records: IDatRecords, startDate:number, endDate:number):IDatRecords{
-  let newDat:IDatRecords = {}
+static trimIDatRecords(records: Map<number, number>, startDate:number, endDate:number):Map<number, number>{
+  let newDat:Map<number, number> = new Map()
 
-  Object.keys(records).forEach((record:string, i:number) => {
+  records.forEach((v:number, k:number) => {
     // If the record is inside of the given date range
-    if(parseInt(record) >= startDate && parseInt(record) < endDate){
+    if(k >= startDate && k < endDate){
       // Add the record
-      newDat[record] = records[record]
+      newDat.set(k, v)
     }
   })
 
   return newDat
-}*/
+}
 
 ////////////////////////////////////////////////////////////
 // Date/Time operations

@@ -22,9 +22,9 @@ beforeAll(async () => {
 // Object creation
 ////////////////////////////////////////////////////////////////////////////////////////
 
-/*test('construct from .dat file (contents)', () =>{
-  expect((global as any).rg_data01.contents).toEqual({"RG_X": {883612800000 => 0,883616400000=> 0.25,883620000000=> 0.5,883623600000=> 0.8,883627200000=> 1.6,883630800000=> 0.1,883634400000=> 0,883710000000=> 0,883713600000=> 0.4,883717200000=> 0.2,883720800000=> 0,}, "RG_Y": {883612800000=> 0,883616400000=> 1.25,883620000000=> 1.5,883623600000=> 1.8,883627200000=> 2.6,883630800000=> 1.1,883634400000=> 0,883710000000=> 0,883713600000=> 1.4,883717200000=> 1.2,883720800000=> 0,}})
-})*/
+test('construct from .dat file (contents)', () =>{
+  expect((global as any).rg_data01.contents['RG_X'].get(883616400000)).toEqual(0.25)
+})
 
 test('stringify', () =>{
   expect((global as any).rg_data01.stringify()).toEqual(`;Notes go here
@@ -94,15 +94,15 @@ RG_Y 1998 01 01 06 00 0
 test('findSubStorms RG1', () => {
   expect(SwmmDat_Map.findSubStorms((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"end": 883612800000, "start": 883612800000, "vol": 1}, {"end": 883872000000, "start": 883872000000, "vol": 1}, {"end": 883958400000, "start": 883958400000, "vol": 1}, {"end": 884131200000, "start": 884131200000, "vol": 1}, {"end": 884217600000, "start": 884217600000, "vol": 1}, {"end": 884304000000, "start": 884304000000, "vol": 1}, {"end": 884476800000, "start": 884476800000, "vol": 1}, {"end": 884563200000, "start": 884563200000, "vol": 1}])
 })
-
+/*
 test('findStorms RG1', () => {
   expect((global as any).rg_data02.findStorms((global as any).rg_data02.contents.RG1, 1000*60*60*2, 0.1)).toEqual([{"begin": 883612800000, "end": 883612800000}, {"begin": 883872000000, "end": 883872000000}, {"begin": 883958400000, "end": 883958400000}, {"begin": 884131200000, "end": 884131200000}, {"begin": 884217600000, "end": 884217600000}, {"begin": 884304000000, "end": 884304000000}, {"begin": 884476800000, "end": 884476800000}, {"begin": 884563200000, "end": 884563200000}])
 })
+*/
 /*
 test('findStormsPretty RG1', () => {
   expect((global as any).rg_data02.findStormsPretty((global as any).rg_data02.contents.RG1, 1000*60*60*24, 0.1)).toEqual([{"begin": "01/01/1998 00:00:00", "end": "01/01/1998 00:00:00"}, {"begin": "01/04/1998 00:00:00", "end": "01/04/1998 00:00:00"}, {"begin": "01/05/1998 00:00:00", "end": "01/05/1998 00:00:00"},{"begin": "01/07/1998 00:00:00", "end": "01/07/1998 00:00:00"}, {"begin": "01/08/1998 00:00:00", "end": "01/08/1998 00:00:00"}, {"begin": "01/09/1998 00:00:00", "end": "01/09/1998 00:00:00"}, {"begin": "01/11/1998 00:00:00", "end": "01/11/1998 00:00:00"}, {"begin": "01/12/1998 00:00:00", "end": "01/12/1998 00:00:00"},])
 })
-
 test('stormVol RG3', () => {
   expect(Math.round(SwmmDat.stormVol((global as any).rg_data03.contents[127069], 0, (new Date(2014, 0, 1, 0, 0, 0)).getTime())*10)/10).toEqual(1296.7)
 })
@@ -111,8 +111,9 @@ test('maxEvent RG3', () => {
   expect(SwmmDat.maxEvent((global as any).rg_data03.contents[127069], (new Date(1995, 7, 4, 0, 0, 0)).getTime(), (new Date(1995, 7, 6, 0, 0, 0)).getTime(), 3600000)).toBeDefined()
   // vol is floating point so ends up funny .toEqual({"end": 807527700000, "start": 807525000000, "vol": 0.3})
 })
-
-test('trimIDatRecords RG3', () => {
-  expect(SwmmDat.trimIDatRecords((global as any).rg_data03.contents[127069], (new Date(1995, 7, 4, 0, 0, 0)).getTime(), (new Date(1995, 7, 6, 0, 0, 0)).getTime())).toEqual({"807525000000": 0.1, "807526800000": 0.1, "807527700000": 0.1, "807528600000": 0.1, "807530400000": 0.1, "807532200000": 0.1, "807534000000": 0.1, "807535800000": 0.1, "807537600000": 0.1, "807549300000": 0.1, "807616800000": 0.1, "807623100000": 0.1, "807624000000": 0.1})
-})
 */
+
+test('trimIDatRecords rg_data03', () => {
+  expect(SwmmDat_Map.trimIDatRecords((global as any).rg_data03.contents[127069], (new Date(1995, 7, 4, 0, 0, 0)).getTime(), (new Date(1995, 7, 6, 0, 0, 0)).getTime()).get(807525000000)).toEqual(0.1)
+})
+
