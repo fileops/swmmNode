@@ -1,4 +1,4 @@
-// SwmmOut.tests.ts
+// SwmmOut.test.ts
 import { SwmmOut } from '../src/index'
 import util from 'util'
 import fs from 'fs'
