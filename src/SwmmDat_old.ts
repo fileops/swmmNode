@@ -1,13 +1,13 @@
-// SwmmDat_Map.ts
+// SwmmDat.ts
 
 /**
  * Interface for working with .dat gages
  * 
  * @typedef IDatGages
- * @property {IDatRecords} Map<number, number> records for the gage. key is unix timecode, value is gage value
+ * @property {IDatRecords} [id:string] records for the gage
  */
 interface IDatGages {
-  [id: string]: Map<number, number>
+  [id: string]: IDatRecords
 }
 
 /**
@@ -16,9 +16,9 @@ interface IDatGages {
  * @typedef IDatRecords
  * @property {number} [dateTime:string] The Unix timestamp of the date and time of rainfall
  */
-/*interface IDatRecords {
-  [key: number]: number;
-}*/
+interface IDatRecords {
+  [dateTime: string]:number
+}
 
 /**
 * Class for storing and working with .dat file contents.
@@ -26,7 +26,7 @@ interface IDatGages {
 * from a .dat file, or translated from a TimeSeries object from
 * a .inp file, or translated from a JSON swmm object.
 */
-export class SwmmDat_Map {
+export class SwmmDat {
 /**
  * @type {Array<string>} the header of a .dat file.
  */
@@ -124,8 +124,8 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
       
       let rain = parseFloat(vals[index + 5])
 
-      if(!Object.keys(outArray).includes(id)) outArray[id] = new Map<number, number>();
-      outArray[id].set(date, rain)
+      if(!Object.keys(outArray).includes(id)) outArray[id] = {};
+      outArray[id][date] = rain
     })
   } catch {
     throw new Error("Could not parse .dat file")
@@ -136,14 +136,14 @@ createDatGages(fileContents:string, fileType:string): IDatGages {
 
 /**
  * 
- * @param {Max<number, number>} dataMap An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {IDatRecord} dataArray An instance of IDatRecords, the data for a gage in a .dat file.
  * @param {number} IEP The inter-event period, maximum time between MSV sums. A unix time in milliseconds.
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<any> {
+findStorms(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
-  let storms = SwmmDat_Map.findSubStorms(dataMap, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
+  let storms = SwmmDat.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
   for (let i = 0; i < storms.length; i++) {
     if (i === 0 || storms[i].start - storms[i - 1].end >= IEP) {
@@ -166,14 +166,14 @@ findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<any> {
 
 /**
  * 
- * @param {Map<number, number>} dataMap  An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {IDatRecords} dataArray  An instance of IDatRecords, the data for a gage in a .dat file.
  * @param {number} IEP The inter-event period, maximum time between MSV sums. A unix time in milliseconds.
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<any> {
+findStormsPretty(dataArray: IDatRecords, IEP: number, MSV:number):Array<any> {
   let mergedStorms: any = []
-  let storms = SwmmDat_Map.findSubStorms(dataMap, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
+  let storms = SwmmDat.findSubStorms(dataArray, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
   for (let i = 0; i < storms.length; i++) {
     if (i === 0 || storms[i].start - storms[i - 1].end >= IEP) {
@@ -193,8 +193,8 @@ findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<an
 
   mergedStorms = mergedStorms.map((o:any)=>{
     return {
-      begin: SwmmDat_Map.unixTime_toDate(o.begin),
-      end  : SwmmDat_Map.unixTime_toDate(o.end)
+      begin: SwmmDat.unixTime_toDate(o.begin),
+      end  : SwmmDat.unixTime_toDate(o.end)
     }
   })
 
@@ -206,36 +206,36 @@ findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<an
  * meets or exceeds the MSV and has a length of IEP.
  * The results will exclude values that are exactly
  * Event Time + IEP, because Events are not considered instantaneous.
- * @param {Map<number, number>} dataMap An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {IDatRecords} dataArray An instance of IDatRecords, the data for a gage in a .dat file.
  * @param {number} IEP Inter-event period, minimum time between classified storms
  * @param {number} MSV Minimum storm volume, the least amount of rain that can classify a storm
  * @returns 
  */
-static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<any> {
+static findSubStorms(dataArray:IDatRecords, IEP:number, MSV:number):Array<any> {
   let outArray: any = []
   // for every entry 
-  let theKeys = Array.from(dataMap.keys())
+  let theKeys = Object.keys(dataArray)
   let theLength = theKeys.length
   for (let i = 0; i < theLength; i++){
     // if there is rainfall
-    let substormStart:number = theKeys[i]
-    if(dataMap.get(substormStart)! > 0){
+    let key:string = theKeys[i]
+    if(dataArray[key] > 0){
       // sum all the rainfall over the following IEP periods
       let rainSum = 0
-      let thisTime = substormStart
+      let thisTime = new Date(parseInt(key)).getTime()
       let n = i
       for(; 
         n < theKeys.length && 
-        theKeys[n] - thisTime < IEP; 
+        new Date(parseInt(theKeys[n])).getTime() - thisTime < IEP; 
         n++){
-          rainSum = rainSum + dataMap.get(theKeys[n])!
+          rainSum = rainSum + dataArray[theKeys[n]]
       }
 
       // If rainSum > MSV, push the start and end into outArray
       if(rainSum > MSV){
         outArray.push({
-          start: theKeys[i], 
-          end:   theKeys[n-1],
+          start: parseInt(theKeys[i]), 
+          end:   parseInt(theKeys[n-1]),
           vol:   rainSum
         })
       }
@@ -264,7 +264,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
  * @param {periodValue} number Number of periodTypes that a summation interval will span. To get 6-hour intervals, use periodValue = 6 and periodType = 'Hour'
  * @returns {}
  */
-/*static sumEvents(dataArray:IDatRecords, startTime:number, endTime:number, periodType:string, periodValue:number):Array<any>
+static sumEvents(dataArray:IDatRecords, startTime:number, endTime:number, periodType:string, periodValue:number):Array<any>
 {
   let outArray = []
   let periodFunc
@@ -359,7 +359,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
   }
 
   return outArray
-}*/
+}
 
 /**
  * Find the sum of rainfall between two points in time,
@@ -372,22 +372,20 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
  * @param {number} endDate The end date to measure to.
  * @returns {number} 
  */
-static stormVol(dataMap:Map<number, number>, startDate:number, endDate:number):number {
+static stormVol(dataArray:IDatRecords, startDate:number, endDate:number):number {
   // Get all of the records that occur between startDate and endDate, inclusive
-  let outArray: any = []
-  // for every entry 
-  let theKeys = Array.from(dataMap.keys())
+  let theKeys = Object.keys(dataArray)
   let theLength = theKeys.length
   // For every key, 
   let outVol: number = 0
   for (let i = 0; i < theLength; i++){
-    let key:number = theKeys[i]
-    let keyNum:number = theKeys[i]
+    let key:string = theKeys[i]
+    let keyNum:number = parseInt(theKeys[i])
     // check to see if the key exists between the
     // times given. 
     if(keyNum >= startDate && keyNum < endDate){
       // Sum all the rainfall in the qualifying times.
-      outVol = outVol + dataMap.get(key)!
+      outVol = outVol + dataArray[key]
     }
   }
 
@@ -406,12 +404,12 @@ static stormVol(dataMap:Map<number, number>, startDate:number, endDate:number):n
  * @param {number} nPeriod number of milliseconds that define the period: 1 hour is 3600000 milliseconds.
  * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event.
  */
-static maxEvent(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
+static maxEvent(records:IDatRecords, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
   // Get a trimmed set of records
-  let trimRecords = SwmmDat_Map.trimIDatRecords(records, startDate, endDate)
+  let trimRecords = SwmmDat.trimIDatRecords(records, startDate, endDate)
 
   // Call findSubStorms on the trimmed records
-  let events = SwmmDat_Map.findSubStorms(trimRecords, nPeriod, 0)
+  let events = SwmmDat.findSubStorms(trimRecords, nPeriod, 0)
   
   // Find the largest, first events.vol value and return the start, end, and vol of that object.
   const max = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
@@ -429,14 +427,14 @@ static maxEvent(records:Map<number, number>, startDate:number, endDate:number, n
  * @param {number} endDate end time, exclusive, in milliseconds
  * @returns {IDatRecords} trimmed set of IDatRecords
  */
-static trimIDatRecords(records: Map<number, number>, startDate:number, endDate:number):Map<number, number>{
-  let newDat:Map<number, number> = new Map()
+static trimIDatRecords(records: IDatRecords, startDate:number, endDate:number):IDatRecords{
+  let newDat:IDatRecords = {}
 
-  records.forEach((v:number, k:number) => {
+  Object.keys(records).forEach((record:string, i:number) => {
     // If the record is inside of the given date range
-    if(k >= startDate && k < endDate){
+    if(parseInt(record) >= startDate && parseInt(record) < endDate){
       // Add the record
-      newDat.set(k, v)
+      newDat[record] = records[record]
     }
   })
 
@@ -509,7 +507,7 @@ subGage(gage:string){
   let s:string = this.stringify()
 
   // Create a new SwmmDat object by passing the string s:
-  let newDat = new SwmmDat_Map(s)
+  let newDat = new SwmmDat(s)
 
   // Delete all of the contents that do not match key 'gage'
   Object.keys(newDat.contents).forEach((k:string)=>{
@@ -534,7 +532,7 @@ subGage(gage:string){
  * gages.
  * @returns {SwmmDat} A new SwmmDat object that combines the records of objToInsert and this object.
  */
-/*mergeGages(objToInsert:SwmmDat){
+mergeGages(objToInsert:SwmmDat){
   // Translate the SwmmDat object to a string, s.
   let s:string = this.stringify()
 
@@ -542,7 +540,7 @@ subGage(gage:string){
   let newDat = new SwmmDat(s)
 
   return newDat
-}*/
+}
 
 /**
  * Creates a copy of the current swmmDat object, trimmed down to a specific date range.
@@ -556,16 +554,16 @@ subRange(startTime:number, endTime:number){
   let s:string = this.stringify()
 
   // Create a new swmmDat object by passing the string s:
-  let newDat = new SwmmDat_Map(s)
+  let newDat = new SwmmDat(s)
 
   // For every gage
-  Object.keys(newDat.contents).forEach((o:string) =>{
+  Object.keys(newDat.contents).forEach((el:string) =>{
     // For every record
-    this.contents[o].forEach((v, k)=>{
+    Object.keys(newDat.contents[el]).forEach((record:string, i:number) => {
       // If the record is outside of the given date range
-      if(k < startTime || k > endTime){
+      if(parseInt(record) < startTime || parseInt(record) > endTime){
         // delete that record.
-        newDat.contents[o].delete(k)
+        delete newDat.contents[el][record]
       }
     })
   })
@@ -596,12 +594,12 @@ stringify(fileType="RG"){
 
   // Add all of the gage records:
   // For each gage record
-  Object.keys(this.contents).forEach((o:string)=>{
-    this.contents[o].forEach((v, k)=>{
+  Object.keys(this.contents).forEach((k:string)=>{
+    (Object.keys(this.contents[k])).forEach((v)=>{
       if(fileType==="RG")
-        s += [o, SwmmDat_Map.unixTime_toDate_Dat(k), v].join(' ') + '\n'
+        s += [k, SwmmDat.unixTime_toDate_Dat(parseInt(v)), this.contents[k][v]].join(' ') + '\n'
       else
-        s += [SwmmDat_Map.unixTime_toDate_Dat(k), v].join(' ') + '\n'
+        s += [SwmmDat.unixTime_toDate_Dat(parseInt(v)), this.contents[k][v]].join(' ') + '\n'
     })
   })
 
