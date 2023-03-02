@@ -270,7 +270,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
  * @param {periodValue} number Number of periodTypes that a summation interval will span. To get 6-hour intervals, use periodValue = 6 and periodType = 'Hour'
  * @returns {}
  */
-/*static sumEvents(dataArray:IDatRecords, startTime:number, endTime:number, periodType:string, periodValue:number):Array<any>
+static sumEvents(dataMap:Map<number, number>, startTime:number, endTime:number, periodType:string, periodValue:number):Array<any>
 {
   let outArray = []
   let periodFunc
@@ -300,7 +300,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
 
   // Get the keys
   // Object.keys should be Array.from
-  let theKeys = Object.keys(dataArray).map(v=>parseInt(v))
+  let theKeys = Array.from(dataMap.keys())
   let theLength = theKeys.length
   let pStart = startTime
   let dStart = new Date(pStart)
@@ -344,7 +344,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
       i < theKeys.length && 
       new Date(theKeys[i]).getTime() < pEnd; 
       ){
-        rainSum = rainSum + dataArray[theKeys[i].toString()]
+        rainSum = rainSum + dataMap.get(theKeys[i])!
         i++
         updated = 1
     }
@@ -366,7 +366,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
   }
 
   return outArray
-}*/
+}
 
 /**
  * Find the sum of rainfall between two points in time,
