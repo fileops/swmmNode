@@ -238,7 +238,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
       }
 
       // If rainSum > MSV, push the start and end into outArray
-      if(rainSum > MSV){
+      if(rainSum >= MSV){
         outArray.push({
           start: theKeys[i], 
           end:   theKeys[n-1],
