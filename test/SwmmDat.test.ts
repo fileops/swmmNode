@@ -107,18 +107,25 @@ test('findStormsPretty RG1', () => {
   expect((global as any).rg_data02.findStormsPretty((global as any).rg_data02.contents.get('RG1'), 1000*60*60*24, 0.1)).toEqual([{"begin": "01/01/1998 00:00:00", "end": "01/01/1998 00:00:00"}, {"begin": "01/04/1998 00:00:00", "end": "01/04/1998 00:00:00"}, {"begin": "01/05/1998 00:00:00", "end": "01/05/1998 00:00:00"},{"begin": "01/07/1998 00:00:00", "end": "01/07/1998 00:00:00"}, {"begin": "01/08/1998 00:00:00", "end": "01/08/1998 00:00:00"}, {"begin": "01/09/1998 00:00:00", "end": "01/09/1998 00:00:00"}, {"begin": "01/11/1998 00:00:00", "end": "01/11/1998 00:00:00"}, {"begin": "01/12/1998 00:00:00", "end": "01/12/1998 00:00:00"},])
 })
 
-test('stormVol RG3', () => {
-  expect(Math.round(SwmmDat.stormVol((global as any).rg_data03.contents.get('127069'), 0, (new Date(2014, 0, 1, 0, 0, 0)).getTime())*10)/10).toEqual(1296.7)
+test('stormVol RG3 data03', () => {
+  expect(Math.round(SwmmDat.stormVol((global as any).rg_data03.contents.get('127069'), 0, (new Date(Date.UTC(2014, 0, 1, 0, 0, 0))).getTime())*10)/10).toEqual(1296.7)
+})
+
+test('stormVol RG3 data02', () => {
+  expect(Math.round(SwmmDat.stormVol((global as any).rg_data02.contents.get('RG3'), (new Date(Date.UTC(1998, 0, 1, 3, 0, 0))).getTime(), (new Date(Date.UTC(1998, 0, 1, 5, 0, 0))).getTime())*100)/100).toEqual(0.95)
 })
 
 
 test('maxEvent RG3', () => {
-  expect(SwmmDat.maxEvent((global as any).rg_data03.contents.get('127069'), (new Date(1995, 7, 4, 0, 0, 0)).getTime(), (new Date(1995, 7, 6, 0, 0, 0)).getTime(), 3600000)).toBeDefined()
+  expect(SwmmDat.maxEvent((global as any).rg_data03.contents.get('127069'), (new Date(Date.UTC(1995, 7, 4, 0, 0, 0))).getTime(), (new Date(Date.UTC(1995, 7, 6, 0, 0, 0))).getTime(), 3600000)).toBeDefined()
   // vol is floating point so ends up funny .toEqual({"end": 807527700000, "start": 807525000000, "vol": 0.3})
 })
 
 
 test('trimIDatRecords rg_data03', () => {
-  expect(SwmmDat.trimIDatRecords((global as any).rg_data03.contents.get('127069'), (new Date(1995, 7, 4, 0, 0, 0)).getTime(), (new Date(1995, 7, 6, 0, 0, 0)).getTime()).get(807525000000)).toEqual(0.1)
+  expect(SwmmDat.trimIDatRecords((global as any).rg_data03.contents.get('127069'), (new Date(Date.UTC(1995, 7, 4, 0, 0, 0))).getTime(), (new Date(Date.UTC(1995, 7, 6, 0, 0, 0))).getTime()).get(807525000000)).toEqual(0.1)
 })
 
+test('sumEvents RG1', () => {
+  expect(SwmmDat.sumEvents((global as any).rg_data02.contents.get('RG1'), (new Date(Date.UTC(1998, 0, 1, 0, 0, 0))).getTime(), (new Date(Date.UTC(1998, 0, 5, 0, 0, 0))).getTime(), 'Day', 1)).toEqual([{"end": 883699200000, "start": 883612800000, "vol": 1}, {"end": 883785600000, "start": 883699200000, "vol": 0}, {"end": 883872000000, "start": 883785600000, "vol": 0}, {"end": 883958400000, "start": 883872000000, "vol": 1}])
+})
