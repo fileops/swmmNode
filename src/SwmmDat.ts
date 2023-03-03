@@ -299,11 +299,11 @@ static sumEvents(dataMap:Map<number, number>, startTime:number, endTime:number, 
   }
 
   // Get the keys
-  // Object.keys should be Array.from
   let theKeys = Array.from(dataMap.keys())
   let theLength = theKeys.length
   let pStart = startTime
   let dStart = new Date(pStart)
+  let gStart = dStart
   let dEnd   = periodFunc(dStart)
   let pEnd   = dEnd.getTime()
   let i = 0
@@ -388,10 +388,9 @@ static stormVol(dataMap:Map<number, number>, startDate:number, endDate:number):n
   let outVol: number = 0
   for (let i = 0; i < theLength; i++){
     let key:number = theKeys[i]
-    let keyNum:number = theKeys[i]
     // check to see if the key exists between the
     // times given. 
-    if(keyNum >= startDate && keyNum < endDate){
+    if(key >= startDate && key < endDate){
       // Sum all the rainfall in the qualifying times.
       outVol = outVol + dataMap.get(key)!
     }
