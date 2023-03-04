@@ -1,26 +1,6 @@
 // SwmmDat.ts
 
 /**
- * Interface for working with .dat gages
- * 
- * @typedef IDatGages
- * @property {IDatRecords} Map<number, number> records for the gage. key is unix timecode, value is gage value
- */
-/*interface IDatGages {
-  [id: string]: Map<number, number>
-}*/
-
-/**
- * Interface for working with .dat records for a gage.
- * 
- * @typedef IDatRecords
- * @property {number} [dateTime:string] The Unix timestamp of the date and time of rainfall
- */
-/*interface IDatRecords {
-  [key: number]: number;
-}*/
-
-/**
 * Class for storing and working with .dat file contents.
 * This class expects a text string, which will usually be extracted
 * from a .dat file, or translated from a TimeSeries object from
@@ -33,7 +13,8 @@ export class SwmmDat {
 header: Array<string>;
 
 /**
- * @type {IDatGages} an object keyed with gage names, which are in turn keyed with unix timestamps, with
+ * @type {Map<string, Map<number, number>>} a Map keyed with gage names, 
+ * which are in turn Maps keyed with unix timestamps, with
  * values of rainfall. the formatted contents of a .dat file.
  */
 contents: Map<string, Map<number, number>>
@@ -48,6 +29,7 @@ constructor(n: string, fileType="RG") {
   this.header = this.parseHeader(n)
   this.contents = this.createDatGages(n, fileType)
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // READING RECORDS
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -88,13 +70,13 @@ getHeader(): Array<string> {
 }
 
 /**
- * When a file contents string is passed to the swmmDat, it creates an 
- * IDatRecord array containing each line of data from a representative .dat file.
+ * When a file contents string is passed to the swmmDat, it creates a 
+ * Map containing each line of data from a representative .dat file.
  * 
- * @param {string} fileContents The contents of a .dat file.
+ * @param {string} fileContents The string contents of a .dat file.
  * @param {string} fileType Either "RG" or "TS", the format of the .dat file.
- * @returns {IDatGages} The contents of a .dat file in an object with keys of gage names,
- * which are in turn objects with keys of unix times, and values of rainfall.
+ * @returns {Map<string, Map<number, number>>} The contents of a .dat file in a Map with keys of gage names,
+ * which are in turn Maps with keys of unix times, and values of rainfall.
  */
 createDatGages(fileContents:string, fileType:string): Map<string, Map<number, number>> {
   let outMap: Map<string, Map<number, number>> = new Map<string, Map<number, number>>()
@@ -137,15 +119,22 @@ createDatGages(fileContents:string, fileType:string): Map<string, Map<number, nu
 }
 
 /**
+ * Finds storms in a set of records for a gage in a SwmmDat object.
+ * Use this to get an array of start and end times for storms. Storms will be added
+ * to the array if they have a minimum total rainfall as stated in MSV, and
+ * seprarated by an inter-event period as stated in IEP.
  * 
- * @param {Max<number, number>} dataMap An instance of IDatRecords, the data for a gage in a .dat file.
+ * To use:
+ * 
+ * 
+ * @param {Max<number, number>} dataMap The data for a gage in a .dat file.
  * @param {number} IEP The inter-event period, maximum time between MSV sums. A unix time in milliseconds.
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<{begin: number, end:number}> {
+static findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<{begin: number, end:number}> {
   let mergedStorms: any = []
-  // Get all of the substorms in this gage.
+  // Get all of the substorms in this gage. Remember findSubStorms is end-inclusive.
   let storms = SwmmDat.findSubStorms(dataMap, IEP, MSV)
     .sort((a:any, b:any) => a.start - b.start)
 
@@ -171,13 +160,18 @@ findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<{begin: 
 }
 
 /**
+ * Gets a group of storms in a human-readable format. This function should probably be
+ * deprecated, but I like how simple it is to use for quick analyses.
  * 
- * @param {Map<number, number>} dataMap  An instance of IDatRecords, the data for a gage in a .dat file.
+ * How to use this: To call this function using unix timestamps, you can use the following format:
+ *   SwmmDat.maxEvent(.get('127069'), (new Date(Date.UTC(1970, 10, 20, 0, 0, 0))).getTime(), (new Date(Date.UTC(1970, 10, 21, 0, 0, 0))).getTime(), 3600000*24)
+ * 
+ * @param {Map<number, number>} dataMap  The data for a gage in a .dat file.
  * @param {number} IEP The inter-event period, maximum time between MSV sums. A unix time in milliseconds.
  * @param {number} MSV The minimum storm volume, the minimum amount of rainfall during an IEP to classify the event as a storm.
  * @returns {Array} Returns an array of storms: { start: DateTime, end: DateTime }
  */
-findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<{begin:number, end:number}> {
+static findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<{begin:number, end:number}> {
   let mergedStorms: any = []
   let storms = SwmmDat.findSubStorms(dataMap, IEP, MSV).sort((a:any, b:any) => a.start - b.start)
 
@@ -211,8 +205,15 @@ findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):Array<{b
  * Find the rainfall elements that classify as a storm due to having a volume that
  * meets or exceeds the MSV and has a length of IEP.
  * The results will exclude values that are exactly
- * Event Time + IEP, because Events are not considered instantaneous.
- * @param {Map<number, number>} dataMap An instance of IDatRecords, the data for a gage in a .dat file.
+ * Event Time + IEP, because Events are not considered instantaneous - BUT!!
+ * the results of findSubStorms are end-inclusive, because .dat files do not have 
+ * fixed time intervals and if you've picked up an event, it is likely you've already
+ * hit an end-exclusive function before this. You can avoid worrying about this by
+ * creating your dat file in predictably-timed intervals (i.e.: if you want 15-minute 
+ * timeseries, you don't need to explicitly state every 15-minute period, but do not
+ * mix times like 10:17 and 8:05. Also, be sure to call these functions based
+ * upon those expected intervals.
+ * @param {Map<number, number>} dataMap The data for a gage in a .dat file.
  * @param {number} IEP Inter-event period, minimum time between classified storms
  * @param {number} MSV Minimum storm volume, the least amount of rain that can classify a storm
  * @returns 
@@ -251,7 +252,6 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
   return outArray
 }
 
-
 ////////////////////////////////////////////////////////////
 // Descriptive stats
 ////////////////////////////////////////////////////////////
@@ -261,7 +261,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
  * This is used to create yearly rainfall totals, monthly
  * statistics, or provide general error checking prior to 
  * utilizing swmmWasm and swmmLink for AI operations.
- * @param {IDatRecords} dataArray An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {dataMap} dataArray The data for a gage in a .dat file.
  * @param {number} startTime The start time (UNIX epoch) of the records to check.
  * This can be prior to or after the events within dataArray.
  * @param {number} endTime The end time (UNIX epoch) of the records to check.
@@ -303,7 +303,6 @@ static sumEvents(dataMap:Map<number, number>, startTime:number, endTime:number, 
   let theLength = theKeys.length
   let pStart = startTime
   let dStart = new Date(pStart)
-  let gStart = dStart
   let dEnd   = periodFunc(dStart)
   let pEnd   = dEnd.getTime()
   let i = 0
@@ -370,18 +369,55 @@ static sumEvents(dataMap:Map<number, number>, startTime:number, endTime:number, 
 
 /**
  * Find the sum of rainfall between two points in time,
- * Inclusive of the start date and exclusive of the end date.
- * This can be used to sum yearly, monthly, daily, or 
- * storm-specific rainfall.
+ * Inclusive of the start date and inclusive of the end date.
+ * This can be used to sum storm-specific rainfall. For exclusive
+ * end events, use periodVol, because storms are often identified
+ * by their final rainfall event.
  * 
- * @param {IDatRecords} dataArray  An instance of IDatRecords, the data for a gage in a .dat file.
+ * @param {Map<number, number>} dataMap  The data for a gage in a .dat file.
  * @param {number} startDate The start date to measure from.
  * @param {number} endDate The end date to measure to.
  * @returns {number} 
  */
 static stormVol(dataMap:Map<number, number>, startDate:number, endDate:number):number {
-  // Get all of the records that occur between startDate and endDate, inclusive
-  // for every entry 
+  // Get all of the records that occur between startDate and endDate.
+  // Because storms are often identified by their final rainfall
+  // event, the end date for this function is inclusive.
+  // For every entry 
+  let theKeys = Array.from(dataMap.keys())
+  let theLength = theKeys.length
+  // For every key, 
+  let outVol: number = 0
+  for (let i = 0; i < theLength; i++){
+    let key:number = theKeys[i]
+    // check to see if the key exists between the
+    // times given. 
+    if(key >= startDate && key <= endDate){
+      // Sum all the rainfall in the qualifying times.
+      outVol = outVol + dataMap.get(key)!
+    }
+  }
+
+  return outVol
+}
+
+/**
+ * Find the sum of rainfall between two points in time,
+ * Inclusive of the start date and exclusive of the end date.
+ * This can be used to sum yearly, monthly, daily, or other rainfall.
+ * For inclusive periods, use stormVol, because storms are usually denoted
+ * by their final rain event.
+ * 
+ * @param {Map<number, number>} dataMap  The data for a gage in a .dat file.
+ * @param {number} startDate The start date to measure from.
+ * @param {number} endDate The end date to measure to.
+ * @returns {number} 
+ */
+static periodVol(dataMap:Map<number, number>, startDate:number, endDate:number):number {
+  // Get all of the records that occur between startDate and endDate.
+  // Because storms are often identified by their final rainfall
+  // event, the end date for this function is inclusive.
+  // For every entry 
   let theKeys = Array.from(dataMap.keys())
   let theLength = theKeys.length
   // For every key, 
@@ -400,39 +436,99 @@ static stormVol(dataMap:Map<number, number>, startDate:number, endDate:number):n
 }
 
 /**
- * Find the maximum volume and start time of an n-period 
- * rainfall between two points in time, inclusive of the start date and exclusive of the end date.
+ * Find the maximum volume and start time, and end time of an n-period 
+ * rainfall between two points in time, inclusive of the 
+ * start date and inclusive of the end date, due to the fact
+ * that storms are often identified by their first and last
+ * recorded rainfall event. Output of this function will be inclusive of the
+ * start time and exclusive of the end time, because rainfall is not instantaneous.
  * This can be used to find the maximum 1-hr, 2-hr, 24-hr, 48-hr
  * rainfall in a storm or in a year/month. 
  * 
- * @param {IDatRecords} records  An instance of IDatRecords, the data for a gage in a .dat file.
- * @param {number} startDate The start date to measure from.
- * @param {number} endDate The end date to measure to.
+ * @param {Map<number, number>} records  The data for a gage in a .dat file.
+ * @param {number} startDate The start date to measure from (unix timestamp, UTC time).
+ * @param {number} endDate The end date to measure to (unix timestamp, UTC time).
  * @param {number} nPeriod number of milliseconds that define the period: 1 hour is 3600000 milliseconds.
- * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event.
+ * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event. Unlike most rainfall data, this is inclusive 
  */
 static maxEvent(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
-  // Get a trimmed set of records
-  let trimRecords = SwmmDat.trimIDatRecords(records, startDate, endDate)
+  // Get a set of records trimmed to the startDate and endDate expanded by nPeriod.
+  // If there is rainfall beyond the start or end of the storm that you wish to 
+  // include, this function will look for that rainfall and attempt to 
+  // include it. If you want something that will cause people to argue with your results, 
+  // you can use maxEventStrict, which will only include events that occur within the
+  // storm definitions (startDate and endDate). This function has its own pitfalls, and 
+  // can cause people to argue with your results by, for example, creating
+  // max event results that are greater than the sum volume of the storm. Either way, 
+  // arguers gonna argue and this is the safest chartable as long as you demarcate your storm extents
+  // and explain why a 72-hour max event on a 3-hour storm shows larger volumes than the actual storm.
+  // 
+  let trimRecords = SwmmDat.trimIDatRecords(records, startDate-nPeriod, endDate+nPeriod)
 
-  // Call findSubStorms on the trimmed records
+  // Call findSubStorms on the trimmed records. Remember findSubStorms is end-inclusive.
   let events = SwmmDat.findSubStorms(trimRecords, nPeriod, 0)
   
-  // Find the largest, first events.vol value and return the start, end, and vol of that object.
-  const max = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
+  // Make sure there are results.
+  if(!events.length){
+    throw new Error("No events for period " + new Date(startDate).toUTCString() + " to " + new Date(endDate).toUTCString())
+  }
+  
+  // Find the largest, first events.vol value and get the start, end, and vol of that object.
+  let maxEvent = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
+  // Update maxEvent.end to be maxEvent.start + nPeriod:
+  maxEvent.end = maxEvent.start + nPeriod
 
-  return max
+  return maxEvent
 }
 
 /**
- * Get a set of IDatRecords that are between two dates, inclusive of the start date and exclusive of the end date.
- * Use this function inside of maxEvent to trim down a
- * passed set of IDatRecords
+ * Find the maximum volume and start time, and end time of an n-period 
+ * rainfall between two points in time, inclusive of the 
+ * start date and inclusive of the end date, due to the fact
+ * that storms are often identified by their first and last
+ * recorded rainfall event. Output of this function will be inclusive of the
+ * start time and exclusive of the end time, because rainfall is not instantaneous.
+ * This can be used to find the maximum 1-hr, 2-hr, 24-hr, 48-hr
+ * rainfall in a storm or in a year/month. The results of this function
+ * can be confusing when charted, as most people will see rainfall within
+ * the bounds of the results of this function that will not be included in
+ * the sum. 
+ * For cases when detailing results to people that cannot make this
+ * distinciton, use maxEvent and NOT maxEventStrict.
  * 
- * @param {IDatRecords} records usually the full set of IDatRecords from a gage
+ * @param {Map<number, number>} records  The data for a gage in a .dat file.
+ * @param {number} startDate The start date to measure from (unix timestamp, UTC time).
+ * @param {number} endDate The end date to measure to (unix timestamp, UTC time).
+ * @param {number} nPeriod number of milliseconds that define the period: 1 hour is 3600000 milliseconds.
+ * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event. Unlike most rainfall data, this is inclusive 
+ */
+static maxEventStrict(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
+  // Get a set of records trimmed to the start and end date of the storm.
+  // 
+  let trimRecords = SwmmDat.trimIDatRecords(records, startDate-nPeriod, endDate+nPeriod)
+
+  // Call findSubStorms on the trimmed records. Remember findSubStorms is end-inclusive.
+  let events = SwmmDat.findSubStorms(trimRecords, nPeriod, 0)
+  
+  // Find the largest, first events.vol value and get the start, end, and vol of that object.
+  let maxEvent = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
+
+  // Update maxEvent.end to be maxEvent.start + nPeriod:
+  maxEvent.end = maxEvent.start + nPeriod
+
+  return maxEvent
+}
+
+/**
+ * Get a Map of rainfall events keyed by dates, trimmed to the value
+ * between two dates, inclusive of the start date and exclusive of the end date.
+ * Use this function inside of maxEvent to trim down a
+ * passed set of Map<number, number> records.
+ * 
+ * @param {Map<number, number>} records usually the full Map of unix time keyed rainfall from a gage
  * @param {number} startDate start time, inclusive, in milliseconds
  * @param {number} endDate end time, exclusive, in milliseconds
- * @returns {IDatRecords} trimmed set of IDatRecords
+ * @returns {Map<number, number>} trimmed set of unix time keyed rainfall
  */
 static trimIDatRecords(records: Map<number, number>, startDate:number, endDate:number):Map<number, number>{
   let newDat:Map<number, number> = new Map()
