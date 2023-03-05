@@ -231,18 +231,22 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
       let rainSum = 0
       let thisTime = substormStart
       let n = i
+      let end = theKeys[i]
       for(; 
         n < theKeys.length && 
         theKeys[n] - thisTime < IEP; 
         n++){
-          rainSum = rainSum + dataMap.get(theKeys[n])!
+          if(dataMap.get(theKeys[n])! > 0){
+            rainSum = rainSum + dataMap.get(theKeys[n])!
+            end = theKeys[n]
+          }
       }
 
       // If rainSum > MSV, push the start and end into outArray
       if(rainSum >= MSV){
         outArray.push({
           start: theKeys[i], 
-          end:   theKeys[n-1],
+          end:   end,
           vol:   rainSum
         })
       }
@@ -445,13 +449,15 @@ static periodVol(dataMap:Map<number, number>, startDate:number, endDate:number):
  * This can be used to find the maximum 1-hr, 2-hr, 24-hr, 48-hr
  * rainfall in a storm or in a year/month. 
  * 
+ * Example uses: 
+ * 
  * @param {Map<number, number>} records  The data for a gage in a .dat file.
  * @param {number} startDate The start date to measure from (unix timestamp, UTC time).
  * @param {number} endDate The end date to measure to (unix timestamp, UTC time).
  * @param {number} nPeriod number of milliseconds that define the period: 1 hour is 3600000 milliseconds.
- * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event. Unlike most rainfall data, this is inclusive 
+ * @returns {Array<{number, number, number}>} Array of objects of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event. Unlike most rainfall data, this is inclusive 
  */
-static maxEvent(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
+static maxEvent(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):Array<{start:number, end:number, vol:number}> {
   // Get a set of records trimmed to the startDate and endDate expanded by nPeriod.
   // If there is rainfall beyond the start or end of the storm that you wish to 
   // include, this function will look for that rainfall and attempt to 
@@ -468,17 +474,18 @@ static maxEvent(records:Map<number, number>, startDate:number, endDate:number, n
   // Call findSubStorms on the trimmed records. Remember findSubStorms is end-inclusive.
   let events = SwmmDat.findSubStorms(trimRecords, nPeriod, 0)
   
-  // Make sure there are results.
-  if(!events.length){
-    throw new Error("No events for period " + new Date(startDate).toUTCString() + " to " + new Date(endDate).toUTCString())
-  }
+  // If there are any events, find the maximums
+  if(events.length > 0){
+    // Find the largest events.vol value.
+    const maxEvent = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
   
-  // Find the largest, first events.vol value and get the start, end, and vol of that object.
-  let maxEvent = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
-  // Update maxEvent.end to be maxEvent.start + nPeriod:
-  maxEvent.end = maxEvent.start + nPeriod
+    // Get all of the events that share that same events.vol value as maxEvent.
+    events = events.filter(a => a.vol == maxEvent.vol)
+      // Update maxEvents.end to be maxEvents.start + nPeriod:
+      .map(a => {return {start:a.start, end: a.start + nPeriod, vol: a.vol}});
+  }
 
-  return maxEvent
+  return events
 }
 
 /**
@@ -494,7 +501,7 @@ static maxEvent(records:Map<number, number>, startDate:number, endDate:number, n
  * the bounds of the results of this function that will not be included in
  * the sum. 
  * For cases when detailing results to people that cannot make this
- * distinciton, use maxEvent and NOT maxEventStrict.
+ * distinction, use maxEvent and NOT maxEventStrict.
  * 
  * @param {Map<number, number>} records  The data for a gage in a .dat file.
  * @param {number} startDate The start date to measure from (unix timestamp, UTC time).
@@ -502,21 +509,25 @@ static maxEvent(records:Map<number, number>, startDate:number, endDate:number, n
  * @param {number} nPeriod number of milliseconds that define the period: 1 hour is 3600000 milliseconds.
  * @returns {{number, number, number}} Object of the format {start: number, end:number, vol: number}, start and end time of max event and volume of max event. Unlike most rainfall data, this is inclusive 
  */
-static maxEventStrict(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):{start:number, end:number, vol:number} {
+static maxEventStrict(records:Map<number, number>, startDate:number, endDate:number, nPeriod:number):Array<{start:number, end:number, vol:number}> {
   // Get a set of records trimmed to the start and end date of the storm.
-  // 
-  let trimRecords = SwmmDat.trimIDatRecords(records, startDate-nPeriod, endDate+nPeriod)
+  let trimRecords = SwmmDat.trimIDatRecords(records, startDate, endDate)
 
   // Call findSubStorms on the trimmed records. Remember findSubStorms is end-inclusive.
   let events = SwmmDat.findSubStorms(trimRecords, nPeriod, 0)
   
-  // Find the largest, first events.vol value and get the start, end, and vol of that object.
-  let maxEvent = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
+  // If there are any events, find the maximums
+  if(events.length > 0){
+    // Find the largest events.vol value.
+    const maxEvent = events.reduce((p, c)=>(p.vol >= c.vol)?p:c)
+  
+    // Get all of the events that share that same events.vol value as maxEvent.
+    events = events.filter(a => a.vol == maxEvent.vol)
+      // Update maxEvents.end to be maxEvents.start + nPeriod:
+      .map(a => {return {start:a.start, end: a.start + nPeriod, vol: a.vol}});
+  }
 
-  // Update maxEvent.end to be maxEvent.start + nPeriod:
-  maxEvent.end = maxEvent.start + nPeriod
-
-  return maxEvent
+  return events
 }
 
 /**
@@ -646,7 +657,7 @@ subGage(gage:string){
 }*/
 
 /**
- * Creates a copy of the current swmmDat object, trimmed down to a specific date range.
+ * Creates a copy of the current swmmDat object, trimmed down to a specific date range inclusive of start AND end times.
  * This is used to reduce file sizes and focus on specific storms.
  * @param {number} startTime a unix time, milliseconds since Jan 1st, 1970
  * @param {number} endTime a unix time, milliseconds since Jan 1st, 1970
