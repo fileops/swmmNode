@@ -83,6 +83,7 @@ createDatGages(fileContents:string, fileType:string): Map<string, Map<number, nu
   let processedString: Array<string> = []
   let id: string = ""
   let index: number = 0
+  let vals:Array<string> = []
   try{
     // Get all of the lines that do not start with ';'
     processedString = this.prepContents(fileContents)
@@ -90,12 +91,12 @@ createDatGages(fileContents:string, fileType:string): Map<string, Map<number, nu
 
     // Split every line on space characters, 
     processedString.map(v=>{
-      let vals = v.trim().split(/\s+/)
+      vals = v.trim().split(/\s+/)
 
       // If this is a TimeSeries .dat file, use TS as id and set index = 0
       if(fileType==='TS') {id ="TS"; index = 0}
       // If this is a Raingage .dat file, use the RG id and set index = 1
-      else {id = vals[0]; index = 1}
+      else {id = '' + vals[0]; index = 1}
 
       let date = Date.UTC(
         parseInt(vals[index    ]),     // Year
@@ -106,13 +107,23 @@ createDatGages(fileContents:string, fileType:string): Map<string, Map<number, nu
       
       let rain = parseFloat(vals[index + 5])
 
+      // Make sure we have valid data:
+      if(typeof date !== 'number' || typeof rain !== 'number' || Number.isNaN(date) || Number.isNaN(rain)){
+        throw new Error("Could not parse .dat file: bad number format")
+      }
+
       // If there is no current map for this gage, create a new one.
       if(!outMap.get(id)) outMap.set(id, new Map<number, number>())
       // Set the rainfall for this date on this gage.
       outMap.get(id)?.set(date, rain)
     })
   } catch {
-    throw new Error("Could not parse .dat file")
+    throw new Error("Could not parse .dat file, line is:\n" + vals.join(' '))
+  }
+
+  // Make sure we have a valid outMap.
+  if(!(outMap instanceof Map) || outMap === undefined){
+    throw new Error("Could not parse .dat file: bad file mapping")
   }
 
   return outMap
