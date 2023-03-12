@@ -1567,10 +1567,11 @@ static doubleDateToString_swmmFormat(theDouble:number): string{
 */
 swmmStepToDate(timeStep:number): string{
 
-  let theDouble = this.startTime_Unix()/1000 + timeStep * 3600
+  let theDouble = this.startTime_Unix()/1000 + timeStep * this.timeStep()
 
   let clock = new Date(0)
-  clock.setSeconds(theDouble + clock.getTimezoneOffset()/3600)
+  //clock.setSeconds(theDouble + clock.getTimezoneOffset()/3600)
+  clock.setUTCSeconds(theDouble)
 
   let clockStr = 
     (clock.getUTCMonth()+1).toString().padStart(2, '0') + '/' +
