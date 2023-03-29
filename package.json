@@ -1,6 +1,6 @@
 {
   "name": "@fileops/swmm-node",
-  "version": "0.0.22",
+  "version": "0.0.31",
   "description": "TypeScript package for performing data operations on EPA-SWMM and swmmReact files.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -49,6 +49,7 @@
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
+    "@types/geojson": "^7946.0.10",
     "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
