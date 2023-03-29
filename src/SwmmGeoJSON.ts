@@ -83,8 +83,8 @@ export class SwmmGeoJSON {
     };
 
     // Add each polygon to the features array in the geoJ object.
-    for(let entry in model['Polygons']){
-      const rec = model['Polygons'][entry];
+    for(let entry in model['POLYGONS']){
+      const rec = model['POLYGONS'][entry];
       const polyObj: GeoJSON.Feature<GeoJSON.Polygon> = {
         type: "Feature",
         geometry: {
