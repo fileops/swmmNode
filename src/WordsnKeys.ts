@@ -111,7 +111,7 @@ export const outputDataUnitsWords = {
   SUBCATCH: [
     { US: ()=>'in/hr', SI: ()=>'mm/hr' },
     { US: ()=>'inches', SI: ()=>'mm' },
-    { US: ()=>'in/hr', SI: ()=>'mm/hr' },
+    { US: ()=>'in/day', SI: ()=>'mm/day' },
     { US: ()=>'in/hr', SI: ()=>'mm/hr' },
     { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
     { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
@@ -131,8 +131,9 @@ export const outputDataUnitsWords = {
     { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
     { US: ()=>'feet', SI: ()=>'meters' },
     { US: ()=>'ft/s', SI: ()=>'m/s' },
+    { US: ()=>'ft^3', SI: ()=>'m^3' },
     { US: ()=>'unitless', SI: ()=>'unitless' },
-    { US: ()=>'unitless', SI: ()=>'unitless' },
+    { US: (d:number)=>{return QualUnitsWords[d]}, SI: (d:number)=>{return QualUnitsWords[d]} }
   ],
   SYS: [
     { US: ()=>'F', SI: ()=>'C' },
