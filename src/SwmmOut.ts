@@ -610,6 +610,14 @@ static FLOW_UNIT_VALUES = [
 
 /**
 * @type {Array}
+* Description strings for unit system.
+*/
+static UNIT_SYSTEM = [
+  "US", "SI"
+]
+
+/**
+* @type {Array}
 * Description strings for subcatchment types.
 */
 static SUBCATCHMENT_TYPE_CODES = [
@@ -637,7 +645,7 @@ static LINK_TYPE_CODES = [
 * Description strings structure for subcatchment results.
 */
 static SUBCATCHENT_RESULTS = [
-  "Rainfall", "Snow Depth", "Evap", "Infiltration", "Runoff", "GW Flow", "GW Elev", "Soil Moisture", "Washoff"
+  "Rainfall", "Snow Depth", "Evap", "Infiltration", "Runoff", "GW Flow", "GW Elev", "Soil Moisture"//, "Washoff"
 ]
 
 /**
@@ -645,7 +653,7 @@ static SUBCATCHENT_RESULTS = [
 * Description strings structure for node results.
 */
 static NODE_RESULTS = [
-  "Depth", "Head", "Volume", "Lat. Flow", "Inflow", "Overflow", "Quality"
+  "Depth", "Head", "Volume", "Lat. Flow", "Inflow", "Overflow"//, "Quality"
 ]
 
 /**
@@ -653,7 +661,7 @@ static NODE_RESULTS = [
 * Description strings structure for link results.
 */
 static LINK_RESULTS = [
-  "Flow", "Depth", "Velocity", "Volume", "Capacity", "Quality"
+  "Flow", "Depth", "Velocity", "Volume", "Capacity"//, "Quality"
 ]
 
 /**
