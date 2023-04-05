@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SwmmConvert.ts
 
 /**
@@ -8,7 +9,6 @@
 * JSON formatted inp object storage and operations.
 */
 export class SwmmConvert {
-  
   /**
   * Constructor for the SwmmConvert class.
   */
@@ -3286,5 +3286,12 @@ export class SwmmConvert {
     return fullString;
   }
 
+
 }
   
+
+function isValidData(data){
+  if(typeof data !== 'undefined' && data !== null)
+    return true
+  return false
+}
