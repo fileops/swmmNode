@@ -617,7 +617,9 @@ export class SwmmConvert {
               swmmType: 'CUSTOM',
               Geom1: parseFloat(m[2]),
               Curve: m[3],
-              Barrels: m[4]?parseFloat(m[4]):1
+              Geom2: m[4], // not used, but necessary
+              Geom3: m[5], // not used, but necessary
+              Barrels: m[6]?parseFloat(m[6]):1 // not necessary, but used
             }
           }
           else if(m[1] == 'IRREGULAR'){
@@ -2198,6 +2200,8 @@ export class SwmmConvert {
               inpString += strsPad(rec.swmmType, 16)
               inpString += numsPad(rec.Geom1, 12)
               inpString += strsPad(rec.Curve, 48)
+              inpString += numsPad(rec.Geom2, 10)
+              inpString += numsPad(rec.Geom3, 10)
               inpString += numsPad(rec.Barrels, 10)
               break
             case ('IRREGULAR'):
