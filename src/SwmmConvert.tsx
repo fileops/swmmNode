@@ -1153,11 +1153,16 @@ export class SwmmConvert {
           else {
             for(var n = 1; n < m.length - 1 ; n=n+2){
               var thisTime = 0;
-              //If the date is in hh:mm format, translate it
+              //If the date is in hh:mm:ss format, translate it
               if(typeof m[n] == 'string'){
                 if(m[n].indexOf(':') > 0){
-                  thisTime = parseFloat(m[n].split(':')[0]) + 
-                            parseFloat(m[n].split(':')[1])/60.0
+                  let v = m[n].split(':')
+                  thisTime = parseFloat(v[0]) +
+                             (v.length>1?parseFloat(v[1])/60.0:0) +
+                             (v.length>2?parseFloat(v[2])/3600.0:0)
+                  /*parseFloat(m[n].split(':')[0]) + 
+                            parseFloat(m[n].split(':')[1])/60.0+ 
+                            parseFloat(m[n].split(':')[2])/3600.0*/
                 }else{
                   thisTime = parseFloat(m[n])
                 }
