@@ -416,8 +416,8 @@ export class SwmmConvert {
               Invert: parseFloat(m[1]), 
               Type: m[2].trim(), 
               Tseries: m[3].trim(),
-              Gated: m[3]?m[3]:'NO', 
-              RouteTo: m[4]?m[4]:''
+              Gated: m[4]?m[4]:'NO', 
+              RouteTo: m[5]?m[5]:''
             };
           }
         }
