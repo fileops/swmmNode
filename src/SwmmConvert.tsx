@@ -864,7 +864,11 @@ export class SwmmConvert {
         if(!model[section][m[0]]){
           model[section][m[0]] = []
         }
-        if (m && m.length)
+        if (m && m.length == 2)
+          model[section][m[0]].push({
+            Pollutant: m[1]
+        })
+        if (m && m.length > 2)
           model[section][m[0]].push({
             Pollutant: m[1].trim(), 
             Function: m[2].trim(),
@@ -1160,9 +1164,6 @@ export class SwmmConvert {
                   thisTime = parseFloat(v[0]) +
                              (v.length>1?parseFloat(v[1])/60.0:0) +
                              (v.length>2?parseFloat(v[2])/3600.0:0)
-                  /*parseFloat(m[n].split(':')[0]) + 
-                            parseFloat(m[n].split(':')[1])/60.0+ 
-                            parseFloat(m[n].split(':')[2])/3600.0*/
                 }else{
                   thisTime = parseFloat(m[n])
                 }
