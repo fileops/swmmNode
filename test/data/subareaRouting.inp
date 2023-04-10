@@ -1,0 +1,131 @@
+[TITLE]
+;;Project Title/Notes
+Illustration of the difference between OUTLET and PERVIOUS subarea routing options for a simple 1-acre subcatchment subject to 1-inch of rainfall.
+
+[OPTIONS]
+;;Option             Value
+FLOW_UNITS           CFS
+INFILTRATION         MODIFIED_GREEN_AMPT
+FLOW_ROUTING         DYNWAVE
+LINK_OFFSETS         DEPTH
+MIN_SLOPE            0
+ALLOW_PONDING        NO
+SKIP_STEADY_STATE    NO
+
+START_DATE           06/02/2018
+START_TIME           00:00:00
+REPORT_START_DATE    06/02/2018
+REPORT_START_TIME    00:00:00
+END_DATE             06/02/2018
+END_TIME             03:00:00
+SWEEP_START          1/1
+SWEEP_END            12/31
+DRY_DAYS             0
+REPORT_STEP          00:01:00
+WET_STEP             00:01:00
+DRY_STEP             01:00:00
+ROUTING_STEP         0:01:00 
+RULE_STEP            00:00:00
+
+INERTIAL_DAMPING     NONE
+NORMAL_FLOW_LIMITED  BOTH
+FORCE_MAIN_EQUATION  H-W
+VARIABLE_STEP        0.00
+LENGTHENING_STEP     0
+MIN_SURFAREA         12.6
+MAX_TRIALS           8
+HEAD_TOLERANCE       0.0015
+SYS_FLOW_TOL         5
+LAT_FLOW_TOL         5
+MINIMUM_STEP         0.5
+THREADS              1
+
+[EVAPORATION]
+;;Data Source    Parameters
+;;-------------- ----------------
+CONSTANT         0.0
+DRY_ONLY         NO
+
+[RAINGAGES]
+;;Name           Format    Interval SCF      Source    
+;;-------------- --------- ------ ------ ----------
+UniformRainfall  INTENSITY 1:00     1.0      TIMESERIES UniformRainfall 
+
+[SUBCATCHMENTS]
+;;Name           Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  SnowPack        
+;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- ----------------
+SubareaRouting   UniformRainfall  Outfall1         1        30       100      1        0                        
+DCIA             UniformRainfall  Outfall2         1        15       100      1        0                        
+IA               UniformRainfall  Outfall3         1        30       100      1        0                        
+
+[SUBAREAS]
+;;Subcatchment   N-Imperv   N-Perv     S-Imperv   S-Perv     PctZero    RouteTo    PctRouted 
+;;-------------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+SubareaRouting   0.02       0.2        0.2        0.4        15         PERVIOUS   50        
+DCIA             0.02       0.2        0.2        0.4        15         OUTLET    
+IA               0.02       0.2        0.2        0.4        15         OUTLET    
+
+[INFILTRATION]
+;;Subcatchment   Param1     Param2     Param3     Param4     Param5    
+;;-------------- ---------- ---------- ---------- ---------- ----------
+SubareaRouting   4          0.5        0.35       7          0         
+DCIA             4          0.5        0.35       7          0         
+IA               4          0.5        0.35       7          0         
+
+[OUTFALLS]
+;;Name           Elevation  Type       Stage Data       Gated    Route To        
+;;-------------- ---------- ---------- ---------------- -------- ----------------
+Outfall1         850        FREE                        NO                       
+Outfall2         850        FREE                        NO                       
+Outfall3         850        FREE                        NO                       
+
+[TIMESERIES]
+;;Name           Date       Time       Value     
+;;-------------- ---------- ---------- ----------
+UniformRainfall             0:00       1         
+UniformRainfall             1:00       0         
+
+[REPORT]
+;;Reporting Options
+INPUT      YES
+SUBCATCHMENTS ALL
+NODES ALL
+LINKS ALL
+
+[TAGS]
+
+[MAP]
+DIMENSIONS -4858.132 -254.325 14350.635 10415.802
+Units      None
+
+[COORDINATES]
+;;Node           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+Outfall1         2900.807           7335.640          
+Outfall2         7352.941           4509.804          
+Outfall3         11782.007          1649.366          
+
+[VERTICES]
+;;Link           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+
+[Polygons]
+;;Subcatchment   X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+SubareaRouting   -1239.908          5893.887          
+SubareaRouting   4619.377           8177.624          
+SubareaRouting   1839.677           9930.796          
+SubareaRouting   -3985.006          7647.059          
+DCIA             3200.692           3079.585          
+DCIA             9036.909           5363.322          
+DCIA             6314.879           7116.494          
+DCIA             455.594            4844.291          
+IA               7629.758           230.681           
+IA               13477.509          2468.281          
+IA               10720.877          4232.987          
+IA               4907.728           1960.784          
+
+[SYMBOLS]
+;;Gage           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+
