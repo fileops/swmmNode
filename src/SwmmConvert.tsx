@@ -523,8 +523,8 @@ export class SwmmConvert {
             Node2: array[2], 
             Length: parseFloat(array[3]),   
             Roughness: parseFloat(array[4]),
-            InOffset: parseFloat(array[5]), 
-            OutOffset: parseFloat(array[6]), 
+            InOffset: array[5], 
+            OutOffset: array[6], 
             InitFlow: array[7]?array[7]:'0', 
             MaxFlow: array[8]?array[8]:'', 
             Description: curDesc
@@ -553,7 +553,7 @@ export class SwmmConvert {
             Node1: m[1], 
             Node2: m[2], 
             Type: m[3].trim(), 
-            Offset: parseFloat(m[4]), 
+            Offset: m[4], 
             Cd: parseFloat(m[5]), 
             Gated: m[6]?m[6].trim():'NO',
             Orate: m[7]?parseFloat(m[7]):0,
@@ -568,7 +568,7 @@ export class SwmmConvert {
             Node1: m[1], 
             Node2: m[2], 
             Type: m[3].trim(), 
-            CrestHt: parseFloat(m[4]), 
+            CrestHt: m[4], 
             Cd: parseFloat(m[5]), 
             Gated: m[6]?m[6].trim():'NO',
             EC: m[7]?parseFloat(m[7]):0,
@@ -588,7 +588,7 @@ export class SwmmConvert {
             model[section][m[0]] = {
               Node1: m[1], 
               Node2: m[2], 
-              Offset: parseFloat(m[3]), 
+              Offset: m[3], 
               Type: m[4].trim(),
               Qcurve: m[5].trim(),
               Gated: m[6]?m[6]:'NO',
@@ -598,7 +598,7 @@ export class SwmmConvert {
             model[section][m[0]] = {
               Node1: m[1], 
               Node2: m[2], 
-              Offset: parseFloat(m[3]), 
+              Offset: m[3], 
               Type: m[4].trim(),
               C1: parseFloat(m[5]), 
               C2: parseFloat(m[6]),
@@ -675,7 +675,7 @@ export class SwmmConvert {
               Xright: parseFloat(m[4]),
               Lfactor: parseFloat(m[7]),
               Wfactor: parseFloat(m[8]),
-              Eoffset: parseFloat(m[9]),
+              Eoffset: m[9],
               Nleft: CORData.Nleft,
               Nright: CORData.Nright,
               Nchanl: CORData.Nchanl
@@ -2072,8 +2072,8 @@ export class SwmmConvert {
           inpString += numsPad(rec.Node2, 16)
           inpString += numsPad(rec.Length, 10)
           inpString += numsPad(rec.Roughness, 10)
-          inpString += numsPad(rec.InOffset, 10)
-          inpString += numsPad(rec.OutOffset, 10)
+          inpString += strsPad(rec.InOffset, 10)
+          inpString += strsPad(rec.OutOffset, 10)
           inpString += numsPad(rec.InitFlow, 10)
 
           if(isValidData(rec.MaxFlow))
@@ -2122,7 +2122,7 @@ export class SwmmConvert {
           inpString += strsPad(rec.Node1, 16)
           inpString += strsPad(rec.Node2, 16)
           inpString += strsPad(rec.Type, 16)
-          inpString += numsPad(rec.Offset, 10)
+          inpString += strsPad(rec.Offset, 10)
           inpString += numsPad(rec.Cd, 10)
           if(isValidData(rec.Gated))
             inpString += strsPad(rec.Gated, 10)
@@ -2147,7 +2147,7 @@ export class SwmmConvert {
           inpString += strsPad(rec.Node1, 16)
           inpString += strsPad(rec.Node2, 16)
           inpString += strsPad(rec.Type, 16)
-          inpString += numsPad(rec.CrestHt, 10)
+          inpString += strsPad(rec.CrestHt, 10)
           inpString += numsPad(rec.Cd, 10)
           if(isValidData(rec.Gated))
             inpString += strsPad(rec.Gated, 10)
@@ -2176,7 +2176,7 @@ export class SwmmConvert {
           inpString += strsPad(entry, 16)
           inpString += strsPad(rec.Node1, 16)
           inpString += strsPad(rec.Node2, 16)
-          inpString += numsPad(rec.Offset, 16)
+          inpString += strsPad(rec.Offset, 16)
           inpString += strsPad(rec.Type, 16)
           switch(rec.Type){
             case ('TABULAR/DEPTH'):
@@ -2258,7 +2258,7 @@ export class SwmmConvert {
           inpString += numsPad(0, 3)
           inpString += numsPad(rec.Lfactor, 10)
           inpString += numsPad(rec.Wfactor, 10)
-          inpString += numsPad(rec.Eoffset, 10)
+          inpString += strsPad(rec.Eoffset, 10)
           inpString += '\n'
 
           inpString += strsPad('GR', 4)
@@ -2976,7 +2976,7 @@ export class SwmmConvert {
             inpString += strsPad('DRAIN', 10)
             inpString += numsPad(rec.DRAIN.Coeff, 10)
             inpString += numsPad(rec.DRAIN.Expon, 10)
-            inpString += numsPad(rec.DRAIN.Offset, 10)
+            inpString += strsPad(rec.DRAIN.Offset, 10)
             inpString += numsPad(rec.DRAIN.Delay, 10)
             inpString += numsPad(rec.DRAIN.Open, 10)
             inpString += numsPad(rec.DRAIN.Close, 10)
