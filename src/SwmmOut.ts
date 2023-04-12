@@ -644,7 +644,7 @@ static LINK_TYPE_CODES = [
 * @type {Array}
 * Description strings structure for subcatchment results.
 */
-static SUBCATCHENT_RESULTS = [
+static SUBCATCHMENT_RESULTS = [
   "Rainfall", "Snow Depth", "Evap", "Infiltration", "Runoff", "GW Flow", "GW Elev", "Soil Moisture"//, "Washoff"
 ]
 
