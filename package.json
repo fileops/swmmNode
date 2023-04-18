@@ -1,6 +1,6 @@
 {
   "name": "@fileops/swmm-node",
-  "version": "0.0.53",
+  "version": "0.0.57",
   "description": "TypeScript package for performing data operations on EPA-SWMM and swmmReact files.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -67,7 +67,6 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
-    "babel-jest": "^29.5.0",
     "node": "^19.6.0",
     "react-scripts": "^5.0.1"
   }

@@ -94,7 +94,7 @@ createDatGages(fileContents:string, fileType:string): Map<string, Map<number, nu
       vals = v.trim().split(/\s+/)
 
       // If this is a TimeSeries .dat file, use TS as id and set index = 0
-      if(fileType==='TS') {id ="TS"; index = 0}
+      if(fileType==='TS' || vals.length === 6) {id ="TS"; index = 0}
       // If this is a Raingage .dat file, use the RG id and set index = 1
       else {id = '' + vals[0]; index = 1}
 

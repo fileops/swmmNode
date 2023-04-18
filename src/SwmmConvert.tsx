@@ -3150,7 +3150,7 @@ export class SwmmConvert {
         if(section == 'POLLUTANTS')
           thisStr += '[POLLUTANTS]\n;;Pollutant      Units  Cppt       Cgw        Crdii      Kdecay     SnowOnly   Co-Pollutant     Co-Frac    Cdwf       Cinit     \n'
         if(section == 'INFILTRATION')
-          thisStr += '[INFILTRATION]\n;;Subcatchment   MaxRate    MinRate    Decay      DryTime    MaxInfil   \n'
+          thisStr += '[INFILTRATION]\n;;Subcatchment   Param1     Param2     Param3     Param4     Param5       \n'
         if(section == 'SUBAREAS')
           thisStr += '[SUBAREAS]\n;;Subcatchment   N-Imperv   N-Perv     S-Imperv   S-Perv     PctZero    RouteTo    PctRouted \n'
         if(section == 'SUBCATCHMENTS')
