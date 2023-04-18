@@ -31,6 +31,6 @@ test('create a JSON object from an inp', () =>{
   expect(SwmmConvert.parseInput(file01)).toBeDefined()
 })
 
-test('test proper timesseries translation', () =>{
+test('test proper timeseries translation', () =>{
   expect(SwmmConvert.parseInput(subareaRouting).TIMESERIES).toBeDefined()
 })
