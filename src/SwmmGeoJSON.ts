@@ -35,13 +35,11 @@
  * }
  */
 
+import proj4 from "proj4"
 import {FeatureCollection, Feature, Point, LineString , Polygon } from 'geojson'
 
 /**
-* Class for storing and working with .dat file contents.
-* This class expects a text string, which will usually be extracted
-* from a .dat file, or translated from a TimeSeries object from
-* a .inp file, or translated from a JSON swmm object.
+* Class for storing and working with inp display objects.
 */
 export class SwmmGeoJSON {
   /**
@@ -257,5 +255,127 @@ export class SwmmGeoJSON {
   
     return features;
   }
+
+  /**
+   * Reproject spatial data into GeoJSON objects that can be projected on a global map.
+   * 
+   * @param {JSON} model an EPA-SWMM model in JSON format.
+   * @returns {JSON} object  
+   */
+  static spatialProjection(model: any): any {
+    if(model && ('OPTIONS' in model)){
+      let planarGeojson  = SwmmGeoJSON.geoJSON_model(model)
+      let selectedProjection = 'swmmNode_proj'
+      let selectedTransform  = 'swmmNode_t'
+      let projection = model.PCS[selectedProjection]
+      let transform  = model.TRANSFORM[selectedTransform]
+      // The source data is usually in ft/m.
+      // It needs to be translated to lat/lng
+      let source = '+proj='     + projection.proj  +
+                   ' +zone='    + projection.zone +
+                   ' +datum='   + projection.datum +
+                   ' +units='   + projection.units +
+                   ' +defs='    + projection.defs 
+      let dest = '+proj=longlat +datum=WGS84'
+
+      // Project the linestring and polygon coordinates using Proj4JS
+      let globalGeojson = JSON.parse(JSON.stringify(planarGeojson))
+      globalGeojson.features = globalGeojson.features
+        .filter((o:any)=>o.geometry.type === 'LineString' || o.geometry.type === 'Polygon')
+
+      let falseCenterX = 0
+      let falseCenterY = 0
+      if('MAP' in model && 'DIMENSIONS' in model.MAP){
+        falseCenterX = model.MAP.DIMENSIONS.x1 + (model.MAP.DIMENSIONS.x2 -  model.MAP.DIMENSIONS.x1)/2
+        falseCenterY = model.MAP.DIMENSIONS.y1 + (model.MAP.DIMENSIONS.y2 -  model.MAP.DIMENSIONS.y1)/2
+      }
+
+      globalGeojson.features.forEach(function(feature:any) {
+        let geometry = feature.geometry
+        // Allow for any map dimensions already set in the user file
+        switch (geometry.type) {
+          case 'LineString':
+            geometry.coordinates = geometry.coordinates.map(function(coord:any) {
+              // Perform rotations
+              let x1 = coord[0] - falseCenterX
+              let y1 = coord[1] - falseCenterY
+              // x' = x * cos(theta) - y * sin(theta)
+              coord[0] = x1 * Math.cos(transform.rotation) - y1 * Math.sin(transform.rotation)
+              // y' = x * sin(theta) + y * cos(theta)
+              coord[1] = x1 * Math.sin(transform.rotation) + y1 * Math.cos(transform.rotation)
+              
+              coord[0] *= transform.size
+              coord[1] *= transform.size
+              coord[0] += transform.x
+              coord[1] += transform.y
+              return proj4(source, dest, coord)
+            })
+            break
+          case 'Polygon':
+            geometry.coordinates = geometry.coordinates.map(function(ring:any) {
+              return ring.map(function(coord:any) {
+                // Perform rotations
+                let x1 = coord[0] - falseCenterX
+                let y1 = coord[1] - falseCenterY
+                // x' = x * cos(theta) - y * sin(theta)
+                coord[0] = x1 * Math.cos(transform.rotation) - y1 * Math.sin(transform.rotation)
+                // y' = x * sin(theta) + y * cos(theta)
+                coord[1] = x1 * Math.sin(transform.rotation) + y1 * Math.cos(transform.rotation)
+
+                coord[0] *= transform.size
+                coord[1] *= transform.size
+                coord[0] += transform.x
+                coord[1] += transform.y
+                return proj4(source, dest, coord)
+              })
+            })
+            break
+          case 'Point':
+            geometry.coordinates = geometry.coordinates.map(function(coord:any) {
+              // Perform rotations
+              let x1 = coord[0] - falseCenterX
+              let y1 = coord[1] - falseCenterY
+              // x' = x * cos(theta) - y * sin(theta)
+              coord[0] = x1 * Math.cos(transform.rotation) - y1 * Math.sin(transform.rotation)
+              // y' = x * sin(theta) + y * cos(theta)
+              coord[1] = x1 * Math.sin(transform.rotation) + y1 * Math.cos(transform.rotation)
+              
+              coord[0] *= transform.size
+              coord[1] *= transform.size
+              coord[0] += transform.x
+              coord[1] += transform.y
+              return proj4(source, dest, coord)
+            })
+            break
+        }
+      })
+        
+
+      /*let iconJSON = iconJSONTop2.map((x:any)=>({
+          name: x.properties.name,
+          layer: x.properties.layer,
+          coordinates: x.geometry.coordinates
+      }))
+
+      const geoJsonLayer = new GeoJsonLayer({
+        ...props,
+        data: globalGeojson
+      })
+
+      const iconLayer = new IconLayer({
+        ...propsIcons,
+        data: iconJSON
+      })
+  
+      overlay.setProps({
+        layers: [geoJsonLayer, iconLayer],
+        pickingRadius: 5,
+      })*/
+
+      return globalGeojson
+
+    }
+  }
+
   
   }

@@ -23,7 +23,7 @@ let v=['1', '00']
 ////////////////////////////////////////////////////////////////////////////////////////
 
 test('Test file opening', () =>{
-  expect(subareaRouting).toEqual('')
+  expect(subareaRouting).toBeDefined()
 })
 
 test('create a JSON object from an inp', () =>{

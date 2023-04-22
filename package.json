@@ -1,6 +1,6 @@
 {
   "name": "@fileops/swmm-node",
-  "version": "0.0.57",
+  "version": "0.0.59",
   "description": "TypeScript package for performing data operations on EPA-SWMM and swmmReact files.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -51,8 +51,10 @@
     "@commitlint/config-conventional": "^13.1.0",
     "@types/geojson": "^7946.0.10",
     "@types/jest": "^27.0.1",
+    "@types/proj4": "^2.5.2",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
+    "babel-jest": "^29.5.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -60,7 +62,6 @@
     "pinst": "^2.1.6",
     "prettier": "^2.4.0",
     "ts-jest": "^27.0.5",
-    "babel-jest": "^29.5.0",
     "ts-loader": "^9.2.5",
     "typescript": "^4.4.3",
     "webpack": "^5.52.1",
@@ -68,6 +69,7 @@
   },
   "dependencies": {
     "node": "^19.6.0",
+    "proj4": "^2.9.0",
     "react-scripts": "^5.0.1"
   }
 }
