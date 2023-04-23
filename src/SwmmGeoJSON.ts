@@ -284,8 +284,8 @@ export class SwmmGeoJSON {
       let falseCenterX = 0
       let falseCenterY = 0
       if('MAP' in model && 'DIMENSIONS' in model.MAP){
-        falseCenterX = model.MAP.DIMENSIONS.x1 + (model.MAP.DIMENSIONS.x2 -  model.MAP.DIMENSIONS.x1)/2
-        falseCenterY = model.MAP.DIMENSIONS.y1 + (model.MAP.DIMENSIONS.y2 -  model.MAP.DIMENSIONS.y1)/2
+        falseCenterX = model.MAP.DIMENSIONS.x1 //+ (model.MAP.DIMENSIONS.x2 -  model.MAP.DIMENSIONS.x1)/2
+        falseCenterY = model.MAP.DIMENSIONS.y1 //+ (model.MAP.DIMENSIONS.y2 -  model.MAP.DIMENSIONS.y1)/2
       }
 
       globalGeojson.features.forEach(function(feature:any) {
@@ -376,6 +376,54 @@ export class SwmmGeoJSON {
     
       let center = proj4(source, dest, [transform.x, transform.y])
       return center
+    }
+  }
+
+  /**
+   * Get the bounding box of a swmm model
+   * 
+   * @param {JSON} model an EPA-SWMM model in JSON format.
+   * @returns {JSON} object: {"bottomleft":{ "lat":number, "lng":number }, "topright":{ "lat":number, "lng":number } } 
+   */
+  static getBounds(model: any): any {
+    if(model && ('OPTIONS' in model)){
+      let selectedProjection = 'swmmNode_proj'
+      let selectedTransform  = 'swmmNode_t'
+      let projection = model.PCS[selectedProjection]
+      let transform  = model.TRANSFORM[selectedTransform]
+      // The source data is usually in ft/m.
+      // It needs to be translated to lat/lng
+      let source = '+proj='     + projection.proj  +
+                   ' +zone='    + projection.zone +
+                   ' +datum='   + projection.datum +
+                   ' +units='   + projection.units +
+                   ' +defs='    + projection.defs 
+      let dest = '+proj=longlat +datum=WGS84'
+      
+      let boundsArray = [[0, 0], [90, 90]]
+      if('MAP' in model && 'DIMENSIONS' in model.MAP){
+        boundsArray = [[model.MAP.DIMENSIONS.x1, model.MAP.DIMENSIONS.y1], [model.MAP.DIMENSIONS.x2, model.MAP.DIMENSIONS.y2]]
+
+        boundsArray.forEach(function(coord:any, index:number) {
+          coord[0] *= transform.size
+          coord[1] *= transform.size
+          coord[0] += transform.x
+          coord[1] += transform.y
+          boundsArray[index] = proj4(source, dest, coord)
+        })
+      }
+      
+      return {
+        "bottomleft": {
+          "lat": boundsArray[0][1],
+          "lng": boundsArray[0][0]
+        },
+        "topright": {
+          "lat": boundsArray[1][1],
+          "lng": boundsArray[1][0]
+        }
+      }
+      
     }
   }
 }

@@ -29,9 +29,9 @@ test('create a JSON object from an inp', () =>{
     expect(SwmmGeoJSON.geoJSON_model((global as any).inp02)).toBeDefined()
 })
 
-/*test('create a JSON object from an inp', () =>{
-    expect(SwmmGeoJSON.spatialProjection((global as any).inp02)).toEqual('')
-})*/
+test('getBounds from an inp', () =>{
+    expect(SwmmGeoJSON.getBounds((global as any).inp02)).toEqual('')
+})
 
 test('create a JSON object from an inp', () =>{
     expect(SwmmGeoJSON.spatialProjection((global as any).inp02)).toEqual({
