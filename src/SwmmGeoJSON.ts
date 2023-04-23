@@ -280,8 +280,6 @@ export class SwmmGeoJSON {
 
       // Project the linestring and polygon coordinates using Proj4JS
       let globalGeojson = JSON.parse(JSON.stringify(planarGeojson))
-      globalGeojson.features = globalGeojson.features
-        .filter((o:any)=>o.geometry.type === 'LineString' || o.geometry.type === 'Polygon')
 
       let falseCenterX = 0
       let falseCenterY = 0
@@ -331,51 +329,53 @@ export class SwmmGeoJSON {
             })
             break
           case 'Point':
-            geometry.coordinates = geometry.coordinates.map(function(coord:any) {
+            geometry.coordinates = (() => {
               // Perform rotations
-              let x1 = coord[0] - falseCenterX
-              let y1 = coord[1] - falseCenterY
+              let x1 = geometry.coordinates[0] - falseCenterX
+              let y1 = geometry.coordinates[1] - falseCenterY
               // x' = x * cos(theta) - y * sin(theta)
-              coord[0] = x1 * Math.cos(transform.rotation) - y1 * Math.sin(transform.rotation)
+              geometry.coordinates[0] = x1 * Math.cos(transform.rotation) - y1 * Math.sin(transform.rotation)
               // y' = x * sin(theta) + y * cos(theta)
-              coord[1] = x1 * Math.sin(transform.rotation) + y1 * Math.cos(transform.rotation)
+              geometry.coordinates[1] = x1 * Math.sin(transform.rotation) + y1 * Math.cos(transform.rotation)
               
-              coord[0] *= transform.size
-              coord[1] *= transform.size
-              coord[0] += transform.x
-              coord[1] += transform.y
-              return proj4(source, dest, coord)
-            })
+              geometry.coordinates[0] *= transform.size
+              geometry.coordinates[1] *= transform.size
+              geometry.coordinates[0] += transform.x
+              geometry.coordinates[1] += transform.y
+              return proj4(source, dest, geometry.coordinates)
+            })()
             break
         }
       })
-        
-
-      /*let iconJSON = iconJSONTop2.map((x:any)=>({
-          name: x.properties.name,
-          layer: x.properties.layer,
-          coordinates: x.geometry.coordinates
-      }))
-
-      const geoJsonLayer = new GeoJsonLayer({
-        ...props,
-        data: globalGeojson
-      })
-
-      const iconLayer = new IconLayer({
-        ...propsIcons,
-        data: iconJSON
-      })
-  
-      overlay.setProps({
-        layers: [geoJsonLayer, iconLayer],
-        pickingRadius: 5,
-      })*/
 
       return globalGeojson
 
     }
   }
 
-  
+  /**
+   * Get the globally positioned lat/long center point of a model.
+   * 
+   * @param {JSON} model an EPA-SWMM model in JSON format.
+   * @returns {JSON} object  
+   */
+  static getCenter(model: any): any {
+    if(model && ('OPTIONS' in model)){
+      let selectedProjection = 'swmmNode_proj'
+      let selectedTransform  = 'swmmNode_t'
+      let projection = model.PCS[selectedProjection]
+      let transform  = model.TRANSFORM[selectedTransform]
+      // The source data is usually in ft/m.
+      // It needs to be translated to lat/lng
+      let source = '+proj='    + projection.proj  +
+                  ' +zone='    + projection.zone  +
+                  ' +datum='   + projection.datum +
+                  ' +units='   + projection.units +
+                  ' +defs='    + projection.defs 
+      let dest = '+proj=longlat +datum=WGS84'
+    
+      let center = proj4(source, dest, [transform.x, transform.y])
+      return center
+    }
   }
+}

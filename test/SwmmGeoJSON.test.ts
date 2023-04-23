@@ -26,6 +26,162 @@ test('create a JSON object from an inp', () =>{
 })
 
 test('create a JSON object from an inp', () =>{
-    expect(SwmmGeoJSON.geoJSON_model((global as any).inp02)).toEqual({"features": [{"geometry": {"coordinates": [2900.807, 7335.64], "type": "Point"}, "properties": {"layer": "OUTFALLS", "name": "Outfall1"}, "type": "Feature"}, {"geometry": {"coordinates": [7352.941, 4509.804], "type": "Point"}, "properties": {"layer": "OUTFALLS", "name": "Outfall2"}, "type": "Feature"}, {"geometry": {"coordinates": [11782.007, 1649.366], "type": "Point"}, "properties": {"layer": "OUTFALLS", "name": "Outfall3"}, "type": "Feature"}, {"geometry": {"coordinates": [[[-1239.908, 5893.887], [4619.377, 8177.624], [1839.677, 9930.796], [-3985.006, 7647.059], [-1239.908, 5893.887]]], "type": "Polygon"}, "properties": {"layer": "SUBCATCHMENTS", "name": "SubareaRouting"}, "type": "Feature"}, {"geometry": {"coordinates": [[[3200.692, 3079.585], [9036.909, 5363.322], [6314.879, 7116.494], [455.594, 4844.291], [3200.692, 3079.585]]], "type": "Polygon"}, "properties": {"layer": "SUBCATCHMENTS", "name": "DCIA"}, "type": "Feature"}, {"geometry": {"coordinates": [[[7629.758, 230.681], [13477.509, 2468.281], [10720.877, 4232.987], [4907.728, 1960.784], [7629.758, 230.681]]], "type": "Polygon"}, "properties": {"layer": "SUBCATCHMENTS", "name": "IA"}, "type": "Feature"}], "type": "FeatureCollection"})
+    expect(SwmmGeoJSON.geoJSON_model((global as any).inp02)).toBeDefined()
+})
+
+/*test('create a JSON object from an inp', () =>{
+    expect(SwmmGeoJSON.spatialProjection((global as any).inp02)).toEqual('')
+})*/
+
+test('create a JSON object from an inp', () =>{
+    expect(SwmmGeoJSON.spatialProjection((global as any).inp02)).toEqual({
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        134.65928726631492,
+                        33.79934969702373
+                    ]
+                },
+                "properties": {
+                    "name": "Outfall1",
+                    "layer": "OUTFALLS"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        134.65962710256636,
+                        33.79945432539196
+                    ]
+                },
+                "properties": {
+                    "name": "Outfall2",
+                    "layer": "OUTFALLS"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        134.65996693965207,
+                        33.799558952827404
+                    ]
+                },
+                "properties": {
+                    "name": "Outfall3",
+                    "layer": "OUTFALLS"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                134.65909861579433,
+                                33.799379515059115
+                            ],
+                            [
+                                134.6594075577006,
+                                33.7994746322674
+                            ],
+                            [
+                                134.65892334096526,
+                                33.80057080213852
+                            ],
+                            [
+                                134.65861439567763,
+                                33.80047568371344
+                            ],
+                            [
+                                134.65909861579433,
+                                33.799379515059115
+                            ]
+                        ]
+                    ]
+                },
+                "properties": {
+                    "name": "SubareaRouting",
+                    "layer": "SUBCATCHMENTS"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                134.65943845192916,
+                                33.799484143945826
+                            ],
+                            [
+                                134.65974739459384,
+                                33.799579260306125
+                            ],
+                            [
+                                134.65926318157804,
+                                33.80067543151569
+                            ],
+                            [
+                                134.65895423553195,
+                                33.80058031393864
+                            ],
+                            [
+                                134.65943845192916,
+                                33.799484143945826
+                            ]
+                        ]
+                    ]
+                },
+                "properties": {
+                    "name": "DCIA",
+                    "layer": "SUBCATCHMENTS"
+                }
+            },
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                134.6597782888982,
+                                33.79958877189975
+                            ],
+                            [
+                                134.66008723232125,
+                                33.799683887412016
+                            ],
+                            [
+                                134.6596030230251,
+                                33.80078005996003
+                            ],
+                            [
+                                134.6592940762206,
+                                33.80068494323101
+                            ],
+                            [
+                                134.6597782888982,
+                                33.79958877189975
+                            ]
+                        ]
+                    ]
+                },
+                "properties": {
+                    "name": "IA",
+                    "layer": "SUBCATCHMENTS"
+                }
+            }
+        ]
+    })
 })
 
