@@ -402,7 +402,7 @@ export class SwmmGeoJSON {
       
       let boundsArray = [[0, 0], [90, 90]]
       if('MAP' in model && 'DIMENSIONS' in model.MAP){
-        boundsArray = [[model.MAP.DIMENSIONS.x1, model.MAP.DIMENSIONS.y1], [model.MAP.DIMENSIONS.x2, model.MAP.DIMENSIONS.y2]]
+        boundsArray = [[0, 0], [model.MAP.DIMENSIONS.x2 - model.MAP.DIMENSIONS.x1, model.MAP.DIMENSIONS.y2 - model.MAP.DIMENSIONS.y1]]
 
         boundsArray.forEach(function(coord:any, index:number) {
           coord[0] *= transform.size
