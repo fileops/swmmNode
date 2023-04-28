@@ -4,12 +4,16 @@ import util from 'util'
 import fs from 'fs'
 
 let test_Example1 = './test/data/Example1.out'
+let test_Example2 = './test/data/inflow conduit node conduit oufall.out'
 
 // Prior to running tests, open files and set objects.
 beforeAll(async () => {
   const readFile = util.promisify(fs.readFile)
   const file = await readFile(test_Example1);
   (global as any).example1 = new SwmmOut(file.buffer)
+  
+  const file2 = await readFile(test_Example2);
+  (global as any).example2 = new SwmmOut(file2.buffer)
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -449,22 +453,9 @@ test('sysOutput', () =>{
     .toBe(4.341998100280762)
 })
 
-/*
-test('linkOutput compare test 1', () =>{
-  expect((global as any).example1.
-  linkOutput(2, 0, 0))
-    .toBe(1.24)
+test('processOut', () =>{
+  expect((global as any).example2.
+  processOut(['US_Conduit', 'DS_Conduit'], 1, 1))
+    .toBe(4.341998100280762)
 })
 
-test('linkOutput out of bounds 1', () =>{
-  expect((global as any).example1.
-  linkOutput(36, 0, 0))
-    .toBe(5.061554431915283)
-})
-
-test('linkOutput out of bounds 2', () =>{
-  expect((global as any).example1.
-  linkOutput(36, 0, 1))
-    .toBe(5.061554431915283)
-})
-*/

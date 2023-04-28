@@ -1787,4 +1787,167 @@ intArrayToString(offset1:number, offset2:number) {
   return ret.join('');
 }
 
+/**
+ * Change the Computed Results section of a swmm .out file to an object that describes a set of objects
+ * and a specific output result type.
+ * @param {Array<string>} objNames array of object IDs (names) to provide results for.
+ * @param {outputType} int the flag type of the objects to be parsed.
+ * @param {outputPos} int the flag type of the output to be parsed.
+ * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
+ */
+processOut(objNames:Array<string>, objectType:number, outputPos:number){
+  let results = {}
+  objNames.forEach(ID=>{
+    let section = {}
+    if(objectType === 0){
+      section = this.subcatchmentResults(ID, outputPos, 0)
+    }
+    else if(objectType === 1){
+      section = this.linkResults(ID, outputPos, 0)
+    }
+    else if(objectType === 2){
+      section = this.nodeResults(ID, outputPos, 0)
+    }
+    results = {...results, ...section}
+  })
+  return results
+}
+
+/**
+ * Change the Computed Results section of a swmm .out file to an object that describes a set of objects
+ * and a specific output result type.
+ * @param {Array<string>} objNames array of object IDs (names) to provide results for.
+ * @param {outputType} int the flag type of the objects to be parsed.
+ * @param {outputPos} int the flag type of the output to be parsed.
+ * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
+ */
+CreateGeoJSONTimestep(objNames:Array<string>, objectType:number, resultType:number, geoJSONData:any, timeStep:number){
+  let objectTypeString = ['Polygon', 'LineString', 'Point']
+  const map:Map<string, number> = new Map<string, number>(geoJSONData.features.filter((obj:any)=>obj.geometry.type===objectTypeString[objectType]).map((obj:any, index:number) => [obj.properties.name, index]))
+  
+  objNames.forEach(ID=>{
+    if(objectType === 0){
+      let val = this.subcatchmentResults(ID, resultType, timeStep)
+      let idx:number = map.get(ID) ?? 0
+      geoJSONData.features.filter((obj:any)=>obj.geometry.type===objectTypeString[objectType])[idx].properties.displayvals = val
+    }
+    else if(objectType === 1){
+      let val = this.linkResults(ID, resultType, timeStep)
+      let idx:number = map.get(ID) ?? 0
+      geoJSONData.features.filter((obj:any)=>obj.geometry.type===objectTypeString[objectType])[idx].properties.displayvals = val
+    }
+    else if(objectType === 2){
+      let val = this.nodeResults(ID, resultType, timeStep)
+      let idx:number = map.get(ID) ?? 0
+      geoJSONData.features.filter((obj:any)=>obj.geometry.type===objectTypeString[objectType])[idx].properties.displayvals = val
+    }
+  })
+
+  return geoJSONData
+}
+
+/**
+ * Change the Node Computed Results section of a swmm .out file to an object.
+ * @param {string} objName object ID (name) to provide results for.
+ * @param {outputPos} int the flag type of the output to be parsed.
+ * @param {timeStep} int the positional timestep of the results. 0 for all time steps.
+ * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
+ */
+nodeResults(objName:string, outputPos:number, timeStep:number){
+  let section = 
+    this.timeOuput(objName,
+      this.nodeCount(), 
+      this.nodeName.bind(this),
+      this.nodeOutput.bind(this),
+      this.reportingPeriods(),
+      this.swmmStepToDate.bind(this),
+      outputPos,
+      timeStep)
+    
+  return section
+}
+
+/**
+ * Change the Link Computed Results section of a swmm .out file to an object.
+ * @param {string} objName object ID (name) to provide results for.
+ * @param {outputPos} int the flag type of the output to be parsed.
+ * @param {timeStep} int the positional timestep of the results. 0 for all time steps.
+ * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
+ */
+linkResults(objName:string, outputPos:number, timeStep:number){
+  let section = 
+  this.timeOuput(objName,
+    this.totalLinks, 
+    this.linkName.bind(this),
+    this.linkOutput.bind(this),
+    this.reportingPeriods(),
+    this.swmmStepToDate.bind(this),
+    outputPos,
+    timeStep)
+    
+  return section
+}
+
+/**
+ * Change the Subcatchment Computed Results section of a swmm .out file to an object.
+ * @param {string} objName object ID (name) to provide results for.
+ * @param {outputPos} int the flag type of the output to be parsed.
+ * @param {timeStep} int the positional timestep of the results. 0 for all time steps.
+ * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
+ */
+subcatchmentResults(objName:string, outputPos:number, timeStep:number){
+  let section = 
+    this.timeOuput(objName,
+      this.subcatchmentCount(), 
+      this.subcatchmentName.bind(this),
+      this.subcatchmentOutput.bind(this),
+      this.reportingPeriods(),
+      this.swmmStepToDate.bind(this), 
+      outputPos,
+      timeStep)
+  
+  return section
+}
+
+/**
+ * Create time-based subsection
+ * @param {iCount} number count of object names
+ * @param {nameFunc} function function to get an object name
+ * @param {func} function function that retrieves the object value
+ * @param {timePeriods} number count of time periods
+ * @param {timeFunc} function function that translates time periods
+ * @param {timeStep} int the positional timestep of the results. 0 for all time steps.
+ * @returns {JSON} an object representing a time-based subsection.
+ */
+timeOuput(objName:string, iCount:number, nameFunc:Function, func:Function, timePeriods:number, timeFunc:Function, outputPos:number, timeStep:number){
+  // Return values for CreateGeoJSONTimestep, specific results.
+  if(timeStep !== 0){
+    for(let i = 0; i < iCount; i++){
+      if(nameFunc(i) === objName){
+        return func(i, outputPos, timeStep)
+      }
+    }
+  }
+
+  // Return values for processOut
+  let obj = Object.create(null)
+  for(let i = 0; i < iCount; i++){
+    if(nameFunc(i) === objName){
+      // Add a property to the object
+      obj[nameFunc(i)]= new Array()
+  
+      for(let j = 1; j <= timePeriods; j++){
+        let dataArray = new Array()
+        dataArray.push(timeFunc(j))
+  
+        dataArray.push(func(i, outputPos, j))
+        // Push the values to the return array
+        obj[nameFunc(i)].push(dataArray)
+      }
+    }
+  }
+  
+  return obj
+}
+
 }
