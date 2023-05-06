@@ -23,6 +23,9 @@ totalNodes: number
 nodeOutputVars: number
 totalLinks: number
 linkOutputVars: number
+subcatchmentMap: Map<string, number>
+linkMap: Map<string, number>
+nodeMap: Map<string, number>
 // Because RECORD_SIZE is not variable and may need 
 // to be requested without initializing a SwmmOut object, it is static. 
 static RECORD_SIZE: number = 4
@@ -688,6 +691,9 @@ constructor(n: ArrayBuffer) {
   this.bytesPerPeriod = this.bytesPerPeriod_func()
   this.totalSubcatchments = this.subcatchmentCount()
   this.subcatchmentOutputVars = this.subcatchmentOutputCount()
+  this.subcatchmentMap = this.subcatchmentMapFunc()
+  this.linkMap = this.linkMapFunc()
+  this.nodeMap = this.nodeMapFunc()
   this.totalNodes = this.nodeCount()
   this.nodeOutputVars = this.nodeOutputCount()
   this.totalLinks = this.linkCount()
@@ -894,6 +900,36 @@ nodeName(objectIndex:number): string {
   }
 
   return objectName
+}
+
+subcatchmentMapFunc(): Map<string, number>{
+  let thisMap = new Map<string, number>()
+
+  for(let i = 0; i < this.subcatchmentCount(); i++){
+    thisMap.set(this.subcatchmentName(i), i)
+  }
+
+  return thisMap
+}
+
+linkMapFunc(): Map<string, number>{
+  let thisMap = new Map<string, number>()
+
+  for(let i = 0; i < this.linkCount(); i++){
+    thisMap.set(this.linkName(i), i)
+  }
+
+  return thisMap
+}
+
+nodeMapFunc(): Map<string, number>{
+  let thisMap = new Map<string, number>()
+
+  for(let i = 0; i < this.nodeCount(); i++){
+    thisMap.set(this.nodeName(i), i)
+  }
+
+  return thisMap
 }
 
 /**
@@ -1855,8 +1891,8 @@ CreateGeoJSONTimestep(objNames:Array<string>, objectType:number, resultType:numb
  */
 nodeResults(objName:string, outputPos:number, timeStep:number){
   let section = 
-    this.timeOuput(objName,
-      this.nodeCount(), 
+    this.timeOuput(objName, this.nodeMap.get(objName)||0,
+      this.totalNodes, 
       this.nodeName.bind(this),
       this.nodeOutput.bind(this),
       this.reportingPeriods(),
@@ -1876,7 +1912,7 @@ nodeResults(objName:string, outputPos:number, timeStep:number){
  */
 linkResults(objName:string, outputPos:number, timeStep:number){
   let section = 
-  this.timeOuput(objName,
+  this.timeOuput(objName, this.linkMap.get(objName)||0,
     this.totalLinks, 
     this.linkName.bind(this),
     this.linkOutput.bind(this),
@@ -1897,7 +1933,7 @@ linkResults(objName:string, outputPos:number, timeStep:number){
  */
 subcatchmentResults(objName:string, outputPos:number, timeStep:number){
   let section = 
-    this.timeOuput(objName,
+    this.timeOuput(objName, this.subcatchmentMap.get(objName)||0,
       this.subcatchmentCount(), 
       this.subcatchmentName.bind(this),
       this.subcatchmentOutput.bind(this),
@@ -1919,33 +1955,33 @@ subcatchmentResults(objName:string, outputPos:number, timeStep:number){
  * @param {timeStep} int the positional timestep of the results. 0 for all time steps.
  * @returns {JSON} an object representing a time-based subsection.
  */
-timeOuput(objName:string, iCount:number, nameFunc:Function, func:Function, timePeriods:number, timeFunc:Function, outputPos:number, timeStep:number){
+timeOuput(objName:string, objIndex:number, iCount:number, nameFunc:Function, func:Function, timePeriods:number, timeFunc:Function, outputPos:number, timeStep:number){
   // Return values for CreateGeoJSONTimestep, specific results.
   if(timeStep !== 0){
-    for(let i = 0; i < iCount; i++){
-      if(nameFunc(i) === objName){
-        return func(i, outputPos, timeStep)
-      }
-    }
+    //for(let i = 0; i < iCount; i++){
+      //if(nameFunc(i) === objName){
+        return func(objIndex, outputPos, timeStep)
+      //}
+    //}
   }
 
   // Return values for processOut
   let obj = Object.create(null)
-  for(let i = 0; i < iCount; i++){
-    if(nameFunc(i) === objName){
+  //for(let i = 0; i < iCount; i++){
+    //if(nameFunc(i) === objName){
       // Add a property to the object
-      obj[nameFunc(i)]= new Array()
+      obj[objName]= new Array()
   
       for(let j = 1; j <= timePeriods; j++){
         let dataArray = new Array()
         dataArray.push(timeFunc(j))
   
-        dataArray.push(func(i, outputPos, j))
+        dataArray.push(func(objIndex, outputPos, j))
         // Push the values to the return array
-        obj[nameFunc(i)].push(dataArray)
+        obj[objName].push(dataArray)
       }
-    }
-  }
+    //}
+  //}
   
   return obj
 }

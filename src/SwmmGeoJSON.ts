@@ -349,7 +349,6 @@ export class SwmmGeoJSON {
       })
 
       return globalGeojson
-
     }
   }
 

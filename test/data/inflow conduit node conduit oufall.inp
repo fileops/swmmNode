@@ -1,15 +1,9 @@
 [TITLE]
 ;;Project Title/Notes
 ;[PCS]
-;;Name           proj      zone                datum              units              defs   
-;;------------------------------------------------------------------------------------------------------------------
-swmmNode_proj    utm        29                 WGS84              ft                 no_defs    
-
-
+swmmNode_proj    utm        19                 WGS84              ft                 no_defs    
 ;[TRANSFORM]
-;;Name           x                    y                    size                 rotation  
-;;------------------------------------------------------------------------------------------------------------------
-swmmNode_t       1678000.6925357112   13781790.634758798   1                    0                 
+swmmNode_t       1663563.9226540488   4389967.627853039    1                    0                 
 
 [OPTIONS]
 ;;Option             Value
@@ -18,7 +12,7 @@ INFILTRATION         HORTON
 FLOW_ROUTING         DYNWAVE
 LINK_OFFSETS         DEPTH
 MIN_SLOPE            0
-ALLOW_PONDING        NO
+ALLOW_PONDING        YES
 SKIP_STEADY_STATE    NO
 
 START_DATE           04/26/2023
@@ -31,9 +25,9 @@ SWEEP_START          01/01
 SWEEP_END            12/31
 DRY_DAYS             0
 REPORT_STEP          00:15:00
-WET_STEP             00:05:00
+WET_STEP             00:00:01
 DRY_STEP             01:00:00
-ROUTING_STEP         0:01:00 
+ROUTING_STEP         0:00:01 
 RULE_STEP            00:00:00
 
 INERTIAL_DAMPING     FULL
@@ -55,11 +49,931 @@ THREADS              1
 CONSTANT         0.0
 DRY_ONLY         NO
 
+[RAINGAGES]
+;;Name           Format    Interval SCF      Source    
+;;-------------- --------- ------ ------ ----------
+1                INTENSITY 0.1     1.0      TIMESERIES rg1             
+
+[SUBCATCHMENTS]
+;;Name           Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  SnowPack        
+;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- ----------------
+0 1                Inflow_Junction  5        2        500      0.5      0 
+1 1                Inflow_Junction  5        2        500      0.5      0 
+2 1                Inflow_Junction  5        2        500      0.5      0 
+3 1                Inflow_Junction  5        2        500      0.5      0 
+4 1                Inflow_Junction  5        2        500      0.5      0 
+5 1                Inflow_Junction  5        2        500      0.5      0 
+6 1                Inflow_Junction  5        2        500      0.5      0 
+7 1                Inflow_Junction  5        2        500      0.5      0 
+8 1                Inflow_Junction  5        2        500      0.5      0 
+9 1                Inflow_Junction  5        2        500      0.5      0 
+10 1                Inflow_Junction  5        2        500      0.5      0 
+11 1                Inflow_Junction  5        2        500      0.5      0 
+12 1                Inflow_Junction  5        2        500      0.5      0 
+13 1                Inflow_Junction  5        2        500      0.5      0 
+14 1                Inflow_Junction  5        2        500      0.5      0 
+15 1                Inflow_Junction  5        2        500      0.5      0 
+16 1                Inflow_Junction  5        2        500      0.5      0 
+17 1                Inflow_Junction  5        2        500      0.5      0 
+18 1                Inflow_Junction  5        2        500      0.5      0 
+19 1                Inflow_Junction  5        2        500      0.5      0 
+20 1                Inflow_Junction  5        2        500      0.5      0 
+21 1                Inflow_Junction  5        2        500      0.5      0 
+22 1                Inflow_Junction  5        2        500      0.5      0 
+23 1                Inflow_Junction  5        2        500      0.5      0 
+24 1                Inflow_Junction  5        2        500      0.5      0 
+25 1                Inflow_Junction  5        2        500      0.5      0 
+26 1                Inflow_Junction  5        2        500      0.5      0 
+27 1                Inflow_Junction  5        2        500      0.5      0 
+28 1                Inflow_Junction  5        2        500      0.5      0 
+29 1                Inflow_Junction  5        2        500      0.5      0 
+30 1                Inflow_Junction  5        2        500      0.5      0 
+31 1                Inflow_Junction  5        2        500      0.5      0 
+32 1                Inflow_Junction  5        2        500      0.5      0 
+33 1                Inflow_Junction  5        2        500      0.5      0 
+34 1                Inflow_Junction  5        2        500      0.5      0 
+35 1                Inflow_Junction  5        2        500      0.5      0 
+36 1                Inflow_Junction  5        2        500      0.5      0 
+37 1                Inflow_Junction  5        2        500      0.5      0 
+38 1                Inflow_Junction  5        2        500      0.5      0 
+39 1                Inflow_Junction  5        2        500      0.5      0 
+40 1                Inflow_Junction  5        2        500      0.5      0 
+41 1                Inflow_Junction  5        2        500      0.5      0 
+42 1                Inflow_Junction  5        2        500      0.5      0 
+43 1                Inflow_Junction  5        2        500      0.5      0 
+44 1                Inflow_Junction  5        2        500      0.5      0 
+45 1                Inflow_Junction  5        2        500      0.5      0 
+46 1                Inflow_Junction  5        2        500      0.5      0 
+47 1                Inflow_Junction  5        2        500      0.5      0 
+48 1                Inflow_Junction  5        2        500      0.5      0 
+49 1                Inflow_Junction  5        2        500      0.5      0 
+50 1                Inflow_Junction  5        2        500      0.5      0 
+51 1                Inflow_Junction  5        2        500      0.5      0 
+52 1                Inflow_Junction  5        2        500      0.5      0 
+53 1                Inflow_Junction  5        2        500      0.5      0 
+54 1                Inflow_Junction  5        2        500      0.5      0 
+55 1                Inflow_Junction  5        2        500      0.5      0 
+56 1                Inflow_Junction  5        2        500      0.5      0 
+57 1                Inflow_Junction  5        2        500      0.5      0 
+58 1                Inflow_Junction  5        2        500      0.5      0 
+59 1                Inflow_Junction  5        2        500      0.5      0 
+60 1                Inflow_Junction  5        2        500      0.5      0 
+61 1                Inflow_Junction  5        2        500      0.5      0 
+62 1                Inflow_Junction  5        2        500      0.5      0 
+63 1                Inflow_Junction  5        2        500      0.5      0 
+64 1                Inflow_Junction  5        2        500      0.5      0 
+65 1                Inflow_Junction  5        2        500      0.5      0 
+66 1                Inflow_Junction  5        2        500      0.5      0 
+67 1                Inflow_Junction  5        2        500      0.5      0 
+68 1                Inflow_Junction  5        2        500      0.5      0 
+69 1                Inflow_Junction  5        2        500      0.5      0 
+70 1                Inflow_Junction  5        2        500      0.5      0 
+71 1                Inflow_Junction  5        2        500      0.5      0 
+72 1                Inflow_Junction  5        2        500      0.5      0 
+73 1                Inflow_Junction  5        2        500      0.5      0 
+74 1                Inflow_Junction  5        2        500      0.5      0 
+75 1                Inflow_Junction  5        2        500      0.5      0 
+76 1                Inflow_Junction  5        2        500      0.5      0 
+77 1                Inflow_Junction  5        2        500      0.5      0 
+78 1                Inflow_Junction  5        2        500      0.5      0 
+79 1                Inflow_Junction  5        2        500      0.5      0 
+80 1                Inflow_Junction  5        2        500      0.5      0 
+81 1                Inflow_Junction  5        2        500      0.5      0 
+82 1                Inflow_Junction  5        2        500      0.5      0 
+83 1                Inflow_Junction  5        2        500      0.5      0 
+84 1                Inflow_Junction  5        2        500      0.5      0 
+85 1                Inflow_Junction  5        2        500      0.5      0 
+86 1                Inflow_Junction  5        2        500      0.5      0 
+87 1                Inflow_Junction  5        2        500      0.5      0 
+88 1                Inflow_Junction  5        2        500      0.5      0 
+89 1                Inflow_Junction  5        2        500      0.5      0 
+90 1                Inflow_Junction  5        2        500      0.5      0 
+91 1                Inflow_Junction  5        2        500      0.5      0 
+92 1                Inflow_Junction  5        2        500      0.5      0 
+93 1                Inflow_Junction  5        2        500      0.5      0 
+94 1                Inflow_Junction  5        2        500      0.5      0 
+95 1                Inflow_Junction  5        2        500      0.5      0 
+96 1                Inflow_Junction  5        2        500      0.5      0 
+97 1                Inflow_Junction  5        2        500      0.5      0 
+98 1                Inflow_Junction  5        2        500      0.5      0 
+99 1                Inflow_Junction  5        2        500      0.5      0 
+100 1                Inflow_Junction  5        2        500      0.5      0 
+101 1                Inflow_Junction  5        2        500      0.5      0 
+102 1                Inflow_Junction  5        2        500      0.5      0 
+103 1                Inflow_Junction  5        2        500      0.5      0 
+104 1                Inflow_Junction  5        2        500      0.5      0 
+105 1                Inflow_Junction  5        2        500      0.5      0 
+106 1                Inflow_Junction  5        2        500      0.5      0 
+107 1                Inflow_Junction  5        2        500      0.5      0 
+108 1                Inflow_Junction  5        2        500      0.5      0 
+109 1                Inflow_Junction  5        2        500      0.5      0 
+110 1                Inflow_Junction  5        2        500      0.5      0 
+111 1                Inflow_Junction  5        2        500      0.5      0 
+112 1                Inflow_Junction  5        2        500      0.5      0 
+113 1                Inflow_Junction  5        2        500      0.5      0 
+114 1                Inflow_Junction  5        2        500      0.5      0 
+115 1                Inflow_Junction  5        2        500      0.5      0 
+116 1                Inflow_Junction  5        2        500      0.5      0 
+117 1                Inflow_Junction  5        2        500      0.5      0 
+118 1                Inflow_Junction  5        2        500      0.5      0 
+119 1                Inflow_Junction  5        2        500      0.5      0 
+120 1                Inflow_Junction  5        2        500      0.5      0 
+121 1                Inflow_Junction  5        2        500      0.5      0 
+122 1                Inflow_Junction  5        2        500      0.5      0 
+123 1                Inflow_Junction  5        2        500      0.5      0 
+124 1                Inflow_Junction  5        2        500      0.5      0 
+125 1                Inflow_Junction  5        2        500      0.5      0 
+126 1                Inflow_Junction  5        2        500      0.5      0 
+127 1                Inflow_Junction  5        2        500      0.5      0 
+128 1                Inflow_Junction  5        2        500      0.5      0 
+129 1                Inflow_Junction  5        2        500      0.5      0 
+130 1                Inflow_Junction  5        2        500      0.5      0 
+131 1                Inflow_Junction  5        2        500      0.5      0 
+132 1                Inflow_Junction  5        2        500      0.5      0 
+133 1                Inflow_Junction  5        2        500      0.5      0 
+134 1                Inflow_Junction  5        2        500      0.5      0 
+135 1                Inflow_Junction  5        2        500      0.5      0 
+136 1                Inflow_Junction  5        2        500      0.5      0 
+137 1                Inflow_Junction  5        2        500      0.5      0 
+138 1                Inflow_Junction  5        2        500      0.5      0 
+139 1                Inflow_Junction  5        2        500      0.5      0 
+140 1                Inflow_Junction  5        2        500      0.5      0 
+141 1                Inflow_Junction  5        2        500      0.5      0 
+142 1                Inflow_Junction  5        2        500      0.5      0 
+143 1                Inflow_Junction  5        2        500      0.5      0 
+144 1                Inflow_Junction  5        2        500      0.5      0 
+145 1                Inflow_Junction  5        2        500      0.5      0 
+146 1                Inflow_Junction  5        2        500      0.5      0 
+147 1                Inflow_Junction  5        2        500      0.5      0 
+148 1                Inflow_Junction  5        2        500      0.5      0 
+149 1                Inflow_Junction  5        2        500      0.5      0 
+150 1                Inflow_Junction  5        2        500      0.5      0 
+151 1                Inflow_Junction  5        2        500      0.5      0 
+152 1                Inflow_Junction  5        2        500      0.5      0 
+153 1                Inflow_Junction  5        2        500      0.5      0 
+154 1                Inflow_Junction  5        2        500      0.5      0 
+155 1                Inflow_Junction  5        2        500      0.5      0 
+156 1                Inflow_Junction  5        2        500      0.5      0 
+157 1                Inflow_Junction  5        2        500      0.5      0 
+158 1                Inflow_Junction  5        2        500      0.5      0 
+159 1                Inflow_Junction  5        2        500      0.5      0 
+160 1                Inflow_Junction  5        2        500      0.5      0 
+161 1                Inflow_Junction  5        2        500      0.5      0 
+162 1                Inflow_Junction  5        2        500      0.5      0 
+163 1                Inflow_Junction  5        2        500      0.5      0 
+164 1                Inflow_Junction  5        2        500      0.5      0 
+165 1                Inflow_Junction  5        2        500      0.5      0 
+166 1                Inflow_Junction  5        2        500      0.5      0 
+167 1                Inflow_Junction  5        2        500      0.5      0 
+168 1                Inflow_Junction  5        2        500      0.5      0 
+169 1                Inflow_Junction  5        2        500      0.5      0 
+170 1                Inflow_Junction  5        2        500      0.5      0 
+171 1                Inflow_Junction  5        2        500      0.5      0 
+172 1                Inflow_Junction  5        2        500      0.5      0 
+173 1                Inflow_Junction  5        2        500      0.5      0 
+174 1                Inflow_Junction  5        2        500      0.5      0 
+175 1                Inflow_Junction  5        2        500      0.5      0 
+176 1                Inflow_Junction  5        2        500      0.5      0 
+177 1                Inflow_Junction  5        2        500      0.5      0 
+178 1                Inflow_Junction  5        2        500      0.5      0 
+179 1                Inflow_Junction  5        2        500      0.5      0 
+180 1                Inflow_Junction  5        2        500      0.5      0 
+181 1                Inflow_Junction  5        2        500      0.5      0 
+182 1                Inflow_Junction  5        2        500      0.5      0 
+183 1                Inflow_Junction  5        2        500      0.5      0 
+184 1                Inflow_Junction  5        2        500      0.5      0 
+185 1                Inflow_Junction  5        2        500      0.5      0 
+186 1                Inflow_Junction  5        2        500      0.5      0 
+187 1                Inflow_Junction  5        2        500      0.5      0 
+188 1                Inflow_Junction  5        2        500      0.5      0 
+189 1                Inflow_Junction  5        2        500      0.5      0 
+190 1                Inflow_Junction  5        2        500      0.5      0 
+191 1                Inflow_Junction  5        2        500      0.5      0 
+192 1                Inflow_Junction  5        2        500      0.5      0 
+193 1                Inflow_Junction  5        2        500      0.5      0 
+194 1                Inflow_Junction  5        2        500      0.5      0 
+195 1                Inflow_Junction  5        2        500      0.5      0 
+196 1                Inflow_Junction  5        2        500      0.5      0 
+197 1                Inflow_Junction  5        2        500      0.5      0 
+198 1                Inflow_Junction  5        2        500      0.5      0 
+199 1                Inflow_Junction  5        2        500      0.5      0 
+200 1                Inflow_Junction  5        2        500      0.5      0 
+201 1                Inflow_Junction  5        2        500      0.5      0 
+202 1                Inflow_Junction  5        2        500      0.5      0 
+203 1                Inflow_Junction  5        2        500      0.5      0 
+204 1                Inflow_Junction  5        2        500      0.5      0 
+205 1                Inflow_Junction  5        2        500      0.5      0 
+206 1                Inflow_Junction  5        2        500      0.5      0 
+207 1                Inflow_Junction  5        2        500      0.5      0 
+208 1                Inflow_Junction  5        2        500      0.5      0 
+209 1                Inflow_Junction  5        2        500      0.5      0 
+210 1                Inflow_Junction  5        2        500      0.5      0 
+211 1                Inflow_Junction  5        2        500      0.5      0 
+212 1                Inflow_Junction  5        2        500      0.5      0 
+213 1                Inflow_Junction  5        2        500      0.5      0 
+214 1                Inflow_Junction  5        2        500      0.5      0 
+215 1                Inflow_Junction  5        2        500      0.5      0 
+216 1                Inflow_Junction  5        2        500      0.5      0 
+217 1                Inflow_Junction  5        2        500      0.5      0 
+218 1                Inflow_Junction  5        2        500      0.5      0 
+219 1                Inflow_Junction  5        2        500      0.5      0 
+220 1                Inflow_Junction  5        2        500      0.5      0 
+221 1                Inflow_Junction  5        2        500      0.5      0 
+222 1                Inflow_Junction  5        2        500      0.5      0 
+223 1                Inflow_Junction  5        2        500      0.5      0 
+224 1                Inflow_Junction  5        2        500      0.5      0 
+225 1                Inflow_Junction  5        2        500      0.5      0 
+226 1                Inflow_Junction  5        2        500      0.5      0 
+227 1                Inflow_Junction  5        2        500      0.5      0 
+228 1                Inflow_Junction  5        2        500      0.5      0 
+229 1                Inflow_Junction  5        2        500      0.5      0 
+230 1                Inflow_Junction  5        2        500      0.5      0 
+231 1                Inflow_Junction  5        2        500      0.5      0 
+232 1                Inflow_Junction  5        2        500      0.5      0 
+233 1                Inflow_Junction  5        2        500      0.5      0 
+234 1                Inflow_Junction  5        2        500      0.5      0 
+235 1                Inflow_Junction  5        2        500      0.5      0 
+236 1                Inflow_Junction  5        2        500      0.5      0 
+237 1                Inflow_Junction  5        2        500      0.5      0 
+238 1                Inflow_Junction  5        2        500      0.5      0 
+239 1                Inflow_Junction  5        2        500      0.5      0 
+240 1                Inflow_Junction  5        2        500      0.5      0 
+241 1                Inflow_Junction  5        2        500      0.5      0 
+242 1                Inflow_Junction  5        2        500      0.5      0 
+243 1                Inflow_Junction  5        2        500      0.5      0 
+244 1                Inflow_Junction  5        2        500      0.5      0 
+245 1                Inflow_Junction  5        2        500      0.5      0 
+246 1                Inflow_Junction  5        2        500      0.5      0 
+247 1                Inflow_Junction  5        2        500      0.5      0 
+248 1                Inflow_Junction  5        2        500      0.5      0 
+249 1                Inflow_Junction  5        2        500      0.5      0 
+250 1                Inflow_Junction  5        2        500      0.5      0 
+251 1                Inflow_Junction  5        2        500      0.5      0 
+252 1                Inflow_Junction  5        2        500      0.5      0 
+253 1                Inflow_Junction  5        2        500      0.5      0 
+254 1                Inflow_Junction  5        2        500      0.5      0 
+255 1                Inflow_Junction  5        2        500      0.5      0 
+256 1                Inflow_Junction  5        2        500      0.5      0 
+257 1                Inflow_Junction  5        2        500      0.5      0 
+258 1                Inflow_Junction  5        2        500      0.5      0 
+259 1                Inflow_Junction  5        2        500      0.5      0 
+260 1                Inflow_Junction  5        2        500      0.5      0 
+261 1                Inflow_Junction  5        2        500      0.5      0 
+262 1                Inflow_Junction  5        2        500      0.5      0 
+263 1                Inflow_Junction  5        2        500      0.5      0 
+264 1                Inflow_Junction  5        2        500      0.5      0 
+265 1                Inflow_Junction  5        2        500      0.5      0 
+266 1                Inflow_Junction  5        2        500      0.5      0 
+267 1                Inflow_Junction  5        2        500      0.5      0 
+268 1                Inflow_Junction  5        2        500      0.5      0 
+269 1                Inflow_Junction  5        2        500      0.5      0 
+270 1                Inflow_Junction  5        2        500      0.5      0 
+271 1                Inflow_Junction  5        2        500      0.5      0 
+272 1                Inflow_Junction  5        2        500      0.5      0 
+273 1                Inflow_Junction  5        2        500      0.5      0 
+274 1                Inflow_Junction  5        2        500      0.5      0 
+275 1                Inflow_Junction  5        2        500      0.5      0 
+276 1                Inflow_Junction  5        2        500      0.5      0 
+277 1                Inflow_Junction  5        2        500      0.5      0 
+278 1                Inflow_Junction  5        2        500      0.5      0 
+279 1                Inflow_Junction  5        2        500      0.5      0 
+280 1                Inflow_Junction  5        2        500      0.5      0 
+281 1                Inflow_Junction  5        2        500      0.5      0 
+282 1                Inflow_Junction  5        2        500      0.5      0 
+283 1                Inflow_Junction  5        2        500      0.5      0 
+284 1                Inflow_Junction  5        2        500      0.5      0 
+285 1                Inflow_Junction  5        2        500      0.5      0 
+286 1                Inflow_Junction  5        2        500      0.5      0 
+287 1                Inflow_Junction  5        2        500      0.5      0 
+288 1                Inflow_Junction  5        2        500      0.5      0 
+289 1                Inflow_Junction  5        2        500      0.5      0 
+290 1                Inflow_Junction  5        2        500      0.5      0 
+291 1                Inflow_Junction  5        2        500      0.5      0 
+292 1                Inflow_Junction  5        2        500      0.5      0 
+293 1                Inflow_Junction  5        2        500      0.5      0 
+294 1                Inflow_Junction  5        2        500      0.5      0 
+295 1                Inflow_Junction  5        2        500      0.5      0 
+296 1                Inflow_Junction  5        2        500      0.5      0 
+297 1                Inflow_Junction  5        2        500      0.5      0 
+298 1                Inflow_Junction  5        2        500      0.5      0 
+299 1                Inflow_Junction  5        2        500      0.5      0 
+300 1                Inflow_Junction  5        2        500      0.5      0 
+
+[SUBAREAS]
+;;Subcatchment   N-Imperv   N-Perv     S-Imperv   S-Perv     PctZero    RouteTo    PctRouted 
+;;-------------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+0 0.01       0.1        0.05       0.05       25         OUTLET 
+1 0.01       0.1        0.05       0.05       25         OUTLET 
+2 0.01       0.1        0.05       0.05       25         OUTLET 
+3 0.01       0.1        0.05       0.05       25         OUTLET 
+4 0.01       0.1        0.05       0.05       25         OUTLET 
+5 0.01       0.1        0.05       0.05       25         OUTLET 
+6 0.01       0.1        0.05       0.05       25         OUTLET 
+7 0.01       0.1        0.05       0.05       25         OUTLET 
+8 0.01       0.1        0.05       0.05       25         OUTLET 
+9 0.01       0.1        0.05       0.05       25         OUTLET 
+10 0.01       0.1        0.05       0.05       25         OUTLET 
+11 0.01       0.1        0.05       0.05       25         OUTLET 
+12 0.01       0.1        0.05       0.05       25         OUTLET 
+13 0.01       0.1        0.05       0.05       25         OUTLET 
+14 0.01       0.1        0.05       0.05       25         OUTLET 
+15 0.01       0.1        0.05       0.05       25         OUTLET 
+16 0.01       0.1        0.05       0.05       25         OUTLET 
+17 0.01       0.1        0.05       0.05       25         OUTLET 
+18 0.01       0.1        0.05       0.05       25         OUTLET 
+19 0.01       0.1        0.05       0.05       25         OUTLET 
+20 0.01       0.1        0.05       0.05       25         OUTLET 
+21 0.01       0.1        0.05       0.05       25         OUTLET 
+22 0.01       0.1        0.05       0.05       25         OUTLET 
+23 0.01       0.1        0.05       0.05       25         OUTLET 
+24 0.01       0.1        0.05       0.05       25         OUTLET 
+25 0.01       0.1        0.05       0.05       25         OUTLET 
+26 0.01       0.1        0.05       0.05       25         OUTLET 
+27 0.01       0.1        0.05       0.05       25         OUTLET 
+28 0.01       0.1        0.05       0.05       25         OUTLET 
+29 0.01       0.1        0.05       0.05       25         OUTLET 
+30 0.01       0.1        0.05       0.05       25         OUTLET 
+31 0.01       0.1        0.05       0.05       25         OUTLET 
+32 0.01       0.1        0.05       0.05       25         OUTLET 
+33 0.01       0.1        0.05       0.05       25         OUTLET 
+34 0.01       0.1        0.05       0.05       25         OUTLET 
+35 0.01       0.1        0.05       0.05       25         OUTLET 
+36 0.01       0.1        0.05       0.05       25         OUTLET 
+37 0.01       0.1        0.05       0.05       25         OUTLET 
+38 0.01       0.1        0.05       0.05       25         OUTLET 
+39 0.01       0.1        0.05       0.05       25         OUTLET 
+40 0.01       0.1        0.05       0.05       25         OUTLET 
+41 0.01       0.1        0.05       0.05       25         OUTLET 
+42 0.01       0.1        0.05       0.05       25         OUTLET 
+43 0.01       0.1        0.05       0.05       25         OUTLET 
+44 0.01       0.1        0.05       0.05       25         OUTLET 
+45 0.01       0.1        0.05       0.05       25         OUTLET 
+46 0.01       0.1        0.05       0.05       25         OUTLET 
+47 0.01       0.1        0.05       0.05       25         OUTLET 
+48 0.01       0.1        0.05       0.05       25         OUTLET 
+49 0.01       0.1        0.05       0.05       25         OUTLET 
+50 0.01       0.1        0.05       0.05       25         OUTLET 
+51 0.01       0.1        0.05       0.05       25         OUTLET 
+52 0.01       0.1        0.05       0.05       25         OUTLET 
+53 0.01       0.1        0.05       0.05       25         OUTLET 
+54 0.01       0.1        0.05       0.05       25         OUTLET 
+55 0.01       0.1        0.05       0.05       25         OUTLET 
+56 0.01       0.1        0.05       0.05       25         OUTLET 
+57 0.01       0.1        0.05       0.05       25         OUTLET 
+58 0.01       0.1        0.05       0.05       25         OUTLET 
+59 0.01       0.1        0.05       0.05       25         OUTLET 
+60 0.01       0.1        0.05       0.05       25         OUTLET 
+61 0.01       0.1        0.05       0.05       25         OUTLET 
+62 0.01       0.1        0.05       0.05       25         OUTLET 
+63 0.01       0.1        0.05       0.05       25         OUTLET 
+64 0.01       0.1        0.05       0.05       25         OUTLET 
+65 0.01       0.1        0.05       0.05       25         OUTLET 
+66 0.01       0.1        0.05       0.05       25         OUTLET 
+67 0.01       0.1        0.05       0.05       25         OUTLET 
+68 0.01       0.1        0.05       0.05       25         OUTLET 
+69 0.01       0.1        0.05       0.05       25         OUTLET 
+70 0.01       0.1        0.05       0.05       25         OUTLET 
+71 0.01       0.1        0.05       0.05       25         OUTLET 
+72 0.01       0.1        0.05       0.05       25         OUTLET 
+73 0.01       0.1        0.05       0.05       25         OUTLET 
+74 0.01       0.1        0.05       0.05       25         OUTLET 
+75 0.01       0.1        0.05       0.05       25         OUTLET 
+76 0.01       0.1        0.05       0.05       25         OUTLET 
+77 0.01       0.1        0.05       0.05       25         OUTLET 
+78 0.01       0.1        0.05       0.05       25         OUTLET 
+79 0.01       0.1        0.05       0.05       25         OUTLET 
+80 0.01       0.1        0.05       0.05       25         OUTLET 
+81 0.01       0.1        0.05       0.05       25         OUTLET 
+82 0.01       0.1        0.05       0.05       25         OUTLET 
+83 0.01       0.1        0.05       0.05       25         OUTLET 
+84 0.01       0.1        0.05       0.05       25         OUTLET 
+85 0.01       0.1        0.05       0.05       25         OUTLET 
+86 0.01       0.1        0.05       0.05       25         OUTLET 
+87 0.01       0.1        0.05       0.05       25         OUTLET 
+88 0.01       0.1        0.05       0.05       25         OUTLET 
+89 0.01       0.1        0.05       0.05       25         OUTLET 
+90 0.01       0.1        0.05       0.05       25         OUTLET 
+91 0.01       0.1        0.05       0.05       25         OUTLET 
+92 0.01       0.1        0.05       0.05       25         OUTLET 
+93 0.01       0.1        0.05       0.05       25         OUTLET 
+94 0.01       0.1        0.05       0.05       25         OUTLET 
+95 0.01       0.1        0.05       0.05       25         OUTLET 
+96 0.01       0.1        0.05       0.05       25         OUTLET 
+97 0.01       0.1        0.05       0.05       25         OUTLET 
+98 0.01       0.1        0.05       0.05       25         OUTLET 
+99 0.01       0.1        0.05       0.05       25         OUTLET 
+100 0.01       0.1        0.05       0.05       25         OUTLET 
+101 0.01       0.1        0.05       0.05       25         OUTLET 
+102 0.01       0.1        0.05       0.05       25         OUTLET 
+103 0.01       0.1        0.05       0.05       25         OUTLET 
+104 0.01       0.1        0.05       0.05       25         OUTLET 
+105 0.01       0.1        0.05       0.05       25         OUTLET 
+106 0.01       0.1        0.05       0.05       25         OUTLET 
+107 0.01       0.1        0.05       0.05       25         OUTLET 
+108 0.01       0.1        0.05       0.05       25         OUTLET 
+109 0.01       0.1        0.05       0.05       25         OUTLET 
+110 0.01       0.1        0.05       0.05       25         OUTLET 
+111 0.01       0.1        0.05       0.05       25         OUTLET 
+112 0.01       0.1        0.05       0.05       25         OUTLET 
+113 0.01       0.1        0.05       0.05       25         OUTLET 
+114 0.01       0.1        0.05       0.05       25         OUTLET 
+115 0.01       0.1        0.05       0.05       25         OUTLET 
+116 0.01       0.1        0.05       0.05       25         OUTLET 
+117 0.01       0.1        0.05       0.05       25         OUTLET 
+118 0.01       0.1        0.05       0.05       25         OUTLET 
+119 0.01       0.1        0.05       0.05       25         OUTLET 
+120 0.01       0.1        0.05       0.05       25         OUTLET 
+121 0.01       0.1        0.05       0.05       25         OUTLET 
+122 0.01       0.1        0.05       0.05       25         OUTLET 
+123 0.01       0.1        0.05       0.05       25         OUTLET 
+124 0.01       0.1        0.05       0.05       25         OUTLET 
+125 0.01       0.1        0.05       0.05       25         OUTLET 
+126 0.01       0.1        0.05       0.05       25         OUTLET 
+127 0.01       0.1        0.05       0.05       25         OUTLET 
+128 0.01       0.1        0.05       0.05       25         OUTLET 
+129 0.01       0.1        0.05       0.05       25         OUTLET 
+130 0.01       0.1        0.05       0.05       25         OUTLET 
+131 0.01       0.1        0.05       0.05       25         OUTLET 
+132 0.01       0.1        0.05       0.05       25         OUTLET 
+133 0.01       0.1        0.05       0.05       25         OUTLET 
+134 0.01       0.1        0.05       0.05       25         OUTLET 
+135 0.01       0.1        0.05       0.05       25         OUTLET 
+136 0.01       0.1        0.05       0.05       25         OUTLET 
+137 0.01       0.1        0.05       0.05       25         OUTLET 
+138 0.01       0.1        0.05       0.05       25         OUTLET 
+139 0.01       0.1        0.05       0.05       25         OUTLET 
+140 0.01       0.1        0.05       0.05       25         OUTLET 
+141 0.01       0.1        0.05       0.05       25         OUTLET 
+142 0.01       0.1        0.05       0.05       25         OUTLET 
+143 0.01       0.1        0.05       0.05       25         OUTLET 
+144 0.01       0.1        0.05       0.05       25         OUTLET 
+145 0.01       0.1        0.05       0.05       25         OUTLET 
+146 0.01       0.1        0.05       0.05       25         OUTLET 
+147 0.01       0.1        0.05       0.05       25         OUTLET 
+148 0.01       0.1        0.05       0.05       25         OUTLET 
+149 0.01       0.1        0.05       0.05       25         OUTLET 
+150 0.01       0.1        0.05       0.05       25         OUTLET 
+151 0.01       0.1        0.05       0.05       25         OUTLET 
+152 0.01       0.1        0.05       0.05       25         OUTLET 
+153 0.01       0.1        0.05       0.05       25         OUTLET 
+154 0.01       0.1        0.05       0.05       25         OUTLET 
+155 0.01       0.1        0.05       0.05       25         OUTLET 
+156 0.01       0.1        0.05       0.05       25         OUTLET 
+157 0.01       0.1        0.05       0.05       25         OUTLET 
+158 0.01       0.1        0.05       0.05       25         OUTLET 
+159 0.01       0.1        0.05       0.05       25         OUTLET 
+160 0.01       0.1        0.05       0.05       25         OUTLET 
+161 0.01       0.1        0.05       0.05       25         OUTLET 
+162 0.01       0.1        0.05       0.05       25         OUTLET 
+163 0.01       0.1        0.05       0.05       25         OUTLET 
+164 0.01       0.1        0.05       0.05       25         OUTLET 
+165 0.01       0.1        0.05       0.05       25         OUTLET 
+166 0.01       0.1        0.05       0.05       25         OUTLET 
+167 0.01       0.1        0.05       0.05       25         OUTLET 
+168 0.01       0.1        0.05       0.05       25         OUTLET 
+169 0.01       0.1        0.05       0.05       25         OUTLET 
+170 0.01       0.1        0.05       0.05       25         OUTLET 
+171 0.01       0.1        0.05       0.05       25         OUTLET 
+172 0.01       0.1        0.05       0.05       25         OUTLET 
+173 0.01       0.1        0.05       0.05       25         OUTLET 
+174 0.01       0.1        0.05       0.05       25         OUTLET 
+175 0.01       0.1        0.05       0.05       25         OUTLET 
+176 0.01       0.1        0.05       0.05       25         OUTLET 
+177 0.01       0.1        0.05       0.05       25         OUTLET 
+178 0.01       0.1        0.05       0.05       25         OUTLET 
+179 0.01       0.1        0.05       0.05       25         OUTLET 
+180 0.01       0.1        0.05       0.05       25         OUTLET 
+181 0.01       0.1        0.05       0.05       25         OUTLET 
+182 0.01       0.1        0.05       0.05       25         OUTLET 
+183 0.01       0.1        0.05       0.05       25         OUTLET 
+184 0.01       0.1        0.05       0.05       25         OUTLET 
+185 0.01       0.1        0.05       0.05       25         OUTLET 
+186 0.01       0.1        0.05       0.05       25         OUTLET 
+187 0.01       0.1        0.05       0.05       25         OUTLET 
+188 0.01       0.1        0.05       0.05       25         OUTLET 
+189 0.01       0.1        0.05       0.05       25         OUTLET 
+190 0.01       0.1        0.05       0.05       25         OUTLET 
+191 0.01       0.1        0.05       0.05       25         OUTLET 
+192 0.01       0.1        0.05       0.05       25         OUTLET 
+193 0.01       0.1        0.05       0.05       25         OUTLET 
+194 0.01       0.1        0.05       0.05       25         OUTLET 
+195 0.01       0.1        0.05       0.05       25         OUTLET 
+196 0.01       0.1        0.05       0.05       25         OUTLET 
+197 0.01       0.1        0.05       0.05       25         OUTLET 
+198 0.01       0.1        0.05       0.05       25         OUTLET 
+199 0.01       0.1        0.05       0.05       25         OUTLET 
+200 0.01       0.1        0.05       0.05       25         OUTLET 
+201 0.01       0.1        0.05       0.05       25         OUTLET 
+202 0.01       0.1        0.05       0.05       25         OUTLET 
+203 0.01       0.1        0.05       0.05       25         OUTLET 
+204 0.01       0.1        0.05       0.05       25         OUTLET 
+205 0.01       0.1        0.05       0.05       25         OUTLET 
+206 0.01       0.1        0.05       0.05       25         OUTLET 
+207 0.01       0.1        0.05       0.05       25         OUTLET 
+208 0.01       0.1        0.05       0.05       25         OUTLET 
+209 0.01       0.1        0.05       0.05       25         OUTLET 
+210 0.01       0.1        0.05       0.05       25         OUTLET 
+211 0.01       0.1        0.05       0.05       25         OUTLET 
+212 0.01       0.1        0.05       0.05       25         OUTLET 
+213 0.01       0.1        0.05       0.05       25         OUTLET 
+214 0.01       0.1        0.05       0.05       25         OUTLET 
+215 0.01       0.1        0.05       0.05       25         OUTLET 
+216 0.01       0.1        0.05       0.05       25         OUTLET 
+217 0.01       0.1        0.05       0.05       25         OUTLET 
+218 0.01       0.1        0.05       0.05       25         OUTLET 
+219 0.01       0.1        0.05       0.05       25         OUTLET 
+220 0.01       0.1        0.05       0.05       25         OUTLET 
+221 0.01       0.1        0.05       0.05       25         OUTLET 
+222 0.01       0.1        0.05       0.05       25         OUTLET 
+223 0.01       0.1        0.05       0.05       25         OUTLET 
+224 0.01       0.1        0.05       0.05       25         OUTLET 
+225 0.01       0.1        0.05       0.05       25         OUTLET 
+226 0.01       0.1        0.05       0.05       25         OUTLET 
+227 0.01       0.1        0.05       0.05       25         OUTLET 
+228 0.01       0.1        0.05       0.05       25         OUTLET 
+229 0.01       0.1        0.05       0.05       25         OUTLET 
+230 0.01       0.1        0.05       0.05       25         OUTLET 
+231 0.01       0.1        0.05       0.05       25         OUTLET 
+232 0.01       0.1        0.05       0.05       25         OUTLET 
+233 0.01       0.1        0.05       0.05       25         OUTLET 
+234 0.01       0.1        0.05       0.05       25         OUTLET 
+235 0.01       0.1        0.05       0.05       25         OUTLET 
+236 0.01       0.1        0.05       0.05       25         OUTLET 
+237 0.01       0.1        0.05       0.05       25         OUTLET 
+238 0.01       0.1        0.05       0.05       25         OUTLET 
+239 0.01       0.1        0.05       0.05       25         OUTLET 
+240 0.01       0.1        0.05       0.05       25         OUTLET 
+241 0.01       0.1        0.05       0.05       25         OUTLET 
+242 0.01       0.1        0.05       0.05       25         OUTLET 
+243 0.01       0.1        0.05       0.05       25         OUTLET 
+244 0.01       0.1        0.05       0.05       25         OUTLET 
+245 0.01       0.1        0.05       0.05       25         OUTLET 
+246 0.01       0.1        0.05       0.05       25         OUTLET 
+247 0.01       0.1        0.05       0.05       25         OUTLET 
+248 0.01       0.1        0.05       0.05       25         OUTLET 
+249 0.01       0.1        0.05       0.05       25         OUTLET 
+250 0.01       0.1        0.05       0.05       25         OUTLET 
+251 0.01       0.1        0.05       0.05       25         OUTLET 
+252 0.01       0.1        0.05       0.05       25         OUTLET 
+253 0.01       0.1        0.05       0.05       25         OUTLET 
+254 0.01       0.1        0.05       0.05       25         OUTLET 
+255 0.01       0.1        0.05       0.05       25         OUTLET 
+256 0.01       0.1        0.05       0.05       25         OUTLET 
+257 0.01       0.1        0.05       0.05       25         OUTLET 
+258 0.01       0.1        0.05       0.05       25         OUTLET 
+259 0.01       0.1        0.05       0.05       25         OUTLET 
+260 0.01       0.1        0.05       0.05       25         OUTLET 
+261 0.01       0.1        0.05       0.05       25         OUTLET 
+262 0.01       0.1        0.05       0.05       25         OUTLET 
+263 0.01       0.1        0.05       0.05       25         OUTLET 
+264 0.01       0.1        0.05       0.05       25         OUTLET 
+265 0.01       0.1        0.05       0.05       25         OUTLET 
+266 0.01       0.1        0.05       0.05       25         OUTLET 
+267 0.01       0.1        0.05       0.05       25         OUTLET 
+268 0.01       0.1        0.05       0.05       25         OUTLET 
+269 0.01       0.1        0.05       0.05       25         OUTLET 
+270 0.01       0.1        0.05       0.05       25         OUTLET 
+271 0.01       0.1        0.05       0.05       25         OUTLET 
+272 0.01       0.1        0.05       0.05       25         OUTLET 
+273 0.01       0.1        0.05       0.05       25         OUTLET 
+274 0.01       0.1        0.05       0.05       25         OUTLET 
+275 0.01       0.1        0.05       0.05       25         OUTLET 
+276 0.01       0.1        0.05       0.05       25         OUTLET 
+277 0.01       0.1        0.05       0.05       25         OUTLET 
+278 0.01       0.1        0.05       0.05       25         OUTLET 
+279 0.01       0.1        0.05       0.05       25         OUTLET 
+280 0.01       0.1        0.05       0.05       25         OUTLET 
+281 0.01       0.1        0.05       0.05       25         OUTLET 
+282 0.01       0.1        0.05       0.05       25         OUTLET 
+283 0.01       0.1        0.05       0.05       25         OUTLET 
+284 0.01       0.1        0.05       0.05       25         OUTLET 
+285 0.01       0.1        0.05       0.05       25         OUTLET 
+286 0.01       0.1        0.05       0.05       25         OUTLET 
+287 0.01       0.1        0.05       0.05       25         OUTLET 
+288 0.01       0.1        0.05       0.05       25         OUTLET 
+289 0.01       0.1        0.05       0.05       25         OUTLET 
+290 0.01       0.1        0.05       0.05       25         OUTLET 
+291 0.01       0.1        0.05       0.05       25         OUTLET 
+292 0.01       0.1        0.05       0.05       25         OUTLET 
+293 0.01       0.1        0.05       0.05       25         OUTLET 
+294 0.01       0.1        0.05       0.05       25         OUTLET 
+295 0.01       0.1        0.05       0.05       25         OUTLET 
+296 0.01       0.1        0.05       0.05       25         OUTLET 
+297 0.01       0.1        0.05       0.05       25         OUTLET 
+298 0.01       0.1        0.05       0.05       25         OUTLET 
+299 0.01       0.1        0.05       0.05       25         OUTLET 
+300 0.01       0.1        0.05       0.05       25         OUTLET 
+
+[INFILTRATION]
+;;Subcatchment   Param1     Param2     Param3     Param4     Param5    
+;;-------------- ---------- ---------- ---------- ---------- ----------
+0 3.0        0.5        4          7          0 
+1 3.0        0.5        4          7          0 
+2 3.0        0.5        4          7          0 
+3 3.0        0.5        4          7          0 
+4 3.0        0.5        4          7          0 
+5 3.0        0.5        4          7          0 
+6 3.0        0.5        4          7          0 
+7 3.0        0.5        4          7          0 
+8 3.0        0.5        4          7          0 
+9 3.0        0.5        4          7          0 
+10 3.0        0.5        4          7          0 
+11 3.0        0.5        4          7          0 
+12 3.0        0.5        4          7          0 
+13 3.0        0.5        4          7          0 
+14 3.0        0.5        4          7          0 
+15 3.0        0.5        4          7          0 
+16 3.0        0.5        4          7          0 
+17 3.0        0.5        4          7          0 
+18 3.0        0.5        4          7          0 
+19 3.0        0.5        4          7          0 
+20 3.0        0.5        4          7          0 
+21 3.0        0.5        4          7          0 
+22 3.0        0.5        4          7          0 
+23 3.0        0.5        4          7          0 
+24 3.0        0.5        4          7          0 
+25 3.0        0.5        4          7          0 
+26 3.0        0.5        4          7          0 
+27 3.0        0.5        4          7          0 
+28 3.0        0.5        4          7          0 
+29 3.0        0.5        4          7          0 
+30 3.0        0.5        4          7          0 
+31 3.0        0.5        4          7          0 
+32 3.0        0.5        4          7          0 
+33 3.0        0.5        4          7          0 
+34 3.0        0.5        4          7          0 
+35 3.0        0.5        4          7          0 
+36 3.0        0.5        4          7          0 
+37 3.0        0.5        4          7          0 
+38 3.0        0.5        4          7          0 
+39 3.0        0.5        4          7          0 
+40 3.0        0.5        4          7          0 
+41 3.0        0.5        4          7          0 
+42 3.0        0.5        4          7          0 
+43 3.0        0.5        4          7          0 
+44 3.0        0.5        4          7          0 
+45 3.0        0.5        4          7          0 
+46 3.0        0.5        4          7          0 
+47 3.0        0.5        4          7          0 
+48 3.0        0.5        4          7          0 
+49 3.0        0.5        4          7          0 
+50 3.0        0.5        4          7          0 
+51 3.0        0.5        4          7          0 
+52 3.0        0.5        4          7          0 
+53 3.0        0.5        4          7          0 
+54 3.0        0.5        4          7          0 
+55 3.0        0.5        4          7          0 
+56 3.0        0.5        4          7          0 
+57 3.0        0.5        4          7          0 
+58 3.0        0.5        4          7          0 
+59 3.0        0.5        4          7          0 
+60 3.0        0.5        4          7          0 
+61 3.0        0.5        4          7          0 
+62 3.0        0.5        4          7          0 
+63 3.0        0.5        4          7          0 
+64 3.0        0.5        4          7          0 
+65 3.0        0.5        4          7          0 
+66 3.0        0.5        4          7          0 
+67 3.0        0.5        4          7          0 
+68 3.0        0.5        4          7          0 
+69 3.0        0.5        4          7          0 
+70 3.0        0.5        4          7          0 
+71 3.0        0.5        4          7          0 
+72 3.0        0.5        4          7          0 
+73 3.0        0.5        4          7          0 
+74 3.0        0.5        4          7          0 
+75 3.0        0.5        4          7          0 
+76 3.0        0.5        4          7          0 
+77 3.0        0.5        4          7          0 
+78 3.0        0.5        4          7          0 
+79 3.0        0.5        4          7          0 
+80 3.0        0.5        4          7          0 
+81 3.0        0.5        4          7          0 
+82 3.0        0.5        4          7          0 
+83 3.0        0.5        4          7          0 
+84 3.0        0.5        4          7          0 
+85 3.0        0.5        4          7          0 
+86 3.0        0.5        4          7          0 
+87 3.0        0.5        4          7          0 
+88 3.0        0.5        4          7          0 
+89 3.0        0.5        4          7          0 
+90 3.0        0.5        4          7          0 
+91 3.0        0.5        4          7          0 
+92 3.0        0.5        4          7          0 
+93 3.0        0.5        4          7          0 
+94 3.0        0.5        4          7          0 
+95 3.0        0.5        4          7          0 
+96 3.0        0.5        4          7          0 
+97 3.0        0.5        4          7          0 
+98 3.0        0.5        4          7          0 
+99 3.0        0.5        4          7          0 
+100 3.0        0.5        4          7          0 
+101 3.0        0.5        4          7          0 
+102 3.0        0.5        4          7          0 
+103 3.0        0.5        4          7          0 
+104 3.0        0.5        4          7          0 
+105 3.0        0.5        4          7          0 
+106 3.0        0.5        4          7          0 
+107 3.0        0.5        4          7          0 
+108 3.0        0.5        4          7          0 
+109 3.0        0.5        4          7          0 
+110 3.0        0.5        4          7          0 
+111 3.0        0.5        4          7          0 
+112 3.0        0.5        4          7          0 
+113 3.0        0.5        4          7          0 
+114 3.0        0.5        4          7          0 
+115 3.0        0.5        4          7          0 
+116 3.0        0.5        4          7          0 
+117 3.0        0.5        4          7          0 
+118 3.0        0.5        4          7          0 
+119 3.0        0.5        4          7          0 
+120 3.0        0.5        4          7          0 
+121 3.0        0.5        4          7          0 
+122 3.0        0.5        4          7          0 
+123 3.0        0.5        4          7          0 
+124 3.0        0.5        4          7          0 
+125 3.0        0.5        4          7          0 
+126 3.0        0.5        4          7          0 
+127 3.0        0.5        4          7          0 
+128 3.0        0.5        4          7          0 
+129 3.0        0.5        4          7          0 
+130 3.0        0.5        4          7          0 
+131 3.0        0.5        4          7          0 
+132 3.0        0.5        4          7          0 
+133 3.0        0.5        4          7          0 
+134 3.0        0.5        4          7          0 
+135 3.0        0.5        4          7          0 
+136 3.0        0.5        4          7          0 
+137 3.0        0.5        4          7          0 
+138 3.0        0.5        4          7          0 
+139 3.0        0.5        4          7          0 
+140 3.0        0.5        4          7          0 
+141 3.0        0.5        4          7          0 
+142 3.0        0.5        4          7          0 
+143 3.0        0.5        4          7          0 
+144 3.0        0.5        4          7          0 
+145 3.0        0.5        4          7          0 
+146 3.0        0.5        4          7          0 
+147 3.0        0.5        4          7          0 
+148 3.0        0.5        4          7          0 
+149 3.0        0.5        4          7          0 
+150 3.0        0.5        4          7          0 
+151 3.0        0.5        4          7          0 
+152 3.0        0.5        4          7          0 
+153 3.0        0.5        4          7          0 
+154 3.0        0.5        4          7          0 
+155 3.0        0.5        4          7          0 
+156 3.0        0.5        4          7          0 
+157 3.0        0.5        4          7          0 
+158 3.0        0.5        4          7          0 
+159 3.0        0.5        4          7          0 
+160 3.0        0.5        4          7          0 
+161 3.0        0.5        4          7          0 
+162 3.0        0.5        4          7          0 
+163 3.0        0.5        4          7          0 
+164 3.0        0.5        4          7          0 
+165 3.0        0.5        4          7          0 
+166 3.0        0.5        4          7          0 
+167 3.0        0.5        4          7          0 
+168 3.0        0.5        4          7          0 
+169 3.0        0.5        4          7          0 
+170 3.0        0.5        4          7          0 
+171 3.0        0.5        4          7          0 
+172 3.0        0.5        4          7          0 
+173 3.0        0.5        4          7          0 
+174 3.0        0.5        4          7          0 
+175 3.0        0.5        4          7          0 
+176 3.0        0.5        4          7          0 
+177 3.0        0.5        4          7          0 
+178 3.0        0.5        4          7          0 
+179 3.0        0.5        4          7          0 
+180 3.0        0.5        4          7          0 
+181 3.0        0.5        4          7          0 
+182 3.0        0.5        4          7          0 
+183 3.0        0.5        4          7          0 
+184 3.0        0.5        4          7          0 
+185 3.0        0.5        4          7          0 
+186 3.0        0.5        4          7          0 
+187 3.0        0.5        4          7          0 
+188 3.0        0.5        4          7          0 
+189 3.0        0.5        4          7          0 
+190 3.0        0.5        4          7          0 
+191 3.0        0.5        4          7          0 
+192 3.0        0.5        4          7          0 
+193 3.0        0.5        4          7          0 
+194 3.0        0.5        4          7          0 
+195 3.0        0.5        4          7          0 
+196 3.0        0.5        4          7          0 
+197 3.0        0.5        4          7          0 
+198 3.0        0.5        4          7          0 
+199 3.0        0.5        4          7          0 
+200 3.0        0.5        4          7          0 
+201 3.0        0.5        4          7          0 
+202 3.0        0.5        4          7          0 
+203 3.0        0.5        4          7          0 
+204 3.0        0.5        4          7          0 
+205 3.0        0.5        4          7          0 
+206 3.0        0.5        4          7          0 
+207 3.0        0.5        4          7          0 
+208 3.0        0.5        4          7          0 
+209 3.0        0.5        4          7          0 
+210 3.0        0.5        4          7          0 
+211 3.0        0.5        4          7          0 
+212 3.0        0.5        4          7          0 
+213 3.0        0.5        4          7          0 
+214 3.0        0.5        4          7          0 
+215 3.0        0.5        4          7          0 
+216 3.0        0.5        4          7          0 
+217 3.0        0.5        4          7          0 
+218 3.0        0.5        4          7          0 
+219 3.0        0.5        4          7          0 
+220 3.0        0.5        4          7          0 
+221 3.0        0.5        4          7          0 
+222 3.0        0.5        4          7          0 
+223 3.0        0.5        4          7          0 
+224 3.0        0.5        4          7          0 
+225 3.0        0.5        4          7          0 
+226 3.0        0.5        4          7          0 
+227 3.0        0.5        4          7          0 
+228 3.0        0.5        4          7          0 
+229 3.0        0.5        4          7          0 
+230 3.0        0.5        4          7          0 
+231 3.0        0.5        4          7          0 
+232 3.0        0.5        4          7          0 
+233 3.0        0.5        4          7          0 
+234 3.0        0.5        4          7          0 
+235 3.0        0.5        4          7          0 
+236 3.0        0.5        4          7          0 
+237 3.0        0.5        4          7          0 
+238 3.0        0.5        4          7          0 
+239 3.0        0.5        4          7          0 
+240 3.0        0.5        4          7          0 
+241 3.0        0.5        4          7          0 
+242 3.0        0.5        4          7          0 
+243 3.0        0.5        4          7          0 
+244 3.0        0.5        4          7          0 
+245 3.0        0.5        4          7          0 
+246 3.0        0.5        4          7          0 
+247 3.0        0.5        4          7          0 
+248 3.0        0.5        4          7          0 
+249 3.0        0.5        4          7          0 
+250 3.0        0.5        4          7          0 
+251 3.0        0.5        4          7          0 
+252 3.0        0.5        4          7          0 
+253 3.0        0.5        4          7          0 
+254 3.0        0.5        4          7          0 
+255 3.0        0.5        4          7          0 
+256 3.0        0.5        4          7          0 
+257 3.0        0.5        4          7          0 
+258 3.0        0.5        4          7          0 
+259 3.0        0.5        4          7          0 
+260 3.0        0.5        4          7          0 
+261 3.0        0.5        4          7          0 
+262 3.0        0.5        4          7          0 
+263 3.0        0.5        4          7          0 
+264 3.0        0.5        4          7          0 
+265 3.0        0.5        4          7          0 
+266 3.0        0.5        4          7          0 
+267 3.0        0.5        4          7          0 
+268 3.0        0.5        4          7          0 
+269 3.0        0.5        4          7          0 
+270 3.0        0.5        4          7          0 
+271 3.0        0.5        4          7          0 
+272 3.0        0.5        4          7          0 
+273 3.0        0.5        4          7          0 
+274 3.0        0.5        4          7          0 
+275 3.0        0.5        4          7          0 
+276 3.0        0.5        4          7          0 
+277 3.0        0.5        4          7          0 
+278 3.0        0.5        4          7          0 
+279 3.0        0.5        4          7          0 
+280 3.0        0.5        4          7          0 
+281 3.0        0.5        4          7          0 
+282 3.0        0.5        4          7          0 
+283 3.0        0.5        4          7          0 
+284 3.0        0.5        4          7          0 
+285 3.0        0.5        4          7          0 
+286 3.0        0.5        4          7          0 
+287 3.0        0.5        4          7          0 
+288 3.0        0.5        4          7          0 
+289 3.0        0.5        4          7          0 
+290 3.0        0.5        4          7          0 
+291 3.0        0.5        4          7          0 
+292 3.0        0.5        4          7          0 
+293 3.0        0.5        4          7          0 
+294 3.0        0.5        4          7          0 
+295 3.0        0.5        4          7          0 
+296 3.0        0.5        4          7          0 
+297 3.0        0.5        4          7          0 
+298 3.0        0.5        4          7          0 
+299 3.0        0.5        4          7          0 
+300 3.0        0.5        4          7          0 
+
 [JUNCTIONS]
 ;;Name           Elevation  MaxDepth   InitDepth  SurDepth   Aponded   
 ;;-------------- ---------- ---------- ---------- ---------- ----------
-Inflow_Junction  100        7          0          0          0         
-Central_Junction 98         7          0          0          0         
+Inflow_Junction  100        7          0          0          10        
+Central_Junction 98         7          0          0          10        
 
 [OUTFALLS]
 ;;Name           Elevation  Type       Stage Data       Gated    Route To        
@@ -69,8 +983,8 @@ Outfall          96         FREE                        NO
 [CONDUITS]
 ;;Name           From Node        To Node          Length     Roughness  InOffset   OutOffset  InitFlow   MaxFlow   
 ;;-------------- ---------------- ---------------- ---------- ---------- ---------- ---------- ---------- ----------
-US_Conduit       Inflow_Junction  Central_Junction 100        0.01       0          0          0          0         
-DS_Conduit       Central_Junction Outfall          100        0.01       0          0          0          0         
+US_Conduit       Inflow_Junction  Central_Junction 115        0.01       0          0          0          0         
+DS_Conduit       Central_Junction Outfall          445        0.01       0          0          0          0         
 
 [XSECTIONS]
 ;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels    Culvert   
@@ -87,9 +1001,111 @@ Inflow_Junction  FLOW             TwelveHourInflow FLOW     1.0      1.0
 ;;Name           Date       Time       Value     
 ;;-------------- ---------- ---------- ----------
 TwelveHourInflow            0          0         
-TwelveHourInflow            1          0.2       
+TwelveHourInflow            1          0.9       
 TwelveHourInflow            11         0.01      
 TwelveHourInflow            12         0         
+;
+rg1                         0          0         
+rg1                         1.1          15  
+rg1                         1.2          0  
+rg1                         1.3          15  
+rg1                         1.4          0  
+rg1                         1.5          0  
+rg1                         1.6          20  
+rg1                         1.7          15  
+rg1                         1.8          0  
+rg1                         1.9          0   
+rg1                         2.1          15  
+rg1                         2.2          0  
+rg1                         2.3          0  
+rg1                         2.4          0  
+rg1                         2.5          0  
+rg1                         2.6          2  
+rg1                         2.7          0  
+rg1                         2.8          0  
+rg1                         2.9          0   
+rg1                         3.1          10  
+rg1                         3.2          0  
+rg1                         3.3          30  
+rg1                         3.4          0  
+rg1                         3.5          0  
+rg1                         3.6          0  
+rg1                         3.7          0  
+rg1                         3.8          0  
+rg1                         3.9          0   
+rg1                         4.1          1  
+rg1                         4.2          3  
+rg1                         4.3          5  
+rg1                         4.4          7  
+rg1                         4.5          8  
+rg1                         4.6          10  
+rg1                         4.7          30  
+rg1                         4.8          40  
+rg1                         4.9          20   
+rg1                         5.1          15  
+rg1                         5.2          0  
+rg1                         5.3          15  
+rg1                         5.4          0  
+rg1                         5.5          0  
+rg1                         5.6          20  
+rg1                         5.7          15  
+rg1                         5.8          0  
+rg1                         5.9          0   
+rg1                         6.1          15  
+rg1                         6.2          0  
+rg1                         6.3          15  
+rg1                         6.4          0  
+rg1                         6.5          0  
+rg1                         6.6          20  
+rg1                         6.7          15  
+rg1                         6.8          0  
+rg1                         6.9          0   
+rg1                         7.1          15  
+rg1                         7.2          0  
+rg1                         7.3          15  
+rg1                         7.4          0  
+rg1                         7.5          0  
+rg1                         7.6          20  
+rg1                         7.7          15  
+rg1                         7.8          0  
+rg1                         7.9          0   
+rg1                         8.1          15  
+rg1                         8.2          0  
+rg1                         8.3          15  
+rg1                         8.4          0  
+rg1                         8.5          0  
+rg1                         8.6          20  
+rg1                         8.7          15  
+rg1                         8.8          0  
+rg1                         8.9          0   
+rg1                         9.1          15  
+rg1                         9.2          0  
+rg1                         9.3          15  
+rg1                         9.4          0  
+rg1                         9.5          0  
+rg1                         9.6          20  
+rg1                         9.7          15  
+rg1                         9.8          0  
+rg1                         9.9          0   
+rg1                         10.1          15  
+rg1                         10.2          0  
+rg1                         10.3          15  
+rg1                         10.4          0  
+rg1                         10.5          0  
+rg1                         10.6          20  
+rg1                         10.7          15  
+rg1                         10.8          0  
+rg1                         10.9          0   
+rg1                         11.1          15  
+rg1                         11.2          0  
+rg1                         11.3          15  
+rg1                         11.4          0  
+rg1                         11.5          0  
+rg1                         11.6          20  
+rg1                         11.7          15  
+rg1                         11.8          0  
+rg1                         11.9          0  
+rg1                         12         0         
 
 [REPORT]
 ;;Reporting Options
@@ -100,17 +1116,2226 @@ LINKS ALL
 [TAGS]
 
 [MAP]
-DIMENSIONS 0.000 0.000 500.000 500.000
+DIMENSIONS 0.000 0.000 1000.000 1000.000
 Units      None
 
 [COORDINATES]
 ;;Node           X-Coord            Y-Coord           
 ;;-------------- ------------------ ------------------
-Inflow_Junction  250           350          
-Central_Junction 250           250          
-Outfall          250           150          
+Inflow_Junction  800.000            500.000           
+Central_Junction 500.000            500.000           
+Outfall          200.000            500.000           
 
 [VERTICES]
 ;;Link           X-Coord            Y-Coord           
 ;;-------------- ------------------ ------------------
+
+[Polygons]
+;;Subcatchment   X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------   
+0 -807.0029168580659 473.3482644427568
+0 -716.9892295484897 417.37609796226025
+0 -881.8237479620147 155.0803635045886
+0 -973.020463285502 212.58996160514653
+0 -914.4856957781594 303.8019289262593
+0 -831.9070617486723 252.3973472993821
+0 -818.1340312345419 273.83627287484705
+0 -900.3319569895975 326.0191081147641
+0 -851.0026250842493 405.1320869103074
+0 -767.6466185625177 353.7360334675759
+0 -750.8080890008714 379.4659473579377
+0 -833.0058366656303 431.64837389066815
+
+1 -605.3767040562816 1046.148909136653
+1 -536.4957076197024 1003.1208400018513
+1 -562.8824021427426 961.0302701368928
+1 -560.9264034978114 959.8892637100071
+1 -566.6564790899865 950.1500306650996
+1 -606.1854742194992 974.9017437305301
+1 -599.2972058563028 985.4274283647537
+1 -631.3868610023055 1005.2239195033908
+
+2 -655.2280170230661 -96.53758662939072
+2 -628.2358695636503 -112.12933654338121
+2 -641.9927365707699 -135.11721928790212
+2 -618.9086372393649 -148.8140026498586
+2 -637.2416852770839 -180.36789146997035
+2 -681.0569308972917 -154.88552228361368
+2 -664.2505922690034 -126.05796307139099
+2 -670.5075851469301 -122.63885178603232
+
+3 -466.4805751866661 1148.6547272875905
+3 -448.50007374677807 1139.5512502640486
+3 -478.235234770691 1083.100562589243
+3 -498.171754559502 1093.3450747951865
+3 -491.3079037948046 1106.1934814490378
+3 -513.5850978582166 1117.1877928283066
+3 -497.1928637200035 1148.3328087627888
+3 -476.47479877690785 1137.7093463093042
+3 -471.14573295228183 1148.6058260388672
+
+4 -743.4312191777863 157.6906739603728
+4 -718.0188065497205 144.40552311576903
+4 -726.4056959506124 128.4433558769524
+4 -708.8134008494671 119.33528178557754
+4 -714.5274969362654 108.04724070616066
+4 -705.1400667533744 102.72503593377769
+4 -721.1484729708172 71.970194010064
+4 -773.9294529075269 99.6816505882889
+
+5 -693.2032964739483 -71.76847624406219
+5 -666.9928121368866 -86.98125259578228
+5 -683.0337297271471 -114.63920588418841
+5 -691.2508405407425 -109.69188966974616
+5 -706.9111233144067 -136.57149820216
+5 -750.3333968278021 -111.47213076986372
+5 -731.6195957819 -79.14004911854863
+5 -706.1947970150504 -93.58672920055687
+
+6 -462.7586558263283 -22.505125664174557
+6 -422.45866054086946 -46.47514358907938
+6 -422.3328545251861 -58.47646261006594
+6 -437.23963248357177 -83.02519474737346
+6 -461.49822962936014 -68.56654256023467
+6 -473.72821475658566 -88.82819987088442
+6 -501.1132698964793 -72.85354900360107
+6 -484.68783677043393 -44.804311061277986
+6 -478.42677950579673 -48.61050943657756
+
+7 -608.7833913923241 72.37273645028472
+7 -564.9765465778764 47.6649781037122
+7 -584.832064029295 12.997873555868864
+7 -609.8680534251034 27.44845632649958
+7 -622.4706594741438 5.634311782196164
+7 -649.851474922616 21.221913792192936
+7 -634.1953977716621 48.48854285851121
+7 -625.5895440990571 43.545345943421125
+
+8 -553.6968898889609 455.481084831059
+8 -532.1804989425 442.9297840539366
+8 -532.5571016813628 441.7643130533397
+8 -507.9061597089749 426.9228216242045
+8 -527.7775434474461 393.80467583984137
+8 -550.4724654508755 407.505173901096
+8 -566.1444692455698 381.78737726435065
+8 -589.6209846117999 395.8668995629996
+
+9 -595.2254612105899 374.12634759396315
+9 -572.5427041375078 361.5871958900243
+9 -593.1512052277103 324.5895363949239
+9 -571.2500129425898 312.42934992164373
+9 -584.2250015961472 289.0627978891134
+9 -612.7759410936851 305.02510916255414
+9 -616.9754115410615 297.62475672364235
+9 -633.0084698500577 306.3618660867214
+
+10 -651.1349167835433 292.2336271535605
+10 -617.100574237993 272.45694001950324
+10 -632.764610324055 245.96478920802474
+10 -607.331943382509 230.74410856887698
+10 -621.0805008839816 206.9822252523154
+10 -680.9363394631073 241.975621573627
+
+11 -426.67521395883523 355.759583003819
+11 -426.0299445001874 294.2052757740021
+11 -460.04411658947356 312.04604109562933
+11 -463.093450647546 306.2064278200269
+11 -485.3794160785619 317.9753229301423
+11 -471.6513218935579 343.67285241000354
+11 -441.5452359726187 327.72701122798026
+
+12 -546.9345166229177 32.75398133508861
+12 -520.748386796331 19.86423370242119
+12 -534.0798052642494 -6.60377112403512
+12 -513.7537274749484 -16.844667490571737
+12 -529.7579383121338 -47.98689882270992
+12 -576.2702023431193 -24.856174463406205
+
+13 -488.34760651760735 304.39302931912243
+13 -480.7458296576515 283.95232327468693
+13 -454.01771124312654 293.5247199423611
+13 -435.18930277763866 240.67878542095423
+13 -483.6118447589688 223.5225915852934
+13 -510.03787461598404 296.4221731405705
+
+14 -685.0750193034764 228.76823462173343
+14 -631.0710854504723 195.64940186217427
+14 -645.2165692008566 172.65770114399493
+14 -667.9116103299893 186.3584106490016
+14 -681.2876846282743 164.14913834631443
+14 -712.592565004481 183.1802136581391
+
+15 -677.2615814676974 113.85803179070354
+15 -629.5305870627053 85.70669377595186
+15 -662.0009465138428 30.386993046849966
+15 -686.2593196416274 44.84577935002744
+15 -679.006324976217 57.69869039952755
+15 -702.4789992701262 71.39134450256824
+
+16 -496.12123684515245 415.43107595667243
+16 -449.95783546520397 388.4254718963057
+16 -485.1083075576462 329.20628394559026
+16 -508.9736858638935 343.28169153630733
+16 -498.65934862359427 360.81271271780133
+16 -520.9574248252902 373.74301174655557
+
+17 -562.2036171243526 116.99923221580684
+17 -539.4395008685533 96.7172415163368
+17 -527.1405890618917 110.39740535989404
+17 -509.09046411002055 94.71219377405941
+17 -543.6748424412217 55.631782883778214
+17 -584.4931478959043 91.98620523698628
+
+18 -604.6423814219888 196.70061946846545
+18 -540.0932805633638 196.21539400331676
+18 -540.3191314022988 143.556728169322
+18 -579.982544564642 143.91549956798553
+18 -580.1934602963738 164.04659115709364
+18 -605.0792542195413 164.17304978705943
+
+19 -512.7910559386946 262.32173161767423
+19 -490.1277230847627 214.54920707643032
+19 -511.4090019967407 204.64672422409058
+19 -518.5692592351697 220.0588113553822
+19 -548.3630614201538 206.19537321478128
+19 -563.4813587991521 238.9470858834684
+
+20 -449.0400775813032 78.30565214529634
+20 -425.55915922275744 63.838940845802426
+20 -459.21576605853625 10.442409655079246
+20 -506.5745236366056 40.146161584183574
+20 -487.4520506898407 70.54663013480604
+20 -463.1895319148898 55.7008940782398
+
+21 -434.8203079404775 1132.725685864687
+21 -433.9274644849356 1047.5585749279708
+21 -454.669962922344 1060.5047842487693
+21 -447.4133012199309 1072.9701694585383
+21 -465.025371927768 1084.0133608151227
+
+22 -649.6223253665958 1001.5483868308365
+22 -616.398829491809 984.8610882125795
+22 -626.6764931690414 963.8463804181665
+22 -660.288773139473 980.5296325273812
+
+23 -726.9286606695969 178.38394476659596
+23 -705.4202468970325 166.60664926469326
+23 -717.2534141035285 145.57507512904704
+23 -738.7618388396222 157.35238929279149
+
+24 600.8261828550603 591.1116661541164
+24 601.6892578434199 582.9901044722646
+24 620.71462135599 585.5133159738034
+24 621.9990599912126 574.2987976875156
+24 641.801971284207 576.8302056174725
+24 644.3342054258101 557.8853381164372
+24 624.5312805073336 555.3539269901812
+24 625.8197950806934 543.752265309915
+24 580.0017101441044 537.8497805483639
+24 576.6268140508328 562.980582125485
+24 565.3687226232141 561.3134547192603
+24 561.9979147629347 586.0571056269109
+
+25 186.94540218031034 -20.72104547545314
+25 220.1747340329457 -37.79513402841985
+25 212.16490522166714 -52.59220650047064
+25 225.84950285148807 -59.804896492511034
+25 198.4063561204821 -112.36287472583354
+25 156.57090193452314 -90.3457335550338
+25 171.05177795421332 -62.316482497379184
+25 191.38224334083498 -72.94402243569493
+25 196.71536338073201 -62.434071246534586
+25 171.69513817341067 -49.532710406929255
+
+26 903.144268306205 312.81742543540895
+26 959.8307082841638 283.6018057465553
+26 945.7355234078132 255.9636905696243
+26 924.234583911486 266.96539331786335
+26 913.5690284005832 245.94543575495481
+26 875.252875367878 266.0623641554266
+26 882.1081543832552 279.68578541465104
+26 892.2693285427522 274.75947998836637
+26 902.1736456402577 294.22267909534276
+26 895.1389898441266 297.63319287262857
+
+27 1019.8934390982613 487.50221391767263
+27 1072.2909071852919 459.40336044691503
+27 1058.944922181312 434.48348142392933
+27 1053.4735346871894 437.13605777546763
+27 1038.5968998770695 409.87698389589787
+27 1004.9665550051723 428.1070991400629
+27 1007.6390273214784 432.7813654690981
+27 994.343228866579 439.9976285994053
+
+28 -202.55049168271944 80.50325116328895
+28 -171.67045830190182 64.95283770188689
+28 -188.06301262089983 33.80640702135861
+28 -177.50911182747222 28.496602399274707
+28 -183.2311345853377 17.982683835551143
+28 -195.74111903691664 24.43351407535374
+28 -199.1751491338946 18.202592423185706
+28 -246.08855959842913 42.49003810249269
+28 -234.27194683114067 65.07045542821288
+28 -215.50497925071977 55.20063161663711
+
+29 585.6429838286713 1147.3144287727773
+29 593.1557516083121 1135.3913366235793
+29 607.0657046444248 1143.6681678462774
+29 615.7773603335954 1128.6603679433465
+29 603.0296203892212 1120.7829220946878
+29 618.4561760213692 1095.7794406134635
+29 584.452643643599 1075.6761883255094
+29 561.898034098791 1112.9940335359424
+29 567.3122206816915 1115.7611532155424
+29 558.2118245149031 1130.7648852411658
+
+30 -123.988423547009 189.73777717351913
+30 -92.29840646404773 171.09858721494675
+30 -117.89958831085823 128.24020343460143
+30 -146.45504253939725 144.58926889114082
+30 -150.27376110758632 137.9671514276415
+30 -177.26595175545663 153.55828719213605
+30 -161.60635716863908 180.4379357546568
+30 -137.74471317860298 166.74987606145442
+
+31 331.2179422604386 88.43126147426665
+31 353.14417029730976 73.94886965304613
+31 346.26009171665646 63.03545378521085
+31 369.3608243272174 47.79104397445917
+31 341.42348735709675 5.29463778808713
+31 323.02063985099085 17.49102027155459
+31 322.6399980795104 16.71265710145235
+31 295.62299485877156 34.62623430788517
+
+32 895.1910958206281 477.28359100595117
+32 949.9537118219305 446.1120003927499
+32 937.7372322566807 424.68865423090756
+32 929.5240508592688 429.2482558693737
+32 914.2503606837709 402.7594173066318
+32 885.6945397381205 419.1072481125593
+32 900.9723247741349 445.2089217659086
+32 882.5898921461776 455.46906778402627
+
+33 -434.43966133287176 1133.504006702453
+33 -413.7053247629665 1121.3320940416306
+33 -424.02336525870487 1104.1886389050633
+33 -402.89212026586756 1091.246550021693
+33 -431.1898786444217 1046.038608731702
+33 -454.669962922344 1060.5047842487693
+33 -447.4133012199309 1072.9701694585383
+33 -459.93897490249947 1080.9693514686078
+33 -460.0566573238466 1092.195926444605
+
+34 319.4959126948379 537.8207066617906
+34 325.5919802892022 512.7184606529772
+34 323.26341476966627 512.3068115692586
+34 328.94630371243693 489.52324792556465
+34 273.0972809889354 476.1595214251429
+34 267.81948197912425 497.39866499975324
+34 274.41234339168295 499.01664532907307
+34 267.9153436606284 525.2762226965278
+
+35 884.2473816063721 150.39058754965663
+35 904.9749160278589 138.99347864463925
+35 870.6167873374652 78.61870743706822
+35 849.1035129842348 90.78195636160672
+35 856.3557827360928 103.63527509756386
+35 829.3670309379231 118.83831395208836
+35 846.1634696833789 148.44084064662457
+35 874.3226131347474 132.8629802837968
+
+36 52.99156434414908 257.41585699655116
+36 79.97972652339377 242.2121425140649
+36 57.46063937339932 202.09630820713937
+36 33.214211201062426 215.39296370185912
+36 28.249539546202868 206.82291184738278
+36 0.0869151009246707 222.78872369602323
+36 18.41082434542477 255.11687713488936
+36 43.831668698461726 241.0582048110664
+
+37 225.95449943747371 300.27341247163713
+37 255.61940298369154 289.3569695390761
+37 257.1216213754378 294.40606083907187
+37 277.4193138743285 286.87580743432045
+37 255.877433890244 227.79840104468167
+37 215.286053650314 242.47185183875263
+37 220.967200827552 256.85712545737624
+37 211.20712645561434 260.6263603568077
+
+38 -360.65976769826375 326.6391203161329
+38 -298.8719842080027 292.8283183481544
+38 -311.8548727585003 270.23588335327804
+38 -325.1503817788325 277.4528248589486
+38 -331.64589749858715 266.5437440369278
+38 -355.892069719499 279.8407073672861
+38 -369.62820848310366 254.9173278119415
+38 -393.4815369260032 267.8312714304775
+
+39 948.6067103932146 869.2774918023497
+39 996.722853143001 841.520985879004
+39 982.9637582371943 818.920155569911
+39 964.1846166867763 829.9502596780658
+39 949.2795738268178 805.4015135783702
+39 932.8493577628396 814.907706361264
+39 929.0269178436138 808.6727166138589
+39 917.2863947062287 815.9052927680314
+
+40 -189.9486431593541 510.01486033014953
+40 -156.18518670462072 479.00800122506917
+40 -173.86970034451224 459.85088516771793
+40 -165.23545254790224 452.1979829072952
+40 -180.61578246345744 435.77525650151074
+40 -208.8795813890174 461.4194462541491
+40 -196.1922280578874 475.1036659087986
+40 -210.32613747869618 488.11931513622403
+
+41 1002.850506677758 75.36531110107899
+41 1023.9832436693832 62.42380210198462
+41 991.1110604726709 8.646451333537698
+41 973.5017837504856 19.30203819833696
+41 978.0937322082464 26.319678343832493
+41 946.7874842744786 45.34898127801716
+41 963.9848579184618 73.79434333182871
+41 991.3747465801425 57.43409068323672
+
+42 839.6816122205928 62.4185560811311
+42 852.1959143043496 55.58106518909335
+42 854.4878245429136 59.47700824774802
+42 881.0837928347755 44.657003588974476
+42 849.410260935314 -12.205032706260681
+42 825.5560948855709 0.7079929541796446
+42 836.2381231742911 20.17954444885254
+42 820.9860492523294 28.536953227594495
+
+43 -52.193254778161645 387.95168395899236
+43 -26.59781923959963 357.2462761551142
+43 -45.86993453418836 341.1697383020073
+43 -34.453230877174065 327.73839857056737
+43 -54.883570418693125 310.87533875741065
+43 -96.6178668232169 360.3830845467746
+43 -77.34167326008901 376.07244146429
+43 -72.61949540767819 370.7015399336815
+
+44 40.62405595602468 1064.9269479773939
+44 73.87231548200361 1045.9177752956748
+44 31.09894182928838 972.2940053287894
+44 11.927477497141808 983.707732476294
+44 19.941157697699964 998.1170694660395
+44 11.728307615034282 1002.676843225956
+44 23.957425623433664 1022.9379381369799
+44 18.08936654846184 1026.360825682059
+
+45 440.2047403997276 1001.7587412651628
+45 462.9241240010597 985.7366142105311
+45 452.96684081549756 971.3066929187626
+45 463.1480342124123 964.4447349067777
+45 437.872125888709 927.7851207125932
+45 415.55368781951256 942.6500144861639
+45 420.1415444461163 950.0544508118182
+45 409.95628672186285 957.3035536371171
+
+46 699.2603941981215 1065.2692975793034
+46 718.7841956615448 1057.344289118424
+46 719.5332018521149 1060.0623409282416
+46 758.1920714806765 1044.2082682810724
+46 743.4132966543548 1007.6589651945978
+46 717.2519184318371 1018.2242788672447
+46 714.6039054510184 1011.2273925989866
+46 682.5906926719472 1023.6669814195484
+
+47 -184.5494467250537 995.9706856384873
+47 -141.91401796974242 971.6393553987145
+47 -156.42712997552007 946.7083206064999
+47 -172.85279582464136 955.8279922809452
+47 -177.43268564529717 947.6494112126529
+47 -216.16421494283713 970.4731048792601
+47 -201.26635875506327 995.795288644731
+47 -188.75275293039158 988.9575716163963
+
+48 968.5916837072 596.1448841914535
+48 1025.2776173711754 566.9297162443399
+48 1011.5551096394192 540.8444673679769
+48 999.8226075300481 547.302819846198
+48 987.2500690994784 522.7783795986325
+48 957.5361652413849 538.3395116943866
+48 973.5424173998181 569.0948788132519
+48 958.2987574774306 576.6777748540044
+
+49 1037.873323511565 552.3498187754303
+49 1103.1328198232222 521.2892262004316
+49 1090.5766798246186 495.216184893623
+49 1071.0360464761034 504.6896310765296
+49 1058.8523234897293 480.16921545378864
+49 1027.9720122886356 495.7180072441697
+49 1043.1884301030077 527.62666647695
+49 1029.1192017311696 534.4475622959435
+
+50 977.3595371169504 428.20343439280987
+50 1030.1743984580971 397.39859953150153
+50 1015.6620198057499 372.46639863960445
+50 1018.7926107319072 370.56349885091186
+50 1005.0414422871545 347.18800848163664
+50 954.1826213493478 376.85202530026436
+50 971.756308068987 406.4625504203141
+50 966.2767678159289 409.88941323012114
+
+51 315.89044981612824 806.8674008175731
+51 322.202120159287 761.2476221881807
+51 310.5553294667043 759.5765238367021
+51 314.33093625563197 733.2885774597526
+51 286.380234133685 729.1231030952185
+51 277.5610642754473 791.3649204168469
+51 291.9210845984053 793.838859161362
+51 290.65306434128433 803.504789577797
+
+52 250.72011980833486 1125.5960160251707
+52 274.2046089184005 1110.743350064382
+52 264.64417604589835 1095.5434037242085
+52 274.4283734774217 1089.4515701998025
+52 250.33490353240632 1051.2560617215931
+52 227.63197447359562 1065.7298277243972
+52 232.60455612977967 1073.5254071690142
+52 222.8162951527629 1080.0043826568872
+
+53 201.57834269688465 584.9782856404781
+53 207.89799654879607 538.58385412395
+53 180.7164910377469 535.2008963171393
+53 182.3935891208239 523.6032947152853
+53 159.87326672999188 520.6564989164472
+53 154.4044337279629 560.0907829795033
+53 174.20332224783488 563.008981930092
+53 171.67955006007105 581.1796192061156
+
+54 116.9617336159572 1015.3969823606312
+54 140.45030631800182 1000.157016409561
+54 135.47361837513745 992.7485588639975
+54 145.26188844069839 986.2695311550051
+54 116.57614261400886 941.0567424111068
+54 93.48036574036814 955.9137205574661
+54 103.04500947869383 970.7265549246222
+54 92.86391282291152 977.5886432118714
+
+55 -393.1040732844267 231.82770952396095
+55 -359.47041453421116 213.2086239848286
+55 -355.270999195287 220.60904038883746
+55 -335.7144514278043 209.58593995682895
+55 -371.21310820709914 146.49077784828842
+55 -401.3275517523289 163.2109258621931
+55 -388.7333137015812 185.7993266377598
+55 -411.4203620303888 198.7255479041487
+
+56 190.56612898921594 966.999917441979
+56 216.36704439204186 953.720121242106
+56 211.41884043463506 943.6017589084804
+56 218.85014288825914 939.4209898356348
+56 195.2306374697946 893.0997642744333
+56 167.4777088232804 907.1334423571825
+56 176.62509531667456 924.6521255020052
+56 170.76106227678247 927.6878679022193
+
+57 176.14329666038975 193.27615395374596
+57 204.322328197537 175.76195799559355
+57 170.67114378605038 121.9776909109205
+57 153.84389671310782 132.25478308275342
+57 150.39776021591388 127.18525004573166
+57 125.34926693537273 142.7965160086751
+57 149.8162590910215 182.54577649571002
+57 163.90576687757857 173.78865945525467
+
+58 1130.3668488657568 372.1264477465302
+58 1165.9616290293634 351.98126663826406
+58 1166.2432122705504 325.2690055835992
+58 1149.819682797417 297.21909632720053
+58 1118.9146311592776 315.09070319868624
+58 1134.1881773245987 341.57974508963525
+58 1118.1463936944492 351.0900940783322
+
+59 229.5693685109727 770.3405703548342
+59 234.70238910568878 725.8698455039412
+59 224.9953581681475 724.6063358876854
+59 226.74161621625535 706.4276278503239
+59 198.39397139195353 703.0324135608971
+59 192.78682672814466 755.6287874802947
+59 204.05299072153866 756.5214947443455
+59 203.15749973407947 767.7400378827006
+
+60 394.91004038695246 761.2375985980034
+60 395.0036520471331 752.3336514867842
+60 407.4442606854718 752.464448645711
+60 408.9117672473658 723.8292095065117
+60 367.3337868931703 721.456234253943
+60 367.8242982395459 711.7821038290858
+60 344.1215613016393 710.3714254461229
+60 341.288418808952 757.9637041576207
+
+61 263.7126014807727 592.2130979467183
+61 291.4455555595923 580.1149996835738
+61 272.83512930432335 538.1046660523862
+61 247.83168073394336 549.457136746496
+61 242.8915463713929 538.564359376207
+61 222.18900732859038 547.6390033792704
+61 238.52382519328967 584.2049486413598
+61 256.49273785366677 576.2631244361401
+
+62 -330.2345545766875 502.73575979843736
+62 -300.88985928869806 485.2334878426045
+62 -306.62400814914145 475.88116417452693
+62 -293.3245290077757 468.2771543506533
+62 -319.31450267182663 425.41534641198814
+62 -361.56995083973743 450.5257979352027
+
+63 946.8856173788663 368.2572763990611
+63 976.6037756202277 352.3088973965496
+63 963.6341904073488 328.55447040870786
+63 981.6198073299602 319.0645017065108
+63 967.8848926848732 294.14044882170856
+63 913.5311167994514 323.38060775212944
+63 924.9782677858602 344.02156243287027
+63 931.624140699394 340.60696748271585
+
+64 533.032258940395 974.0846064388752
+64 534.0419003346469 952.0266450159252
+64 547.6446453025565 952.5569012984633
+64 549.295548173599 906.5012067649513
+64 523.2522405765485 905.8400924690068
+64 523.1667299908586 913.9697387050837
+64 508.39766536746174 913.4272274747491
+64 506.6043218013365 973.0322934072465
+
+65 -62.440770781831816 549.2959830202162
+65 -61.10785027872771 533.435852104798
+65 -39.74164421320893 535.2088270261884
+65 -35.82411550777033 495.37101994268596
+65 -58.35260690446012 493.1986661385745
+65 -59.26018592528999 505.57871719263494
+65 -86.44987638108432 502.9702866896987
+65 -90.79673322988674 546.6753175482154
+
+66 212.70628516864963 154.94236632436514
+66 240.0793506752234 140.12996960803866
+66 229.77352806716226 121.82424321770668
+66 245.80698401178233 113.0875716265291
+66 226.72602022485808 78.81523588486016
+66 206.78036296390928 89.83390997163951
+66 213.64821997308172 102.2958278618753
+66 190.57609250186943 114.83037587441504
+
+67 169.38685920927674 318.26362570375204
+67 192.41813615825959 309.60050170868635
+67 187.1216943487525 295.6064805537462
+67 208.97853483539075 287.7053794078529
+67 192.72483031079173 243.39635862410069
+67 163.45274712494574 253.92983765527606
+67 171.39743880741298 274.9208912141621
+67 155.39663401758298 280.5604737121612
+
+68 95.99556420370936 753.4505496919155
+68 101.5171381952241 708.9838615786284
+68 90.647853406379 707.3210212513804
+68 93.17969364137389 688.376203654334
+68 65.22078719735146 684.9852095749229
+68 58.054755605524406 737.9524364676327
+68 69.70156798418611 739.6234275829047
+68 68.04079040908255 749.672430716455
+
+69 358.3606373195071 465.4404174890369
+69 360.8112917363178 454.23810102045536
+69 372.0612983228639 456.6794135905802
+69 379.032652097987 422.2940907776356
+69 342.9499425650574 414.9456308335066
+69 345.01588984997943 403.35207286290824
+69 320.5719560664147 398.44903552159667
+69 308.69939992623404 455.2390546090901
+
+70 -112.77169654052705 343.5649711173028
+70 -79.10546639189124 321.84923253022134
+70 -89.82051834836602 305.4753434471786
+70 -73.37818452296779 294.80695622228086
+70 -90.2202043349389 269.46366313658655
+70 -129.36590779782273 294.60655247978866
+70 -114.82401705533266 316.8282444626093
+70 -125.78690859884955 324.0695571154356
+
+71 514.7594721626956 419.46233345009387
+71 528.893772998359 406.4470167644322
+71 535.8102650623769 414.2632832042873
+71 551.1190454706084 400.4859765972942
+71 529.5960824145004 376.64184090308845
+71 544.1191867592279 363.6306001599878
+71 521.8227096279152 339.3911269325763
+71 477.8565168126952 379.1951014660299
+
+72 -270.21111392136663 -30.16584907285869
+72 -232.64863653318025 -52.615583987906575
+72 -246.02042437391356 -75.21240914985538
+72 -254.62638710974716 -70.26930767297745
+72 -269.1483029392548 -94.42692850716412
+72 -315.70553617505357 -67.03806568495929
+72 -302.70623612077907 -45.99391709640622
+72 -285.494340847712 -55.88013901375234
+
+73 690.6010357057676 447.25308904238045
+73 739.0901096560992 421.0483122151345
+73 725.3631801861338 395.35021214559674
+73 724.1927829436027 395.7250696439296
+73 710.8464518559631 370.8053132016212
+73 663.1470881865826 395.85697215795517
+
+74 1154.925552179804 661.2176524661481
+74 1162.839714752743 648.1372042540461
+74 1163.3212664991152 602.4558429159224
+74 1162.547804727219 602.0605159457773
+74 1153.04997925926 617.8345062062144
+74 1126.7808399188798 601.6835022065789
+74 1107.7974821364041 632.0701106749475
+
+75 1094.8268735539168 313.2881285175681
+75 1141.3931144757662 285.1277609951794
+75 1112.7286204884294 237.97706768848002
+75 1083.7755691555794 255.09497059881687
+75 1100.5879679254722 283.14897767081857
+75 1082.9829003331251 293.4172488357872
+
+76 603.6057486215141 -42.66920128278434
+76 646.2475866442546 -67.38742374815047
+76 637.4604143567849 -82.19282472506166
+76 630.0287705208175 -78.01200473308563
+76 616.6617454770021 -100.99643391184509
+76 563.0688632503152 -70.19840482622385
+76 577.2053329071496 -46.43157009035349
+76 594.8104165086988 -56.70029549859464
+
+77 1108.103219009703 1119.51991513744
+77 1142.530729274964 1099.3629863597453
+77 1126.8647913723253 1073.2576834205538
+77 1134.6890518593136 1068.6941545996815
+77 1121.6995584368706 1046.8758788704872
+77 1072.793870058842 1075.7851276248693
+77 1087.3098846643697 1100.3296099435538
+77 1094.352521870518 1096.1450034417212
+
+78 535.1506029497832 476.9787566252053
+78 580.8976908663753 452.6807704139501
+78 571.7503932863474 435.1616481170058
+78 578.7890438677277 431.3639373630285
+78 564.2966402436141 404.4963530730456
+78 522.8504294499289 426.5165941249579
+78 536.2009730034042 451.04907150380313
+78 524.8613963702228 457.1246042121202
+
+79 66.41130540217273 386.4866689927876
+79 89.08624092792161 374.72233187779784
+79 83.36846136464737 363.8213511835784
+79 105.65058265603147 352.44006838463247
+79 84.31421615509316 310.7880810368806
+79 55.77914845664054 325.20115367881954
+79 65.68403460131958 344.6639968790114
+79 49.26606386061758 353.0094792880118
+
+80 -389.17460044962354 524.5738278888166
+80 -371.570260979468 514.3047125246376
+80 -366.2167523629032 522.8786701988429
+80 -340.39541116333567 507.6624712664634
+80 -369.42659625806846 458.186913959682
+80 -413.24515379895456 484.05537107400596
+
+81 -424.00655112438835 360.8208476677537
+81 -399.37171012093313 347.52794180065393
+81 -418.4370659114793 311.70783117972314
+81 -410.22408660827205 307.14780944772065
+81 -418.99140435946174 290.4072909168899
+81 -451.83520263130777 307.87314132228494
+81 -452.10302624851465 333.4239894375205
+81 -441.5452359726187 327.72701122798026
+
+82 276.0869253380224 117.66472945176065
+82 303.49261275911704 99.75527551397681
+82 293.15833683288656 84.15946071222425
+82 306.4703853861429 75.39421188086271
+82 284.2710991941858 41.863376984372735
+82 243.55332843679935 68.53816700540483
+
+83 728.0692494942341 507.65956196561456
+83 776.1654071956873 481.837950758636
+83 761.669148101937 455.35743708349764
+83 740.9419133695774 466.754515286535
+83 728.7293567047454 444.94415063411
+83 701.3563130989205 459.7558915261179
+
+84 827.7901897372212 970.2176716439426
+84 869.9685332344379 952.4649149700999
+84 863.5021934446413 938.8459194675088
+84 878.3405513954349 932.807485671714
+84 868.0925407749601 909.0822600498796
+84 818.1061904702801 929.8501869775355
+84 824.556250003865 945.0176778919995
+84 817.9186886411626 947.657968243584
+
+85 729.1235714294016 1109.3334329333156
+85 783.0949834359344 1079.3154518008232
+85 764.0113195646554 1045.4310300685465
+85 724.9066356143449 1066.7007361929864
+85 728.7168588519562 1074.0970098003745
+85 714.2429286448751 1082.4623247012496
+
+86 465.9225700730458 367.8414904922247
+86 502.3839626349509 339.18668257817626
+86 468.61143650347367 297.0163862127811
+86 438.4233449290041 320.70394315570593
+86 453.77081240690313 340.22416844032705
+86 447.50156526756473 344.8043680433184
+
+87 900.4284586932044 1087.5199986007065
+87 954.4245799877681 1055.1795818135142
+87 933.7819687896408 1021.6657490767539
+87 888.78040234535 1049.067804608494
+87 894.8946324912831 1059.1985422912985
+87 886.284727754537 1064.5281994584948
+
+88 691.3851142902859 151.0705305337906
+88 734.0267378399149 126.35262578167021
+88 706.1511572899763 78.04888306930661
+88 683.8522544689476 90.97835255227983
+88 692.2627875758335 104.61817401275039
+88 671.5312471077777 116.4025942813605
+
+89 496.03351898351684 129.6564172115177
+89 546.4464834281243 105.40711440518498
+89 534.2580348718911 81.27373329736292
+89 518.6254567552824 88.8529247585684
+89 506.4573335070163 62.783852856606245
+89 471.6768897320144 79.45404101908207
+
+90 822.9561831061728 358.4342797957361
+90 870.2955279049929 330.66882662661374
+90 841.6469285793137 281.9699686113745
+90 792.3432760690339 311.6507303789258
+90 806.1027941859793 334.2518696319312
+90 808.058897114126 333.1109325122088
+
+91 -7.29449017951265 296.2749948296696
+91 21.260895360959694 279.926167415455
+91 -7.769898673053831 230.44980368204415
+91 -50.80349640012719 255.55180540308356
+91 -31.321352100931108 288.6663976535201
+91 -16.847247454570606 280.30044008232653
+
+92 986.8227397799492 932.4014973472804
+92 1034.5418883964885 905.4152805674821
+92 1021.560392690124 882.8226744495332
+92 1004.737350119045 892.7118266355246
+92 990.6139926624019 867.784177351743
+92 960.0984537322074 885.6596679892391
+
+93 423.4356449714396 8.092678336426616
+93 472.31806854647584 -18.49605768918991
+93 457.04774908698164 -45.37219116836786
+93 436.3243440766819 -34.36180600337684
+93 424.87666203896515 -55.00282455049455
+93 397.11044781515375 -39.8074476569891
+
+94 1063.9583557115402 1065.6256754565984
+94 1106.594846824417 1041.296330589801
+94 1087.1268649732228 1007.0204029269516
+94 1095.3399028019048 1002.4609487336129
+94 1082.7431912005413 980.2596130110323
+94 1031.8976802334655 1008.7613967172801
+
+95 -318.4134118424263 191.18280507810414
+95 -281.23599258600734 168.34198040887713
+95 -315.6372643993236 111.840212168172
+95 -361.8093840230722 139.6201506946236
+95 -341.93394497036934 172.35158780403435
+95 -333.3240145794116 167.02136872895062
+
+96 984.573866203893 -35.173990573734045
+96 1026.8354318740312 -60.669995767995715
+96 998.1703626723029 -107.821145568043
+96 975.4783057782333 -94.50877437181771
+96 983.5040526008233 -81.26000405661762
+96 963.9385836063884 -69.46343231759965
+
+97 934.4633845202625 -2.7913410402834415
+97 976.3279152493924 -27.517207868397236
+97 948.0597331013996 -75.43843122385442
+97 925.3677283513825 -62.126035464927554
+97 933.3934891202953 -48.877295926213264
+97 913.8321428976487 -37.467842841520905
+
+98 805.6654301467352 634.3078803233802
+98 853.0083621093072 606.1555593684316
+98 840.3990350319073 585.115418471396
+98 822.0085669697728 596.1498108282685
+98 806.3461004539859 569.6571004092693
+98 777.3895214602817 587.1622373610735
+
+99 401.03513692575507 1029.2229296583682
+99 435.0653044206556 1009.8352147527039
+99 403.37575472681783 954.5241881143302
+99 379.5145037774928 968.2113703973591
+99 384.8595472581219 977.5595932733268
+99 375.07935444731265 983.2642888445407
+
+100 -139.04100156994537 549.65357625857
+100 -126.76563324290328 528.4878394845873
+100 -120.97061624773778 532.0332182217389
+100 -98.79308300488628 493.54855731874704
+100 -142.4643932073377 468.3110877741128
+100 -176.90910727437586 527.1873258668929
+
+101 391.4534287468996 572.2612284440547
+101 446.8177540274337 557.7435674965382
+101 440.82943320902996 535.6116870138794
+101 428.35209091729484 538.9650574997067
+101 421.61469861492515 514.1150704286993
+101 378.7235690362286 525.6665390040725
+
+102 -277.347223256249 279.50286810845137
+102 -228.83040708489716 250.58628254756331
+102 -265.1306815650314 189.80572713166475
+102 -289.78197256545536 204.6471368353814
+102 -272.5793759438675 232.70438524708152
+102 -296.8377884272486 247.16271951049566
+
+103 461.2938500982709 68.50380298122764
+103 490.24668664764613 51.385128462687135
+103 474.9723546379246 24.89619011245668
+103 492.57735258480534 14.62742773257196
+103 479.9715366815217 -6.800122315064073
+103 433.0208120010793 20.970442164689302
+
+104 -273.6311080227606 481.2604645509273
+104 -231.38780513918027 457.3115730192512
+104 -267.6634335136041 394.2086719274521
+104 -295.04407800361514 409.7956921607256
+104 -291.60601797234267 415.6393810249865
+104 -306.46873706020415 424.00136160850525
+
+105 2.65783366933465 1088.9197687320411
+105 36.30699620395899 1068.7532792780548
+105 1.5350529591087252 1010.7003300413489
+105 -25.853272390784696 1027.060965878889
+105 -13.243502381723374 1048.1003549359739
+105 -19.5043801383581 1051.9062894452363
+
+106 393.6312242166605 513.0465115122497
+106 427.0432223251555 478.55208370648324
+106 409.72345934505574 461.7214588224888
+106 403.4338966491632 468.2373083848506
+106 385.72940934915096 451.01547322049737
+106 358.2182055611629 478.99004211463034
+
+107 -414.6084232288413 57.758851788938046
+107 -364.90067969681695 26.531181467697024
+107 -398.94193932786584 -27.256713850423694
+107 -423.20862548146397 -12.023848358541727
+107 -409.05510850274004 10.193847617134452
+107 -434.88498892914504 26.18467545695603
+
+108 186.47704751463607 764.08025402762
+108 187.9768584270496 732.3479944504797
+108 183.3116274070926 732.2989824749529
+108 184.80330117908306 701.3409438338131
+108 151.38537413044833 699.441198060289
+108 148.38990516541526 762.5186302531511
+
+109 496.59805728821084 1037.1968540344387
+109 558.4972117973957 1029.7174405474216
+109 553.4658112220932 990.5605995524675
+109 507.9191529620439 995.8890218157321
+109 508.6233926306013 1002.8654452767223
+109 492.66365057067014 1004.6334240678698
+
+110 143.4411208834499 12.119583187624812
+110 166.1367313012015 -1.5805534813553095
+110 155.04917718376964 -19.507371731102467
+110 166.3969954836648 -26.357444999739528
+110 143.07177514908835 -63.771929278969765
+110 109.41709038661793 -43.21755998581648
+
+111 744.5522688752972 123.75315191783011
+111 783.6705265226774 101.32129354774952
+111 752.7295976346359 48.7261964045465
+111 729.2602365557104 62.03050512075424
+111 739.1810490549542 79.9452391192317
+111 724.3137433247175 88.69391169957817
+
+112 1093.669995606877 607.5293033253402
+112 1122.618605214171 590.7987713739276
+112 1109.2523324007634 567.8146385978907
+112 1127.6347801338416 557.5546870324761
+112 1113.1225785308052 532.6225745175034
+112 1066.18432980543 559.230102904141
+
+113 1032.3008258584887 232.4833913706243
+113 1081.142681354424 209.76731865480542
+113 1057.5647454611026 159.5727267600596
+113 1031.7748942733742 171.6907338127494
+113 1042.4240741676185 194.25934104435146
+113 1019.3720164194237 204.8574742656201
+
+114 792.6980163787957 93.28553915582597
+114 831.8204346790444 70.46658473275602
+114 800.1020012027584 17.863186474889517
+114 777.0213691252284 31.171563347801566
+114 787.7156453821808 49.48165906779468
+114 772.0666737137362 58.609268790110946
+
+115 -34.91955714067444 1112.9167008176446
+115 -1.66328141419217 1093.1332257520407
+115 -33.37798533216119 1040.1456408537924
+115 -60.77032334986143 1056.8934166077524
+115 -51.979099228745326 1071.3108554556966
+115 -57.46243749628775 1075.124957241118
+
+116 764.7230739686638 571.541951045394
+116 795.210294307908 556.3759487830102
+116 782.2691842708737 529.9118662104011
+116 799.857679913519 521.1920230034739
+116 788.0543459097389 497.4501066021621
+116 739.9867278586607 520.5617610123008
+
+117 88.91343199159019 539.2698819637299
+117 92.12678635609336 492.4555568918586
+117 63.37387166777626 490.60490761324763
+117 62.915989071596414 497.18206488341093
+117 43.48549047391862 496.2036823295057
+117 41.122933716280386 536.0578089226037
+
+118 888.2122796429321 32.342269878834486
+118 927.7114151539281 10.688908245414495
+118 897.9492240564432 -43.055666310712695
+118 872.9205130217597 -29.38067038729787
+118 883.2178172175772 -10.300311567261815
+118 869.144280892564 -3.092054106295109
+
+119 920.6442758687772 127.93028637394309
+119 942.9554998222739 113.83961360901594
+119 933.010366773 98.24764876812696
+119 958.452240301529 82.25404255278409
+119 938.9507351717912 51.07415592856705
+119 890.8128976214211 80.76728843338788
+
+120 557.3348833278287 -79.5511041264981
+120 603.5205666110851 -108.49116581305861
+120 576.7416216777638 -150.20150822401047
+120 543.0783461406827 -128.87331598065794
+120 556.0810980619863 -108.2158331591636
+120 543.9474373837002 -100.59979590401053
+
+121 273.2055781639647 243.85479384288192
+121 300.9470238224603 230.9822708312422
+121 297.90190930874087 224.75541528873146
+121 315.09352098195814 216.80534711107612
+121 298.36572466464713 180.6219212524593
+121 253.43668525689282 201.05743895284832
+
+122 -245.27182122017257 928.3536141961813
+122 -192.06653241999447 897.163991080597
+122 -208.87984183011577 869.1114343125373
+122 -222.9648101972416 877.4813827387989
+122 -225.641505561769 873.194443685934
+122 -264.3730965447612 896.0182694587857
+
+123 -270.1436886556912 890.1502100341022
+123 -216.17300595948473 860.130030605942
+123 -232.9741801393684 830.9160714931786
+123 -247.44386680307798 838.8948393482715
+123 -250.12056990875863 834.6078968960792
+123 -288.8359517608769 855.8832842130214
+
+124 -293.8574450283777 852.7332632243633
+124 -240.65613046474755 821.9305840060115
+124 -257.07264769636095 793.1078062988818
+124 -271.93517545820214 801.4696477837861
+124 -274.6037650394719 796.4084473084658
+124 -313.7201281746384 818.8412039726973
+
+125 446.00953689054586 301.8120263405144
+125 487.4558689906262 279.7915650457144
+125 462.2811042217072 233.45264638587832
+125 410.66549275256693 261.1739370673895
+125 423.25088056828827 284.53692227974534
+125 433.42010618094355 278.8361793998629
+
+126 -394.8522656224668 695.2573991734535
+126 -339.3425057504792 666.8015773296356
+126 -354.9695045761764 636.8254663348198
+126 -371.39122520177625 645.5582342576236
+126 -373.6751377538312 640.8882216848433
+126 -412.37851324351504 661.0025515388697
+
+127 287.15587575291283 1099.264484781772
+127 313.3739646973554 1083.2790678180754
+127 303.8135432114359 1068.0790922157466
+127 311.2529650889337 1063.12412022613
+127 288.313610926969 1026.102172397077
+127 254.26730035757646 1047.0385515410453
+
+128 877.2271275171079 410.8873817976564
+128 908.1237516487017 393.78983759507537
+128 881.0181574730668 346.268826501444
+128 833.3022819303442 372.8687504436821
+128 845.8954116750974 395.4575808830559
+128 862.7186954838689 385.5681448187679
+
+129 -148.89110828540288 1080.7471858877689
+129 -96.06663462240249 1048.7796007785946
+129 -112.49504689034075 1021.1183384731412
+129 -126.96873399987817 1029.4841095190495
+129 -130.02603855868801 1024.41885551624
+129 -169.1462669002358 1047.2383368127048
+
+130 951.000440002419 531.3015273362398
+130 981.131668363465 513.0345577560365
+130 952.0824575580191 465.49319713562727
+130 905.9054968568962 493.65778349898756
+130 919.2801312787924 515.8676093574613
+130 935.7145972757135 505.97416825406253
+
+131 535.4057787714992 193.95510286279023
+131 572.5391455821227 175.37392478995025
+131 558.0628815856762 146.95755075104535
+131 569.0097428518347 141.2650066781789
+131 557.9591596936807 119.85387449152768
+131 509.8788770805113 144.12767554819584
+
+132 155.30066017084755 992.95683388412
+132 188.56942591327243 972.0121213402599
+132 155.68050463870168 919.7860750239342
+132 128.28792631067336 936.5337408520281
+132 137.47192539530806 950.568263836205
+132 131.2069372285623 954.761303761974
+
+133 1023.8763715133537 995.1260025650263
+133 1054.371436360525 979.1862826477736
+133 1039.896117808763 950.7704570349306
+133 1057.0956664641853 942.0468219816685
+133 1046.430490791332 921.0273180343211
+133 998.3511411384679 945.2995229661465
+
+134 -260.38776274584234 738.4820004086941
+134 -227.11496454384178 717.1494585890323
+134 -251.6144816549495 680.4983434993774
+134 -257.48663771455176 684.3084630724043
+134 -266.67499054176733 670.6610746867955
+134 -293.2940640782472 687.8046001754701
+
+135 712.238476308994 829.6203292589635
+135 722.7783665074967 788.6912068333477
+135 719.2916733056773 787.4929956682026
+135 724.1565593357664 768.5728315282613
+135 690.8079962923657 760.0912480205297
+135 674.6257581496611 819.9323902670294
+
+136 581.2514481777325 973.4303528126329
+136 583.3744809366763 956.4172919858247
+136 590.3641259716824 957.2651647180319
+136 596.275243965676 912.802974846214
+136 557.0627405587584 907.35725123249
+136 548.6399069775362 968.8284326884896
+
+137 365.6589011538308 215.01376554742455
+137 382.7892614309676 138.91956456936896
+137 332.74679395533167 127.93969245068729
+137 318.46820886968635 191.6742024421692
+137 344.45929869939573 197.36788731068373
+137 341.6076466750819 209.72763140499592
+
+138 -82.23807797883637 731.4463421218097
+138 -77.4902685447596 686.58430028148
+138 -83.70652267197147 686.1318829096854
+138 -81.97265908261761 669.114523185417
+138 -115.37438379251398 665.6665866654366
+138 -121.8559711810667 727.5460033230484
+
+139 561.8108679805882 529.9149347413331
+139 600.397069652332 521.0286821462214
+139 596.6844795080833 504.3411207050085
+139 616.1719877191354 499.9000530987978
+139 608.7264501261525 468.4605517014861
+139 550.6526557155885 481.7879160474986
+
+140 -44.27824971289374 893.2946415450424
+140 -42.949393627932295 877.8218364175409
+140 -34.011813916265965 878.3028296958655
+140 -30.03741504973732 833.0457447785884
+140 -70.04798620310612 829.5283864550292
+140 -75.73992428858764 890.2542083431035
+
+141 299.79830198036507 451.27375386096537
+141 301.97996904468164 391.6716412063688
+141 254.16888620029204 390.39485048130155
+141 252.9764049348887 429.874244030565
+141 267.74980107229203 430.02948619425297
+141 266.76070894650184 450.1522085852921
+
+142 -36.408015966648236 736.1862928196788
+142 -32.226343859452754 671.1853894423693
+142 -45.825168625917286 670.268292048946
+142 -45.85361515940167 672.9781966116279
+142 -71.88495397823863 671.1562642119825
+142 -76.0421511051245 733.8344011288136
+
+143 572.0849246177822 255.51512558199465
+143 623.6681339179631 230.8912147525698
+143 611.4838849806692 206.37076978571713
+143 591.939150985796 216.23179573006928
+143 580.1436440604739 191.71544266864657
+143 548.8785945759155 206.87371587008238
+
+144 580.2121226403397 813.5185785628855
+144 581.8142095436342 772.108187334612
+144 577.1489841225557 772.0591078344733
+144 577.7617496433668 750.7711513917893
+144 544.3357525898609 749.6451815068722
+144 542.1250563587528 811.9564050454646
+
+145 -0.0238551814109087 899.9539392460138
+145 1.693792896810919 884.4852210711688
+145 9.46100433380343 885.3411095738411
+145 14.60990723897703 839.3220325578004
+145 -24.22621934209019 835.0425993297249
+145 -31.088623592164367 896.1432845238596
+
+146 750.8707673160825 853.2571654524654
+146 766.3587357075885 822.4466072861105
+146 757.4659719287883 817.7069500759244
+146 765.8094191486016 800.7592844422907
+146 739.5117155702319 787.3186571076512
+146 715.2875006829854 835.4599716160446
+
+147 417.41714439960197 247.69369153305888
+147 431.77535919635557 213.38578137382865
+147 418.225157877896 207.8228132929653
+147 426.60113011370413 187.77757963724434
+147 396.7914636377245 175.46162531152368
+147 373.6726348535158 229.42360815778375
+
+148 1054.935247308109 704.3014572225511
+148 1084.608233131934 692.6118211187422
+148 1066.072527528042 643.6327439378947
+148 1013.3682210708503 663.9847239069641
+148 1023.1988821015693 690.4160250127316
+148 1046.2342191331554 681.3666112367064
+
+149 1116.4368751859292 -3.197190562263131
+149 1139.4483420671895 -9.923936491832137
+149 1124.0551082431339 -61.96863006055355
+149 1070.2238596267998 -45.499886088073254
+149 1079.9935474903323 -13.260800438001752
+149 1110.8050974693615 -22.2284696418792
+
+150 802.9035341641866 933.5618062764406
+150 844.6972260840703 915.4177665058523
+150 840.1461645113304 904.5291110221297
+150 853.8141575937625 898.8655011299998
+150 841.6548869539984 872.022774906829
+150 786.1849947590381 896.6047408822924
+
+151 923.2976219374686 1131.1234954707325
+151 965.0829436404165 1113.7540234029293
+151 962.0503176562488 1106.3659164384007
+151 978.4518225586507 1099.5697110202163
+151 965.9284731480293 1070.4002804607153
+151 908.1344294820447 1094.1829925645143
+
+152 45.028378893388435 904.6858427431434
+152 45.964453282998875 889.5960907563567
+152 54.90202839486301 890.0771131422371
+152 58.88470467948355 844.0458027962595
+152 19.258860387373716 840.9195234589279
+152 14.336128717055544 902.4277229439467
+
+153 0.029556883964687586 561.5669811088592
+153 2.561344573041424 542.6220560707152
+153 18.873506121337414 544.3420153707266
+153 23.945242936024442 505.6778681818396
+153 -24.201578801497817 499.3647726289928
+153 -31.813141751335934 557.748127952218
+
+154 581.1736281982157 648.2065091114491
+154 586.3438961573411 600.2514628004283
+154 539.7402130507398 595.1151362508535
+154 536.7134102249984 624.1212791949511
+154 542.9256000902969 624.9609689507633
+154 540.7862842839677 643.5227570999414
+
+155 851.0850260783918 1010.3412594888359
+155 892.1092588696629 991.4149077869952
+155 887.1613094219938 981.2964294012636
+155 901.2261955256108 974.8627039100975
+155 888.6782406242564 948.0159340221435
+155 833.9778351995628 973.3801709078252
+
+156 491.5564536387101 962.0333223696798
+156 493.6835024494212 944.6331235580146
+156 500.66908102924936 945.8680990077555
+156 506.183143859962 902.1760386209935
+156 467.74000246450305 897.5128725580871
+156 460.49180900421925 958.2221122607589
+
+157 872.4604298693594 1048.1215947065502
+157 915.0152179640718 1031.5344280339777
+157 910.0835944234859 1019.8674616143107
+157 923.3627804836724 1014.1998168230057
+157 912.7505403321702 988.1477978061885
+157 857.3052733845543 1010.4067624825984
+
+158 848.3135053757578 682.7663281336427
+158 887.0259852120653 661.8795189894736
+158 863.0022667504381 617.1016487870365
+158 811.3869414250366 644.8217852283269
+158 820.9268596649636 661.9578244909644
+158 833.4408859536052 655.1204819884151
+
+159 52.89912651735358 747.5775704085827
+159 55.2982781061437 704.2395925186574
+159 50.248338230419904 703.7993921469897
+159 51.22507097898051 684.8382394928485
+159 17.807119012111798 682.9386571217328
+159 14.046614683698863 744.8465847689658
+
+160 -329.55277928477153 1068.0112907160074
+160 -309.2071091705002 1055.8353487420827
+160 -320.2945205811411 1037.9094096962363
+160 -299.167233889224 1025.3544913493097
+160 -320.5686135084834 989.8978379406035
+160 -362.0456703470554 1015.0159044396132
+
+161 -136.67476830398664 879.9354606196284
+161 -136.20881262724288 872.5841403454542
+161 -123.38762150821276 873.4930287450552
+161 -120.9318772368133 824.7354638725519
+161 -160.18118158029392 822.7749056648463
+161 -163.09874203172512 878.496670100838
+
+162 -251.82684811018407 33.5246926099062
+162 -219.3632465125993 15.280540712177753
+162 -232.722805746831 -8.477652674540877
+162 -210.81305870669894 -21.411986896768212
+162 -224.18075164640322 -44.39593732915819
+162 -278.94292752211913 -13.221442949026823
+
+163 -9.967253951122984 402.7204551715404
+163 38.698587785474956 396.6494185477495
+163 31.144054065225646 338.49366600625217
+163 -0.780189546989277 342.41743126511574
+163 1.3533043870702386 361.4114738833159
+163 -14.999609224731103 363.56285271421075
+
+164 273.79949904209934 779.3231053445488
+164 280.0826247043442 736.41317198053
+164 271.54190687905066 735.1619031839073
+164 274.06573455175385 716.9913754016161
+164 242.61608476447873 712.7891740109771
+164 234.19798302208073 773.8737412784249
+
+165 -127.08907080977224 1115.0465763509274
+165 -73.18774033430964 1091.6080306321383
+165 -84.95092932344414 1063.9957625139505
+165 -97.44827599148266 1069.2849186118692
+165 -100.87401939276606 1062.2799695543945
+165 -142.2780544073321 1080.4294172935188
+
+166 -124.00982821243815 710.4878681786358
+166 -121.61908207437955 667.9240826591849
+166 -130.55673157866113 667.4431164097041
+166 -129.67762646451592 657.7730428148061
+166 -159.98139378102496 655.5191870313138
+166 -163.25929734110832 708.527310911566
+
+167 609.9057900689077 319.4101415332407
+167 642.3248542270157 305.42567888088524
+167 629.0476485579275 273.9245899617672
+167 645.0567100569606 267.51101099699736
+167 635.9460478569381 246.50753160566092
+167 587.5178628901485 266.90563853271306
+
+168 386.870912341401 1156.0645225923508
+168 411.13298012921587 1141.2201642915606
+168 391.6479326498229 1108.493373254314
+168 401.03525065258145 1103.171746518463
+168 388.81051578582264 1082.5234091188759
+168 354.7682633011136 1103.0724967811257
+
+169 -369.0615350189619 1090.8269391003996
+169 -347.5577268123161 1079.4374559689313
+169 -376.9161636340432 1024.1519796997309
+169 -416.40464718383737 1045.0321144796908
+169 -393.9180770297535 1088.2433141954243
+169 -375.15592321101576 1078.7608926389366
+
+170 1034.9751097417902 52.47290381230414
+170 1060.3681356492452 41.12502415291965
+170 1051.2495503721293 20.895503539592028
+170 1075.0834138274658 9.918376438319683
+170 1061.0249086741824 -21.20432573929429
+170 1011.409181635594 1.1166542582213879
+
+171 622.9471618931275 964.577013483271
+171 623.8957756704185 948.3259287364781
+171 654.9848569557071 949.8145739156753
+171 656.5544648198411 911.5013976767659
+171 605.2616840465926 908.638665471226
+171 602.7394734711852 963.5900578107685
+
+172 -182.61541609838605 144.5970410425216
+172 -150.14377164258622 125.57877389341593
+172 -164.27670910116285 101.42534304969013
+172 -142.75985547481105 88.87417501397431
+172 -155.74271870055236 66.28149723820388
+172 -210.1281637828797 98.62121496349573
+
+173 94.5311389893759 226.490654213354
+173 140.30262504145503 199.86889133416116
+173 112.41389119811356 152.72732206620276
+173 89.33372353715822 166.03620297834277
+173 96.59039031830616 178.5021387077868
+173 73.90309452731162 191.42796629481018
+
+174 1025.190415036399 649.0095514468849
+174 1053.7501663451549 632.2748777810484
+174 1026.2522201871034 585.1371545381844
+174 978.131522630807 613.2810111120343
+174 991.1213454450481 635.099553335458
+174 1010.2894013698678 624.0734815709293
+
+175 405.64878235477954 627.3890562690794
+175 415.09522997098975 579.478911889717
+175 357.282224182738 568.0302664712071
+175 350.7159787735436 600.8709762077779
+175 371.28422346618026 604.5717492438853
+175 368.0112683530897 620.024260353297
+
+176 115.87663763575256 341.31934947520494
+176 159.2258392868098 323.1901885457337
+176 136.8451907564886 269.91181741654873
+176 107.16405403031968 282.37693554349244
+176 115.50975298276171 302.210629850626
+176 101.84162823087536 307.8747368287295
+
+177 -89.33051397744566 888.5628846250474
+177 -87.21195925516076 871.9368571303785
+177 -79.44474216061644 872.7927205339074
+177 -74.31630514771678 828.7092449907213
+177 -113.5412251050584 824.4258574917912
+177 -120.78813479654491 885.1353769786656
+
+178 142.63563629006967 755.1019409410655
+178 145.4562320744153 708.6710327193141
+178 135.35635579540394 707.7905995175242
+178 135.84678483731113 698.1164624541998
+178 107.09408906241879 696.2657746765763
+178 103.77907462930307 752.7579557411373
+
+179 703.1376092447899 -42.00909482501447
+179 723.8366862430703 -50.69644587114453
+179 700.2863818875048 -103.60116130299866
+179 657.7136878003366 -85.46436805278063
+179 674.4248915133066 -47.7318046297878
+179 696.298453216441 -57.18118425831199
+
+180 647.7549904605839 380.5951321721077
+180 699.3135930274148 358.2942842692137
+180 688.6845715942327 333.79028111696243
+180 666.4225475175772 343.2354324813932
+180 655.7894169725478 319.11856409721076
+180 626.4968549909536 331.587190778926
+
+181 1146.1636975330766 -19.91989300213754
+181 1169.9527471144684 -26.638422213494778
+181 1170.446533017559 -73.48232496902347
+181 1158.7463768324815 -70.12100760638714
+181 1152.738073872868 -90.31786083802581
+181 1127.38976908708 -83.22854969464242
+
+182 752.7042461342644 -59.68498872220516
+182 788.7084460335318 -81.7625945918262
+182 778.3825212314259 -98.13298264890909
+182 794.8254484385252 -108.8010194376111
+182 781.4422428193502 -130.23699569515884
+182 728.9991541332565 -97.8784141652286
+
+183 802.835468438454 201.4154058713466
+183 848.2107910339255 175.56496607139707
+183 820.7201643036678 127.65241625346243
+183 774.9600883030798 153.11171902157366
+
+184 629.0878608580679 11.417178008705378
+184 663.868492155103 -5.252855820581317
+184 643.7153054939117 -48.44212400726974
+184 592.9172614554409 -24.584084004163742
+184 604.3281492127571 -0.458763899281621
+184 620.3455098823179 -7.646703669801354
+
+185 424.0598688570317 1132.0641128011048
+185 456.5063744268846 1115.3700109310448
+185 432.50273398449644 1068.6576484367251
+185 403.9682535715401 1083.0699423011392
+185 417.31449366826564 1107.9889050703496
+185 412.62490375479683 1110.2625917606056
+
+186 1157.3834485958796 1165.724952775985
+186 1158.0078417921904 1106.4951358288527
+186 1124.0017364039086 1123.5591526646167
+186 1138.4727909748908 1152.3619722425938
+186 1132.6086932204198 1155.3974842820317
+186 1137.945282728644 1165.5200446546078
+
+187 77.84127580281347 1038.2161229979247
+187 110.704895560164 1018.8157678693533
+187 81.67915158392861 968.9534862916917
+187 48.42672882298939 988.3498302698135
+
+188 323.21921483706683 1071.3803939502686
+188 356.49209101032466 1050.048821080476
+188 326.65673969499767 1003.2751453537494
+188 292.99099805695005 1024.9898302610964
+
+189 473.97224904806353 1118.2638512849808
+189 505.67792049143463 1098.0775111168623
+189 472.77754090726376 1047.012672457844
+189 441.0677658012137 1067.5862131267786
+
+190 1137.863032512134 878.2408149559051
+190 1160.5543766205665 864.9290704522282
+190 1160.9706355987582 825.442107886076
+190 1152.564646273153 811.4153588693589
+190 1112.2644468555227 835.3823047224432
+
+191 -224.74579702247865 713.6897722966969
+191 -191.48918690695427 693.9057686328888
+191 -222.8159694110509 640.9217373393476
+191 -256.06855843239464 660.3186891730875
+
+192 207.72833690000698 1146.8255338650197
+192 242.5154029489495 1129.3814534638077
+192 215.86328143067658 1075.672495186329
+192 181.080232975306 1092.7295217756182
+
+193 -94.43422425189056 1152.5571729484946
+193 -47.10127830808051 1125.178117249161
+193 -66.20624166331254 1093.229977864772
+193 -117.84406221238896 1123.2740781456232
+193 -100.65443522925489 1152.4918865505606
+
+194 363.0888829191681 1051.2796702869236
+194 394.7823346653022 1032.2545249313116
+194 361.9101558828261 978.479831084609
+194 330.6013630058151 997.8962641619146
+
+195 76.77132132439874 66.39907958358526
+195 130.39182604826055 32.890303226187825
+195 113.95080058951862 6.389309404417872
+195 59.94555183756165 39.50693077594042
+
+196 228.14392449567094 943.0031574852765
+196 262.13338649016805 927.4864236973226
+196 237.05650268448517 871.8577644862235
+196 203.07105478737503 886.9874362237751
+
+197 -1.639951789751649 -57.16068496927619
+197 55.02183297392912 -84.05573340132833
+197 42.853190548717976 -110.12474760226905
+197 -14.201479805866256 -82.84658861532807
+
+198 755.5611357961316 1146.392491357401
+198 803.6602875213139 1120.1844364665449
+198 784.5848302282393 1085.5258019715548
+198 736.4897126278374 1111.3468015361577
+
+199 -341.6617452632636 776.7338244784623
+199 -288.4522207691334 745.1567079536617
+199 -307.9465104432311 713.2042344175279
+199 -360.7632443087641 744.3983752205968
+
+200 -366.5338895996101 738.5303053222597
+200 -312.55490304436535 707.7355068475008
+200 -332.0330095575191 674.2344921994954
+200 -385.62732774112374 705.4205728471279
+
+201 -316.4009035581257 814.9413924049586
+201 -264.34148408076726 781.8036260940135
+201 -285.3826732716989 749.0606097094715
+201 -337.44212742126547 782.1984566841274
+
+202 -220.78879016125575 966.5529113560915
+202 -168.35701570869423 934.9680964816362
+202 -187.8550868893508 903.4028757363558
+202 -239.89813109417446 934.9918437395245
+
+203 -225.71755628311075 435.68925853073597
+203 -184.25168721470982 411.732240408659
+203 -214.03588171373121 359.9253807552159
+203 -255.8946356549859 384.2655460629612
+
+204 536.7270945538767 807.6407518070191
+204 538.9337063918356 745.7166467308998
+204 500.8424729958642 744.5416581016034
+204 498.6359477303922 806.4657664597034
+
+205 374.53554152837023 850.0725512802601
+205 376.10882644262165 811.3721035774797
+205 324.81177347851917 808.8970220535994
+205 322.8497937647626 847.593387817964
+
+206 146.55580282467417 566.9774615392089
+206 149.8871837707702 508.93637469410896
+206 100.53341488190927 506.48212343640625
+206 97.20620479271747 564.1360877621919
+
+207 662.0117242210545 1131.8570452816784
+207 696.7950417345855 1114.8006493523717
+207 674.3387165169697 1068.878675851971
+207 639.5553560962435 1085.9351301733404
+
+208 399.483758660499 806.9718088824302
+208 401.41328721749596 771.3724119383842
+208 344.2927669873461 768.0617256946862
+208 341.97047539870255 804.0441697351635
+
+209 739.8430412560701 238.69581192545593
+209 787.1172936540097 217.1242641042918
+209 768.0982042916585 177.04461264237761
+209 721.2167508574203 198.23318214714527
+
+210 7.474122287705541 741.2930394075811
+210 10.719839421333745 691.3820217736065
+210 -27.743985339067876 688.6551743019372
+210 -31.37840122450143 738.562118249014
+
+211 -323.3796551572159 -76.79809471219778
+211 -272.2057654079981 -99.49236925505102
+211 -294.6241576608736 -149.28690478764474
+211 -345.79406049777754 -126.97968535497785
+
+212 91.1540599197615 -81.35321991145611
+212 141.54669654974714 -103.66775712184608
+212 125.2194439987652 -141.00882491841912
+212 74.43797209719196 -118.69830820523202
+
+213 17.10138857946731 -27.53810071386397
+213 72.99776720697992 -55.60266354121268
+213 60.4281790535897 -80.51432243175805
+213 4.531763768522069 -52.44970734231174
+
+214 128.2163332416676 906.3338488582522
+214 177.05213160044514 884.0038952697068
+214 160.70115631492808 848.9868898633868
+214 112.254077531863 871.3209858890623
+
+215 623.3205857833382 818.2310013826936
+215 630.4999232087284 764.1026629451662
+215 591.2831376821268 759.0439946930856
+215 584.4926455558743 813.1764412913471
+
+216 520.0214734734036 1102.1000408288091
+216 572.3357827351429 1081.7433760445565
+216 557.9374033866916 1045.972568007186
+216 505.62303778436035 1066.3292885255069
+
+217 96.77501672017388 901.3575870543718
+217 103.14729094831273 849.9310248140246
+217 65.0887250576634 845.6596315838397
+217 59.10935429483652 896.7031651847064
+
+218 1156.9909107184503 207.08210870809853
+218 1161.3409122612793 200.15873747318983
+218 1167.520536687225 204.0956693496555
+218 1168.1734805193264 142.15382152050734
+218 1136.1316083185375 194.08532892540097
+
+219 -177.22908457834274 1039.4101925231516
+219 -120.22159414924681 1016.3912447262555
+219 -134.24839343735948 982.1733232606202
+219 -191.25594190391712 1005.1923307292163
+
+220 667.1658325465396 826.8229468557984
+220 675.9655158193782 766.5169513449073
+220 637.1456563258544 760.6880523152649
+220 627.9532162647229 821.3771073743701
+
+221 1131.1754342778586 184.7407872006297
+221 1140.5702483851928 141.86286378465593
+221 1091.301528239157 131.2769247367978
+221 1081.906788912369 174.15487953461707
+
+222 56.511581246042624 33.275978641584516
+222 110.12399224727415 0.5413983874022961
+222 95.59836790105328 -23.22922565229237
+222 41.985929225804284 9.50541229173541
+
+223 37.36528778239153 5.197902942076325
+223 91.76342023420148 -28.30286192521453
+223 76.46833394677378 -52.85594427399337
+223 22.07017302326858 -19.35511814802885
+
+224 -17.291406399570405 -84.81493796780705
+224 36.72211564495228 -118.7071470413357
+224 21.422863115556538 -142.87313567101955
+224 -32.59068606537767 -108.98086570389569
+
+225 1152.9128005201928 409.533036345616
+225 1165.4188665773254 403.4700444135815
+225 1165.7290166392922 374.04789748601615
+225 1141.4944123148452 386.1820948012173
+
+226 -448.2845275765285 -30.871407814323902
+226 -416.9832709985785 -49.51520068012178
+226 -437.23963248357177 -83.02519474737346
+226 -447.8056960806716 -76.5538492910564
+
+227 -449.0400775813032 78.30565214529634
+227 -425.55915922275744 63.838940845802426
+227 -448.8891546013765 26.812244582921267
+227 -449.42074018577114 77.5273020695895
+
+228 -451.61607434926555 286.9678842872381
+228 -435.18930277763866 240.67878542095423
+228 -451.0723120912444 235.09180742315948
+
+229 1696.9720521355048 68.36107321456075
+229 1755.300881746458 31.033320078626275
+229 1749.5877714655362 19.744698099792004
+229 1752.3296759594232 17.837749065831304
+229 1740.4778612728696 -1.2593613155186176
+229 1738.5257828012109 -0.505614535883069
+229 1726.6903054129798 -21.151288820430636
+229 1703.6009894080926 -7.069385075941682
+229 1707.0509489362594 -2.3867624569684267
+229 1692.9649218237028 5.98249096237123
+229 1689.9078293605708 0.9168380778282881
+229 1667.9889791333117 14.623937524855137
+229 1680.9826463509817 36.05615227855742
+229 1679.7999551284593 37.59239026531577
+
+230 1632.8179993464146 -42.27606359496713
+230 1654.3399196418468 -55.213045774027705
+230 1651.6756815768313 -60.66174011863768
+230 1664.984167125076 -69.0392462220043
+230 1668.0453602939378 -64.36072362028062
+230 1690.7336587652098 -77.28537259809673
+230 1661.3534530522302 -130.25260474346578
+230 1597.5651320230681 -91.4333241712302
+230 1609.8017799977679 -71.94497270695865
+230 1611.3609914721455 -72.31569503061473
+230 1617.8558276155964 -61.405997255817056
+230 1619.4191258726642 -62.16385894827545
+
+231 1737.9090019562282 131.5167273338884
+231 1757.8593689855188 120.11203573271632
+231 1755.956369425403 116.22012809477746
+231 1773.5699942645151 105.17793948017061
+231 1775.4811711842194 108.29557472839952
+231 1816.1595464190468 85.49444961547852
+231 1805.4373345435597 69.89392182976007
+231 1804.2669072931167 70.26873822696507
+231 1788.580524268793 46.09776958078146
+231 1714.2217938201502 91.77411582320929
+
+232 1438.840558538679 985.1763403024524
+232 1459.9687340732198 972.6227368302643
+232 1453.846519599203 963.2660861425102
+232 1480.458304964006 946.8986659571528
+232 1461.727396065835 916.5018092487007
+232 1435.8972116422374 932.4903448261321
+232 1426.341434206115 916.9027499295771
+232 1405.2091479916126 929.8435316383839
+
+233 1512.9629140580073 924.7859199680388
+233 1524.936467349995 895.4874259531498
+233 1540.425862396136 901.4584657754749
+233 1549.2157573048025 879.095408719033
+233 1484.9459143376444 853.2510047797114
+233 1476.164235926466 874.8398488368839
+233 1495.1362170157954 882.3962986022234
+233 1482.7657526214607 912.4649684559554
+
+234 1325.2577590853907 731.9303681310266
+234 1326.5547331124544 719.5545480623841
+234 1356.4614160181955 722.5802128277719
+234 1360.7289036677685 686.6182157676667
+234 1331.603805378545 683.2136153932661
+234 1333.7477422994561 664.2647712212056
+234 1307.7286989537533 661.2801297269762
+234 1299.6234664788935 729.3369692452252
+
+235 1266.6262645029929 60.722338965162635
+235 1325.691223103786 27.273258773609996
+235 1313.4748368980363 5.849414970725775
+235 1301.3532532125246 12.30367168225348
+235 1285.3102778762113 -14.968258453533053
+235 1253.2343632532284 3.278251128271222
+235 1268.888579341583 30.546044101938605
+235 1254.0251510618255 38.907310731709
+
+236 1379.4622440626845 1011.6516085211188
+236 1407.6371685885824 994.5263043325394
+236 1413.3665410035755 1004.2659567501396
+236 1431.7569891894236 993.2321279942989
+236 1397.3684634319507 935.9555117953569
+236 1375.4545891364105 949.2752291355282
+236 1386.5327745804098 967.9761968515813
+236 1361.8853175225668 982.4285738114268
+
+237 1183.7471438357607 213.9461997896433
+237 1200.754327883711 186.63576923683286
+237 1180.2797258698847 174.03018109872937
+237 1191.7542529446073 155.17933923006058
+237 1168.9632790763862 141.00060693733394
+237 1142.0652792796027 184.46838792599738
+237 1141.9265410406515 197.63102179579437
+237 1156.9909107184503 207.08210870809853
+237 1161.3409122612793 200.15873747318983
+
+238 1238.0482685593888 337.2541654780507
+238 1269.6982691918965 322.48798182606697
+238 1255.6238259212114 292.9140617251396
+238 1269.6932371708099 286.09321772120893
+238 1259.8014221554622 265.4684662204236
+238 1201.1829713471234 293.50159365311265
+238 1212.2125747930259 316.8485403563827
+238 1225.496247783769 310.7937516979873
+
+239 1445.6640900154598 6.856674864888191
+239 1462.88478774135 -3.802719760686159
+239 1458.6735666273162 -10.042071899399161
+239 1470.021723938873 -16.891609482467175
+239 1453.577861088328 -43.00635530427098
+239 1445.7491461692844 -38.05558334849775
+239 1440.0113860606216 -47.02132636681199
+239 1420.0487850406207 -34.45491459965706
+
+240 1574.0763504947536 586.6558823473752
+240 1604.9037554860115 576.14045775868
+240 1596.6164355773944 550.8866338972002
+240 1605.2021216251887 547.8798813354224
+240 1597.659641113598 525.7312942072749
+240 1536.7945521611255 545.609044469893
+240 1545.847213392146 572.0324538443238
+240 1566.9144552415237 565.2857017274946
+
+241 1311.122912191553 560.6508225705475
+241 1314.8137649130076 542.4925567638129
+241 1340.8084206867497 547.8000027015805
+241 1346.9871035988908 514.9553330149502
+241 1327.9699099771678 511.6573441699147
+241 1332.4750754439738 490.0230600889772
+241 1301.4303958513774 484.275177532807
+241 1287.4527307061944 556.1422695014626
+
+242 1265.527208542917 1086.7218040563166
+242 1286.2705412621144 1073.7768931277096
+242 1290.1010277529713 1079.2376285940409
+242 1312.01475576777 1065.9179097488523
+242 1279.5249970767181 1012.9204730466008
+242 1255.2582400308456 1028.1512690857053
+242 1266.3487204900011 1045.6907600592822
+242 1247.561447791988 1057.4948251023889
+
+243 1629.1883303846698 301.5018402375281
+243 1646.80587175861 290.0725139789283
+243 1642.210050869966 283.441957520321
+243 1652.7764963740483 276.9714964721352
+243 1636.717679560883 251.24814994633198
+243 1628.8890128338244 256.1988149024546
+243 1622.7666873647831 246.84188546426594
+243 1602.415433197515 259.4039210435003
+
+244 1210.398301693378 710.1990089416504
+244 1231.5174259410705 661.6379633639008
+244 1206.3575441592839 650.9190217219293
+244 1214.721730777761 632.0357308667153
+244 1187.2414325131103 620.1308117676526
+244 1152.5776989471633 699.522972734645
+244 1163.0255164536647 704.2791730258614
+244 1168.2060373337008 692.3314471505582
+
+245 1693.091780931456 398.9709665067494
+245 1707.1816971544176 390.2147048898041
+245 1702.9787713913247 383.201133640483
+245 1715.8982859544922 374.8196874316782
+245 1700.2079204663169 351.0361686963588
+245 1691.5976314393338 356.36571964249015
+245 1685.4753505506087 347.00880897045135
+245 1667.0721023618244 359.2041433826089
+
+246 1316.0453166174702 1052.4095709957182
+246 1363.0115734278224 1023.0930947475135
+246 1344.2765070591122 993.0835302229971
+246 1318.4505491885357 1008.6850036978722
+246 1308.894733734196 993.0974942948669
+246 1286.9850326119922 1006.0301276855171
+
+247 1568.8283641627058 199.81096766330302
+247 1582.92242651782 190.6674402412027
+247 1577.5653649850283 182.4801173582673
+247 1590.4849326373078 174.09854894690216
+247 1575.1831172322854 150.3190391883254
+247 1566.1840136810206 155.64456574060023
+247 1561.5922364625148 148.62685466185212
+247 1543.1970871700905 160.04808924533427
+
+248 1528.2199459804688 473.8911590911448
+248 1573.5383303239942 453.46203418821096
+248 1561.3795479096007 426.6185378096998
+248 1542.6244131259155 435.3256176095456
+248 1534.6440403447486 417.8184547275305
+248 1485.0246041286737 440.5253378935158
+248 1496.4263356146403 465.4249162543565
+248 1519.4783728709444 454.8272877149284
+
+249 1471.5427815336734 -87.34284767322242
+249 1502.4607809535228 -106.37575762532651
+249 1485.2515843503643 -133.6602354478091
+249 1480.9463862148114 -130.99537769705057
+249 1477.8851537313312 -135.67388949915767
+249 1456.7520404914394 -122.73262856155634
+249 1463.6398166606668 -112.2059880271554
+249 1458.1601094186772 -108.77915471792221
+
+250 1163.992425012868 1165.7946246936917
+250 1187.0519036080223 1154.4227600414306
+250 1161.9158886903897 1104.600501973182
+250 1132.2106655344833 1119.3868529405445
+250 1131.9984724551905 1139.517252780497
+250 1138.4727909748908 1152.3619722425938
+250 1132.6086932204198 1155.3974842820317
+250 1137.945282728644 1165.5200446546078
+
+251 1198.5985058373772 944.312680894509
+251 1221.277581418166 932.1623972989619
+251 1191.5170173638035 878.4192581064999
+251 1168.4450634010136 890.9526191484183
+251 1172.6398799968883 898.7402295116335
+251 1151.519948527217 910.5198349058628
+251 1167.5461601277348 939.3392833471298
+251 1189.443610353861 927.5679005272686
+
+252 1593.1440323826391 106.37007417343557
+252 1624.0619048390072 87.33743998594582
+252 1611.064132082276 66.29243105836213
+252 1602.8466390476096 71.23903367109597
+252 1595.9630509130657 60.325287099927664
+252 1578.3535595173016 70.98046912439167
+252 1584.8524596695788 81.50296484678984
+252 1579.7656402916182 84.5467151273042
+
+253 1465.907965641236 372.95490236766636
+253 1495.225406773854 358.164382442832
+253 1482.6532153277658 333.639534952119
+253 1489.2991644365247 330.2250725608319
+253 1479.399359492818 310.3745387196541
+253 1421.9430057017598 338.80659183487296
+253 1434.1305583359208 362.94016926176846
+253 1455.2387803995516 352.3219350166619
+
+254 1290.8222455205396 126.02385703474283
+254 1337.401262492407 96.7022046558559
+254 1307.5705563502852 49.53867776878178
+254 1280.1682137446478 67.06003737077117
+254 1294.3162424585316 89.66573172435164
+254 1275.139531714376 101.46610719151795
+
+255 1247.8673785421997 549.1428674627095
+255 1284.2967244044412 523.5863308943808
+255 1265.9091632219497 497.4517075996846
+255 1278.4437939692289 488.6788624934852
+255 1265.4173828149214 470.34425441361964
+255 1216.4492930462584 505.06086407229304
+
+256 1203.3738713769708 491.3718828037381
+256 1250.68890249799 465.93001460283995
+256 1224.7707017336506 416.4854002483189
+256 1191.5371702450793 433.9451176598668
+256 1206.7942510505673 461.982619645074
+256 1191.939236784121 469.56951698474586
+
+257 1655.4480117815547 208.08186849579215
+257 1686.7627703801263 188.2792100403458
+257 1671.8457353720441 164.89089808799326
+257 1663.6241720507387 170.22460084408522
+257 1657.117148194462 160.476392544806
+257 1641.4638463286683 169.990609690547
+257 1647.9667855876032 180.12594735436141
+257 1640.9197391595226 184.69769590720534
+
+258 1717.7760520721786 307.4706335365772
+258 1749.0743891771417 289.21666047535837
+258 1735.3237932284828 265.8407160937786
+258 1725.9359181546606 271.16206105053425
+258 1720.2105827508494 261.03494907543063
+258 1703.3868973574135 270.92391190864146
+258 1709.116325340001 280.6638814210892
+258 1704.029527945444 283.7075858283788
+
+259 1272.4175020377152 396.46746394224465
+259 1322.0654112920165 371.05022382363677
+259 1309.4849067430478 347.2997401691973
+259 1288.7655156874098 357.92218764312565
+259 1275.804365930846 333.393340613693
+259 1247.2645742888562 348.1923058796674
+
+260 1695.7381139362697 258.840598706156
+260 1712.5658924041782 248.5644910633564
+260 1706.0711708818562 237.65489051491022
+260 1714.677411014447 232.71245583705604
+260 1701.6838679416105 211.28037485294044
+260 1670.766076847678 230.3128328192979
+260 1684.1402342845686 252.52326051332057
+260 1690.008676447207 249.10062454640865
+
+261 1224.5626090220176 -6.316423706710339
+261 1229.8494082381949 -28.330073771998286
+261 1259.3232374973595 -21.050023157149553
+261 1267.437670231564 -53.100614288821816
+261 1212.7583580715582 -66.84135173074901
+261 1199.3572066044435 -12.777070434764028
+
+262 1419.5531217828393 749.573504185304
+262 1424.9175594940316 720.2050483319908
+262 1446.2672153513413 723.5276979878545
+262 1450.4163553926628 698.7924624979496
+262 1396.467172598932 689.7054439242929
+262 1386.9536772014108 743.8091619107872
+
+263 1416.5491668591276 334.10355455055833
+263 1466.2586073728744 302.8794908132404
+263 1452.1108343249653 280.2738753128797
+263 1440.3658577322494 287.8935106098652
+263 1428.129259663634 268.4054889958352
+263 1390.160672552418 292.3971387781203
+
+264 1513.3520209267735 -33.083197770640254
+264 1530.5768570911605 -44.12970629520714
+264 1523.689124217257 -54.65633891150355
+264 1531.906639503548 -59.602988697588444
+264 1516.985246625496 -82.60427886620164
+264 1486.4560440131463 -63.56729963980615
+264 1501.373365708394 -40.17890288680792
+264 1506.8489794328343 -43.21857904456556
+
+265 1633.798656331608 159.45581857860088
+265 1650.2336049366277 149.56266642175615
+265 1643.345968451351 139.03607501275837
+265 1651.5634491094388 134.08949716761708
+265 1637.8004262747709 111.87488732486963
+265 1607.275436438853 130.52445563673973
+265 1621.8037675912492 153.9086547140032
+265 1628.065087764524 150.10296044684947
+
+266 1479.229766459437 436.9796007052064
+266 1534.782970118802 404.6559228990227
+266 1523.3199561859947 385.5632785409689
+266 1506.5005069596227 395.06518033891916
+266 1492.369158930378 370.9110820889473
+266 1453.6394441772718 393.34581183455884
+
+267 1599.759391545318 253.18102246895432
+267 1619.7177850275766 241.00201301276684
+267 1615.5189003364649 233.6012826897204
+267 1622.95470671542 229.03364088200033
+267 1603.4663188660052 196.6920119356364
+267 1575.290455543436 213.8176375310868
+
+268 1341.671378744999 171.08584473468363
+268 1369.4624378115404 153.56871611066163
+268 1341.9236884266138 110.30122725479305
+268 1296.126327861799 139.2439198549837
+268 1309.508997796569 160.67995389550924
+268 1327.904044300085 149.25856474786997
+
+269 1591.9133055307902 775.3972666952759
+269 1595.5547827086411 725.1033930778503
+269 1560.2012585280463 722.4071388412267
+269 1558.7856669232715 746.0096806809306
+269 1539.3594555868767 744.643105937168
+269 1537.1336541252676 771.3344479072839
+
+270 1281.9691819148138 891.7624585554004
+270 1346.532308441354 852.9521074797958
+270 1333.1581892224494 830.7423297110945
+270 1311.633032625541 844.0662515461445
+270 1302.4577551656403 829.2570079583675
+270 1259.804424904054 855.1347564365715
+
+271 1285.4186312421225 712.1515947468579
+271 1296.4870157865807 658.0641850475222
+271 1271.6546878062654 653.156229082495
+271 1267.5506118126214 673.6331039369106
+271 1238.0652945607435 667.5145957600325
+271 1231.1010690501425 701.1251630242914
+
+272 1371.8816078053787 550.8380002714694
+272 1418.2925368440337 537.3893528096378
+272 1405.9164138841443 494.28236631676555
+272 1381.346121341223 501.3794804941863
+272 1379.0951638687402 493.61223194375634
+272 1356.865682855714 499.95971206203103
+
+273 1403.9883777857758 271.6353970579803
+273 1431.374263024656 255.6628376469016
+273 1405.006133036688 212.02060984261334
+273 1358.8364282019902 239.41044294275343
+273 1372.2108306551818 261.62070321664214
+273 1390.9905300945975 250.5906363762915
+
+274 1541.5987534527667 532.4958168193698
+274 1591.9097929382697 517.9270936455578
+274 1584.4040748293046 492.29429739527404
+274 1576.2153204798233 494.5309028737247
+274 1569.4503472873475 472.3904898799956
+274 1527.716762220487 484.7267609015107
+
+275 1146.1636975330766 -19.91989300213754
+275 1196.4755157132167 -34.489661341533065
+275 1183.7058974590618 -77.21438447572291
+275 1158.7463768324815 -70.12100760638714
+275 1152.738073872868 -90.31786083802581
+275 1144.9379662359133 -88.07697656750679
+275 1144.285084627103 -26.134611004963517
+
+276 1762.4052984397858 1125.2626370768994
+276 1810.5382272782736 1095.9593200366944
+276 1712.6868573231623 936.5739043094218
+276 1664.5537621248513 965.8775689303875
+
+277 1417.0079755280167 -41.06910123117268
+277 1436.5654604332522 -52.0910611320287
+277 1431.60117145814 -60.661462934687734
+277 1440.6003176332451 -65.98707706667483
+277 1422.2778406308498 -98.31660523638129
+277 1393.7211838413496 -81.96898504719138
+
+278 1314.4803923782893 463.50533961877227
+278 1361.7914965432137 438.45076696947217
+278 1332.8122707062867 384.3275846131146
+278 1285.5011021192186 409.38225875236094
+
+279 1582.6905433789361 1170.2118126880378
+279 1629.2763122911565 1140.1175678241998
+279 1589.8630583193153 1080.0777660366148
+279 1452.843582361471 1168.8412631228566
+
+280 1730.659459315706 376.13712338358164
+280 1748.6657726555131 364.7120003886521
+280 1728.0113068628125 332.3581154420972
+280 1705.3069707974792 346.8310687094927
+280 1718.693307036534 367.88001986406744
+280 1723.391315824585 364.8322217371315
+
+281 1485.5892759948038 -18.276064028963447
+281 1502.417139589088 -28.552407504990697
+281 1482.54372283048 -61.28548647649586
+281 1460.624932486564 -47.578190905973315
+281 1474.007571295835 -26.141929445788264
+281 1478.7015328942798 -28.80267506837845
+
+282 1605.2462190508377 175.41592335887253
+282 1623.6332106038462 164.76901015639305
+282 1604.5335536093917 132.43141084350646
+282 1580.6668754722923 146.50512571632862
+282 1593.6523704442661 168.71146937273443
+282 1599.1320407264866 165.28469897061586
+
+283 1198.6288768744562 277.6003689337522
+283 1247.8963145203888 251.40451013110578
+283 1221.9697304014117 202.73379098065197
+283 1172.6981514245272 229.31688054464757
+
+284 1154.925552179804 661.2176524661481
+284 1183.0261687526945 614.2787731457502
+284 1162.547804727219 602.0605159457773
+284 1153.04997925926 617.8345062062144
+284 1137.5970679931343 608.3794583491981
+284 1137.1563650295138 650.1895111035556
+
+285 1185.8116754854564 423.81818249076605
+285 1215.5176763373893 409.0314935967326
+285 1191.1381299127825 361.1517436504364
+285 1141.4944123148452 386.1820948012173
+285 1152.9128005201928 409.533036345616
+285 1173.6239349963143 399.6847749352455
+
+286 1229.9284154286142 922.9615574199706
+286 1273.3632286882494 896.7049032133073
+286 1249.655640428653 858.8994359839708
+286 1206.2248735197354 884.7690385617316
+
+287 1137.863032512134 878.2408149559051
+287 1178.1591120208614 854.6610723976046
+287 1152.564646273153 811.4153588693589
+287 1135.3486617419403 821.6874880120158
+287 1134.8059411202557 873.1753851175308
+
+288 1571.88781675254 646.6446790080518
+288 1615.8352700418327 645.5599554255605
+288 1615.2044019850437 594.8335632104427
+288 1570.4793239529245 595.9100840352476
+
+289 1617.910853057634 706.7551621291786
+289 1620.001388473669 656.0576158352196
+289 1564.808208680246 654.3134050462395
+289 1562.7218626027461 704.6238267123699
+
+290 1659.0590814161114 344.79396821558475
+290 1685.2787249544635 328.8093884345144
+290 1665.3976206057705 296.8508577402681
+290 1639.1820467028301 312.44834106974304
+
+291 1454.410268546315 688.7681248411536
+291 1459.610667411238 638.1033610906452
+291 1415.3316280560102 633.7644138522446
+291 1410.135395576246 684.0420623105019
+
+292 1534.8074206185993 144.4723351188004
+292 1561.8129065507092 127.72144904732704
+292 1542.324371598661 95.3797487784177
+292 1514.930088289082 112.12657127901912
+
+293 1717.077560609905 447.234152097255
+293 1745.584805753082 435.53279171697795
+293 1730.794719120022 400.14351684227586
+293 1702.2833556530531 412.2320419382304
+
+294 1348.8262407369912 230.01256297715008
+294 1390.9979094334412 213.03436440229416
+294 1372.0450333887711 166.7600743342191
+294 1330.2620839523152 183.74243300408125
+
+295 1692.3216542101 324.6248106993735
+295 1713.4545438459609 311.6839494984597
+295 1693.5775472642854 279.338242597878
+295 1672.444642873481 292.27913487516344
+
+296 1446.0840989181306 -69.8010482955724
+296 1469.5661942525767 -84.26623774133623
+296 1449.2916600820608 -115.8420368488878
+296 1426.194246245781 -100.98557059280574
+
+297 1566.1180728317704 125.05663006566465
+297 1589.2072046098765 110.9746827725321
+297 1569.3258235459216 79.01597672887146
+297 1546.6254546458367 93.1020612642169
+
+298 1662.0907714944333 278.61856219545007
+298 1685.5726919753943 264.15374729037285
+298 1665.691538657993 232.19514258764684
+298 1642.2096021762118 246.65999190695584
+
+299 1630.0017387545668 224.4618954733014
+299 1651.1387614721898 211.13380134291947
+299 1631.2616155638825 178.78802580945194
+299 1609.7358010660391 192.11204694025218
+
+300 1140.1474229432642 366.42188561894
+300 1177.6983363223262 345.1358021385968
+300 1149.819682797417 297.21909632720053
+300 1140.8207139687147 302.5447310693562
+
+[SYMBOLS]
+;;Gage           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+1                950.311            790.890           
 
