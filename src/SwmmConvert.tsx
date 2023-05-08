@@ -529,7 +529,16 @@ export class SwmmConvert {
             InitFlow: array[7]?array[7]:'0', 
             MaxFlow: array[8]?array[8]:'', 
             Description: curDesc
-          };
+          }
+
+          // Default losses values
+          model['LOSSES'][array[0]] = {
+            Kin: 0, 
+            Kout: 0, 
+            Kavg: 0, 
+            Flap: 'NO', 
+            Seepage: 0
+          }
         }
       },
 
