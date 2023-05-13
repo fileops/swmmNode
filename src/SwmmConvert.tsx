@@ -586,6 +586,7 @@ export class SwmmConvert {
             Surcharge: m[9]?m[9]:'YES',
             Width: m[10]?m[10]:'',
             Surface: m[11]?m[11]:'',
+            Wcurve: m[12]?m[12]:'',
             Description: curDesc
         }
       },
@@ -1039,41 +1040,22 @@ export class SwmmConvert {
           if(m.length === 4){
             cleanCORData()
             CORData.Type = 'CURVES'
-            CORData.Name = m[1]
-            if(!model[section][m[1]]){
-              model[section][m[1]] = Object.create(null)
-              i = 2
-            }
-            // Since this is the first line a of a new curve, create a new property using
-            // the curve's name
-            model[section][m[1]][m[0]] = []
-          }
-          // Push all the new CURVE objects on to the array.
-          for(;i<m.length; i=i+2){
-            model[section][CORData.Name][m[0]].push({
-              x: parseFloat(m[i]), 
-              y: parseFloat(m[i+1])
-            })
-          }
-
-
-          // If there is not a CURVE array for this 
-          // subcatchment, create one.
-          /*if(!model[section][m[0]]){
-            model[section][m[0]] = {
-              Type: m[1],
-              Curve: []
+            // Capitalize the translation: this is something people read on UIs,
+            // so all caps is a little extreme.
+            CORData.Name = m[1][0].toUpperCase() + m[1].substr(1).toLowerCase()
+            if(!model[section][CORData.Name]){
+              model[section][CORData.Name] = Object.create(null)
             }
             i = 2
+            // Since this is the first line a of a new curve, create a new property using
+            // the curve's name
+            model[section][CORData.Name][m[0]] = []
           }
-
-          // Push all the new CURVE objects on to the 
-          // array.
-          for(;i<m.length; i=i+2)
-            model[section][m[0]].Curve.push({
-              x: parseFloat(m[i]), 
-              y: parseFloat(m[i+1])
-            })*/
+          // Push all the new CURVE objects on to the array.
+          model[section][CORData.Name][m[0]].push({
+            x: parseFloat(m[i]), 
+            y: parseFloat(m[i+1])
+          })
         }
       },
 
@@ -2192,6 +2174,8 @@ export class SwmmConvert {
             inpString += strsPad(rec.Surcharge, 10)
           if(isValidData(rec.Width))
             inpString += numsPad(rec.Width, 10)
+          if(isValidData(rec.Wcurve))
+            inpString += numsPad(rec.Wcurve, 10)
 
           inpString += '\n';
         }
