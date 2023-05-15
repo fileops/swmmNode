@@ -915,9 +915,11 @@ export class SwmmConvert {
       //==
       INFLOWS: function(model, section, m) {
         if (m && m.length){
-          model[section][m[0]] = {
-            Parameter: m[1].trim(), 
-            Timeseries: m[2].trim(),
+          if(!([m[0]] in model[section])){
+            model[section][m[0]] = {}
+          }
+          model[section][m[0]][m[1]] = {
+            Timeseries: m[2].trim()==='""'?'':m[2].trim(),
             Type: m[3] ? m[3].trim() : '',
             UnitsFactor: m[4] ? parseFloat(m[4]) : '',
             ScaleFactor: m[5] ? parseFloat(m[5]) : '',
@@ -2488,27 +2490,47 @@ export class SwmmConvert {
       let inpString = sectionCap(secStr)
       //
       for (let entry in model[secStr]) {
-        var rec = model[secStr][entry]
-        // If there is a description, save it.
-        inpString += validDescription(rec)
-        inpString += strsPad(entry, 16)
-        inpString += strsPad(rec.Parameter, 16)
-        inpString += strsPad(rec.Timeseries, 16)
-        if(isValidData(rec.Type))
-          inpString += strsPad(rec.Type, 10)
-        if(isValidData(rec.UnitsFactor))
-          inpString += numsPad(rec.UnitsFactor, 10)
-        if(isValidData(rec.ScaleFactor))
-          inpString += numsPad(rec.ScaleFactor, 10)
-        if(isValidData(rec.Baseline))
-          inpString += numsPad(rec.Baseline, 10)
-        if(isValidData(rec.Pattern))
-          inpString += strsPad(rec.Pattern, 10)
+        for (let constituent in model[secStr][entry]){
+          var rec = model[secStr][entry][constituent]
+          // If there is a description, save it.
+          inpString += validDescription(rec)
+          inpString += strsPad(entry, 16)
+          inpString += strsPad(constituent, 16)
+          inpString += strsPad(rec.Timeseries===''?"":rec.Timeseries, 16)
+          if(isValidData(rec.Type))
+            inpString += strsPad(rec.Type, 10)
+          if(isValidData(rec.UnitsFactor))
+            inpString += numsPad(rec.UnitsFactor, 10)
+          if(isValidData(rec.ScaleFactor))
+            inpString += numsPad(rec.ScaleFactor, 10)
+          if(isValidData(rec.Baseline))
+            inpString += numsPad(rec.Baseline, 10)
+          if(isValidData(rec.Pattern))
+            inpString += strsPad(rec.Pattern, 10)
+        }
 
         inpString += '\n';
       }
       return inpString;
     },
+
+    /*
+      INFLOWS: function(model, section, m) {
+        if (m && m.length){
+          if(!([m[0]] in model[section])){
+            model[section][m[0]] = {}
+          }
+          model[section][m[0]][m[1]] = {
+            Timeseries: m[2].trim(),
+            Type: m[3] ? m[3].trim() : '',
+            UnitsFactor: m[4] ? parseFloat(m[4]) : '',
+            ScaleFactor: m[5] ? parseFloat(m[5]) : '',
+            Baseline: m[6] ? parseFloat(m[6]) : '',
+            Pattern: m[7] ? m[7].trim() : ''
+          }
+        }
+      }, 
+    */
 
     DWF: function(model) {
       let secStr = 'DWF'
