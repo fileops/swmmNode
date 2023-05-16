@@ -932,16 +932,18 @@ export class SwmmConvert {
       //==
       DWF: function(model, section, m) {
         if (m && m.length){
-          model[section][m[0]] = {
-            Type: m[1].trim(), 
+          if(!([m[0]] in model[section])){
+            model[section][m[0]] = {}
+          }
+          model[section][m[0]][m[1]] = {
             Base: m[2] ? parseFloat(m[2]) : 1.0,
-            Pat1: m[3] ? m[3].trim() : '',
-            Pat2: m[4] ? m[4].trim() : '',
-            Pat3: m[5] ? m[5].trim() : '',
-            Pat4: m[6] ? m[6].trim() : '',
-            Pat5: m[7] ? m[7].trim() : '',
-            Pat6: m[8] ? m[8].trim() : '',
-            Pat7: m[9] ? m[9].trim() : ''
+            Pat1: m[3].trim()==='""'?'':m[3].replaceAll('"', '').trim(),
+            Pat2: m[4].trim()==='""'?'':m[4].replaceAll('"', '').trim(),
+            Pat3: m[5].trim()==='""'?'':m[5].replaceAll('"', '').trim(),
+            Pat4: m[6] ? m[6].replaceAll('"', '').trim() : '',
+            Pat5: m[7] ? m[7].replaceAll('"', '').trim() : '',
+            Pat6: m[8] ? m[8].replaceAll('"', '').trim() : '',
+            Pat7: m[9] ? m[9].replaceAll('"', '').trim() : ''
           }
         }
       },
@@ -997,7 +999,7 @@ export class SwmmConvert {
       RDII: function(model, section, m) {
         if (m && m.length){
           model[section][m[0]] = {
-            UHgroup: m[1].trim(), 
+            UHgroup: m[1].trim()==='""'?'':m[1].trim(),
             SewerArea: m[2] ? parseFloat(m[2]) : 0
           }
         }
@@ -2496,7 +2498,7 @@ export class SwmmConvert {
           inpString += validDescription(rec)
           inpString += strsPad(entry, 16)
           inpString += strsPad(constituent, 16)
-          inpString += strsPad(rec.Timeseries===''?"":rec.Timeseries, 16)
+          inpString += strsPad(rec.Timeseries===''?'""':rec.Timeseries, 16)
           if(isValidData(rec.Type))
             inpString += strsPad(rec.Type, 10)
           if(isValidData(rec.UnitsFactor))
@@ -2507,59 +2509,43 @@ export class SwmmConvert {
             inpString += numsPad(rec.Baseline, 10)
           if(isValidData(rec.Pattern))
             inpString += strsPad(rec.Pattern, 10)
+          
+          inpString += '\n';
         }
-
-        inpString += '\n';
       }
       return inpString;
     },
-
-    /*
-      INFLOWS: function(model, section, m) {
-        if (m && m.length){
-          if(!([m[0]] in model[section])){
-            model[section][m[0]] = {}
-          }
-          model[section][m[0]][m[1]] = {
-            Timeseries: m[2].trim(),
-            Type: m[3] ? m[3].trim() : '',
-            UnitsFactor: m[4] ? parseFloat(m[4]) : '',
-            ScaleFactor: m[5] ? parseFloat(m[5]) : '',
-            Baseline: m[6] ? parseFloat(m[6]) : '',
-            Pattern: m[7] ? m[7].trim() : ''
-          }
-        }
-      }, 
-    */
 
     DWF: function(model) {
       let secStr = 'DWF'
       let inpString = sectionCap(secStr)
       //
       for (let entry in model[secStr]) {
-        var rec = model[secStr][entry]
-        // If there is a description, save it.
-        inpString += validDescription(rec)
-        inpString += strsPad(entry, 16)
-        inpString += strsPad(rec.Type, 16)
-        if(isValidData(rec.Pat1))
-        inpString += numsPad(rec.Base, 10)
-        if(isValidData(rec.Pat1))
-          inpString += strsPad(rec.Pat1, 16)
-        if(isValidData(rec.Pat2))
-          inpString += strsPad(rec.Pat2, 16)
-        if(isValidData(rec.Pat3))
-          inpString += strsPad(rec.Pat3, 16)
-        if(isValidData(rec.Pat4))
-          inpString += strsPad(rec.Pat4, 16)
-        if(isValidData(rec.Pat5))
-          inpString += strsPad(rec.Pat5, 16)
-        if(isValidData(rec.Pat6))
-          inpString += strsPad(rec.Pat6, 16)
-        if(isValidData(rec.Pat7))
-          inpString += strsPad(rec.Pat7, 16)
+        for (let constituent in model[secStr][entry]){
+          var rec = model[secStr][entry][constituent]
+          // If there is a description, save it.
+          inpString += validDescription(rec)
+          inpString += strsPad(entry, 16)
+          inpString += strsPad(constituent, 16)
+          if(isValidData(rec.Pat1))
+          inpString += numsPad(rec.Base, 10)
+          if(isValidData(rec.Pat1))
+            inpString += strsPad(rec.Pat1===''?'""':'"'+rec.Pat1+'"', 16)
+          if(isValidData(rec.Pat2))
+            inpString += strsPad(rec.Pat2===''?'""':'"'+rec.Pat2+'"', 16)
+          if(isValidData(rec.Pat3))
+          inpString += strsPad(rec.Pat3===''?'""':'"'+rec.Pat3+'"', 16)
+          if(isValidData(rec.Pat4))
+          inpString += strsPad('"'+rec.Pat4+'"', 16)
+          if(isValidData(rec.Pat5))
+            inpString += strsPad('"'+rec.Pat5+'"', 16)
+          if(isValidData(rec.Pat6))
+            inpString += strsPad('"'+rec.Pat6+'"', 16)
+          if(isValidData(rec.Pat7))
+            inpString += strsPad('"'+rec.Pat7+'"', 16)
 
-        inpString += '\n';
+          inpString += '\n';
+        }
       }
       return inpString;
     },
@@ -2625,10 +2611,14 @@ export class SwmmConvert {
       //
       for (let entry in model[secStr]) {
         var rec = model[secStr][entry]
+        // If this is an invalid entry, return:
+        if(rec.UHgroup===''||rec.UHgroup==='""'||rec.UHgroup == null|| rec.SewerArea === 0){
+          return ''
+        }
         // If there is a description, save it.
         inpString += validDescription(rec)
         inpString += strsPad(entry, 16)
-        inpString += strsPad(rec.UHgroup, 16)
+        inpString += strsPad(rec.UHgroup===''?'""':rec.UHgroup, 16)
         inpString += numsPad(rec.SewerArea, 10)
 
         inpString += '\n'
