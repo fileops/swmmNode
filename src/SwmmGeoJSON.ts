@@ -56,6 +56,8 @@ export class SwmmGeoJSON {
       ...(SwmmGeoJSON.geoJSON_AnyNodes_tolatlon(model, 'DIVIDERS')).features,
       ...(SwmmGeoJSON.geoJSON_AnyNodes_tolatlon(model, 'STORAGE')).features,
 
+      ...(SwmmGeoJSON.geoJSON_AnySymbols_tolatlon(model, 'RAINGAGES')).features,
+
       ...(SwmmGeoJSON.geoJSON_AnyLinks_tolatlon(model, 'CONDUITS')).features,
       ...(SwmmGeoJSON.geoJSON_AnyLinks_tolatlon(model, 'PUMPS')).features,
       ...(SwmmGeoJSON.geoJSON_AnyLinks_tolatlon(model, 'ORIFICES')).features,
@@ -190,6 +192,36 @@ export class SwmmGeoJSON {
     return geoJ
   }
 
+  // Translate any list of symbols into geoJSON objects:
+  static geoJSON_AnySymbols_tolatlon(model:any, layerName:string):any{
+    var allNodes = SwmmGeoJSON.getAllSymbols(model, layerName)
+    const geoJ: FeatureCollection<Point> = {
+      type: "FeatureCollection",
+      features: []
+    };
+
+    // Add each line to the features array in the geoJ object.
+    // Use nodes
+    for(let entry in allNodes){
+      var rec = allNodes[entry]
+      let polyObj: GeoJSON.Feature<GeoJSON.Point> = {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [rec.x, rec.y]
+        },
+        properties: {
+          name: entry,
+          layer: layerName
+        }
+      }
+      
+      geoJ.features.push(polyObj)
+    }
+
+    return geoJ
+  }
+
   // getAllLinks packs all of the link data into 
   // an array of data structures like the following:
   // {
@@ -255,6 +287,45 @@ export class SwmmGeoJSON {
   
     return features;
   }
+
+    /**
+   * getAllSymbols packs all of the symbol data into 
+   * an array of data structures like the following:
+   * {
+   *  id: 'id',
+   *  x: xPosition,
+   *  y: yPosition,
+   *  nodeType: 'RAINGAGES'
+   * }
+   * 
+   * This makes operations like tracing, translating and displaying easier.
+   * 
+   * @param {JSON} model an EPA-SWMM model in JSON format.
+   * @param {string} sectionName The name of the EPA-SWMM file section (SYMBOLS).
+   * @returns swmmSymbols 
+   */
+    static getAllSymbols(model: any, layerName: string): any {
+      const features: {[key: string]: any} = {}; // use an index signature to define a dynamic key-value pair object
+    
+      for (const entry in model[layerName]) {
+        const rec = model[layerName][entry];
+          
+        // Insert the object
+        features[entry] = {
+          nodeType: layerName
+        };
+      }
+    
+      for (const entry in model.SYMBOLS) {
+        if (features[entry]) {
+          const rec = model.SYMBOLS[entry];
+          features[entry].x = rec.x;
+          features[entry].y = rec.y;
+        }
+      }
+    
+      return features;
+    }
 
   /**
    * Reproject spatial data into GeoJSON objects that can be projected on a global map.

@@ -76,13 +76,13 @@ export class SwmmConvert {
       //==
       RAINGAGES: function(model, section, m) {
         // If the array m is 6 elements, use a timeseries format.
-        if (m && m.length == 6){
+        if (m && (m.length == 6 || m.length == 5)){
           model[section][m[0]] = {
             Format: m[1], 
             Interval: m[2], 
             SCF: m[3], 
             Source: m[4], 
-            SeriesName: m[5], 
+            SeriesName: m[5]?m[5]:'',
             Description: curDesc
           }
         }
@@ -937,13 +937,13 @@ export class SwmmConvert {
           }
           model[section][m[0]][m[1]] = {
             Base: m[2] ? parseFloat(m[2]) : 1.0,
-            Pat1: m[3].trim()==='""'?'':m[3].replaceAll('"', '').trim(),
-            Pat2: m[4].trim()==='""'?'':m[4].replaceAll('"', '').trim(),
-            Pat3: m[5].trim()==='""'?'':m[5].replaceAll('"', '').trim(),
-            Pat4: m[6] ? m[6].replaceAll('"', '').trim() : '',
-            Pat5: m[7] ? m[7].replaceAll('"', '').trim() : '',
-            Pat6: m[8] ? m[8].replaceAll('"', '').trim() : '',
-            Pat7: m[9] ? m[9].replaceAll('"', '').trim() : ''
+            Pat1: m[3]?m[3].trim()==='""'?'':m[3].replaceAll('"', '').trim():'',
+            Pat2: m[4]?m[4].trim()==='""'?'':m[4].replaceAll('"', '').trim():'',
+            Pat3: m[5]?m[5].trim()==='""'?'':m[5].replaceAll('"', '').trim():'',
+            Pat4: m[6]?m[6].trim()==='""'?'':m[6].replaceAll('"', '').trim():'',
+            Pat5: m[7]?m[7].trim()==='""'?'':m[7].replaceAll('"', '').trim():'',
+            Pat6: m[8]?m[8].trim()==='""'?'':m[8].replaceAll('"', '').trim():'',
+            Pat7: m[9]?m[9].trim()==='""'?'':m[9].replaceAll('"', '').trim():'',
           }
         }
       },
@@ -2527,16 +2527,16 @@ export class SwmmConvert {
           inpString += validDescription(rec)
           inpString += strsPad(entry, 16)
           inpString += strsPad(constituent, 16)
-          if(isValidData(rec.Pat1))
-          inpString += numsPad(rec.Base, 10)
+          if(isValidData(rec.Base))
+            inpString += numsPad(rec.Base, 10)
           if(isValidData(rec.Pat1))
             inpString += strsPad(rec.Pat1===''?'""':'"'+rec.Pat1+'"', 16)
           if(isValidData(rec.Pat2))
             inpString += strsPad(rec.Pat2===''?'""':'"'+rec.Pat2+'"', 16)
           if(isValidData(rec.Pat3))
-          inpString += strsPad(rec.Pat3===''?'""':'"'+rec.Pat3+'"', 16)
+            inpString += strsPad(rec.Pat3===''?'""':'"'+rec.Pat3+'"', 16)
           if(isValidData(rec.Pat4))
-          inpString += strsPad('"'+rec.Pat4+'"', 16)
+            inpString += strsPad('"'+rec.Pat4+'"', 16)
           if(isValidData(rec.Pat5))
             inpString += strsPad('"'+rec.Pat5+'"', 16)
           if(isValidData(rec.Pat6))
@@ -2611,17 +2611,18 @@ export class SwmmConvert {
       //
       for (let entry in model[secStr]) {
         var rec = model[secStr][entry]
-        // If this is an invalid entry, return:
+        // If this is an invalid entry, do nothing:
         if(rec.UHgroup===''||rec.UHgroup==='""'||rec.UHgroup == null|| rec.SewerArea === 0){
-          return ''
-        }
-        // If there is a description, save it.
-        inpString += validDescription(rec)
-        inpString += strsPad(entry, 16)
-        inpString += strsPad(rec.UHgroup===''?'""':rec.UHgroup, 16)
-        inpString += numsPad(rec.SewerArea, 10)
 
-        inpString += '\n'
+        } else {
+          // If there is a description, save it.
+          inpString += validDescription(rec)
+          inpString += strsPad(entry, 16)
+          inpString += strsPad(rec.UHgroup===''?'""':rec.UHgroup, 16)
+          inpString += numsPad(rec.SewerArea, 10)
+  
+          inpString += '\n'
+        }
       }
       return inpString
     },
