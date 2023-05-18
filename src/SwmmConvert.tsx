@@ -246,12 +246,15 @@ export class SwmmConvert {
       INFILTRATION: function(model, section, m) {
         let returnObj = {}
         m.forEach((el, i) => {
-          if (i > 0 && parseFloat(m[i]) !== NaN){
+          if (i > 0 && !isNaN(parseFloat(m[i]))){
             returnObj['Param'+i] = m[i]
           } else if (i > 0) {
             returnObj.InfilMethod = m[i]
           }
         })
+        if(!returnObj.InfilMethod){
+          returnObj.InfilMethod = model.OPTIONS.INFILTRATION
+        }
         model[section][m[0]] = returnObj
       },
 
