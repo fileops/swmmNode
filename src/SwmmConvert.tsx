@@ -164,10 +164,29 @@ export class SwmmConvert {
       //==
       ADJUSTMENTS: function(model, section, m) {
         if (m && m.length){
-          // Read in 12 numbers
-          model.ADJUSTMENTS[m[0]] = []
-          for (let i = 0; i < 12; i++){
-            model.ADJUSTMENTS[m[0]][i] = parseFloat(m[i+1])
+          // If this is just a 12-number array
+          
+          if(!model.ADJUSTMENTS.MONTHLY) model.ADJUSTMENTS.MONTHLY = {}
+          if(!model.ADJUSTMENTS.PATTERN) model.ADJUSTMENTS.PATTERN = {}
+          if (['TEMPERATURE', 'EVAPORATION', 'RAINFALL', 'CONDUCTIVITY'].includes(m[0])){
+            // Read in 12 numbers or some strings
+            if(!model.ADJUSTMENTS.MONTHLY[m[0]]) 
+              model.ADJUSTMENTS.MONTHLY[m[0]] = []
+            for (let i = 0; i < m.length - 1; i++){
+              model.ADJUSTMENTS.MONTHLY[m[0]][i] = m[i+1]
+            }
+          }
+          // If this is a subcatchment-associated pattern group
+          else{
+            // Read in 12 numbers or some strings
+            if(!model.ADJUSTMENTS.PATTERN[m[1]]){
+              model.ADJUSTMENTS.PATTERN[m[1]] = {
+                "DSTORE": '',
+                "N-PERV": '',
+                "INFIL" : ''
+              }
+            }
+            model.ADJUSTMENTS.PATTERN[m[1]][m[0]] = m[2]
           }
         }
       },
@@ -286,19 +305,19 @@ export class SwmmConvert {
         if (array && array.length){
           model[section][array[0]] = {
             Aquifer: array[1].trim(),
-            Node: array[2].trim(),
-            Esurf: parseFloat(array[3]),
-            A1: parseFloat(array[4]),
-            B1: parseFloat(array[5]),
-            A2: parseFloat(array[6]),
-            B2: parseFloat(array[7]),
-            A3: parseFloat(array[8]),
-            Dsw: parseFloat(array[9]),
+            Node:  array[2].trim(),
+            Esurf: array[3],
+            A1:    array[4],
+            B1:    array[5],
+            A2:    array[6],
+            B2:    array[7],
+            A3:    array[8],
+            Dsw:   array[9],
             // There is some special parsing used here. keep it a string.
-            Egwt: array.length === 11 ? array[10].trim() : '',
-            Ebot: array.length === 12 ? parseFloat(array[11]) : null,
-            Egw: array.length === 13 ? parseFloat(array[12]) : null,
-            Umc: array.length === 14 ? parseFloat(array[13]) : null
+            Egwt: array.length >= 11 ? array[10].trim() : '',
+            Ebot: array.length >= 12 ? array[11].trim() : '',
+            Egw:  array.length >= 13 ? array[12].trim() : '',
+            Umc:  array.length >= 14 ? array[13].trim() : ''
           }
         }
       },
@@ -901,18 +920,17 @@ export class SwmmConvert {
       //==
       COVERAGES: function(model, section, m) {
         if (m && m.length)
-          // If there is not a COVERAGE array for this 
+          // If there is not a COVERAGE object for this 
           // subcatchment, create one.
           if(!model[section][m[0]]){
-            model[section][m[0]] = []
+            model[section][m[0]] = {}
           }
-          // Push all the new COVERAGE objects on to the 
-          // array.
+          // Add all the new COVERAGE objects into
+          // the subcatchment id position.
           for(var i = 1; i<m.length; i=i+2)
-            model[section][m[0]].push({
-              LandUse: m[i].trim(), 
-              Percent: parseFloat(m[i+1])
-            })
+            model[section][m[0]][m[i].trim()] = {
+              Percent: m[i+1]
+            }
       },
 
       //==
@@ -1011,18 +1029,17 @@ export class SwmmConvert {
       //==
       LOADINGS: function(model, section, m) {
         if (m && m.length)
-          // If there is not a LOADING array for this 
+          // If there is not a LOADING object for this 
           // subcatchment, create one.
           if(!model[section][m[0]]){
-            model[section][m[0]] = []
+            model[section][m[0]] = {}
           }
-          // Push all the new LOADING objects on to the 
-          // array.
+          // Place all the new LOADING objects in to the 
+          // object.
           for(var i = 1; i<m.length; i=i+2)
-            model[section][m[0]].push({
-              Pollutant: m[i].trim(), 
-              InitLoad: parseFloat(m[i+1])
-            })
+          model[section][m[0]][m[i].trim()] = {
+            InitLoad: m[i+1]
+          }
       }, 
 
       //==
@@ -1226,6 +1243,8 @@ export class SwmmConvert {
             }
           }
       },
+
+      
 
       //==
       REPORT: function(model, section, m) {
@@ -1436,6 +1455,12 @@ export class SwmmConvert {
                 Rough: m[4]
               }
               break
+              case('REMOVALS'):
+              obj.REMOVALS = {
+                Pollutant: m[2],
+                PctRemoval: m[3]
+              }
+              break
           }
         }
       }, 
@@ -1489,6 +1514,7 @@ export class SwmmConvert {
       PATTERNS: {},           RDII: {},               HYDROGRAPHS: {},
       LOADINGS: {},           TREATMENT: {},          CURVES: {},
       TIMESERIES: {},         CONTROLS: {},           REPORT: {},
+      ADJUSTMENTS: {},
       MAP: {},                COORDINATES: {},        VERTICES: {},
       POLYGONS: {},           SYMBOLS: {},            LABELS: {},
       BACKDROP: [],           TAGS: {},               PROFILE: {},
@@ -2479,10 +2505,8 @@ export class SwmmConvert {
         var rec = model[secStr][entry]
         for (let el in model[secStr][entry]){
           inpString += strsPad(entry, 16)
-          if(isValidData(rec[el].LandUse))
-            inpString += strsPad(rec[el].LandUse, 16)
-          if(isValidData(rec[el].Percent))
-            inpString += numsPad(rec[el].Percent, 10)
+          inpString += strsPad(el, 16)
+          inpString += strsPad(rec[el].Percent, 10)
 
           inpString += '\n';
         }
@@ -2639,8 +2663,9 @@ export class SwmmConvert {
         var rec = model[secStr][entry]
         for (let el in model[secStr][entry]){
           inpString += strsPad(entry, 16)
-          inpString += strsPad(rec[el].Pollutant, 16)
+          inpString += strsPad(el, 16)
           inpString += numsPad(rec[el].InitLoad, 16)
+
           inpString += '\n'
         }
       }
@@ -2824,6 +2849,33 @@ export class SwmmConvert {
               inpString += '\n';
             }
           } 
+        }
+        return inpString;
+      },
+
+      //==
+      ADJUSTMENTS: function(model) {
+        let secStr = 'ADJUSTMENTS'
+        let inpString = sectionCap(secStr)
+        
+        // If this is just a 12-number array
+        for (let entry in model[secStr].MONTHLY) {
+          var rec = model[secStr].MONTHLY[entry]
+          inpString += strsPad(entry, 16)
+          for(let val in rec){
+            inpString += strsPad(rec[val], 10)
+          }
+          inpString += '\n'
+        }
+        // If this is a subcatchment-associated pattern group
+        for (let subcatch in model[secStr].PATTERN) {
+          var rec = model[secStr].PATTERN[subcatch]
+          for (let type in model[secStr].PATTERN[subcatch]) {
+            inpString += strsPad(type, 16)
+            inpString += strsPad(subcatch, 16)
+            inpString += strsPad(rec[type], 10)
+            inpString += '\n'
+          }
         }
         return inpString;
       },
@@ -3038,6 +3090,13 @@ export class SwmmConvert {
             inpString += numsPad(rec.DRAINMAT.Rough, 10)
             inpString += '\n'
           }
+          if(isValidData(rec.REMOVALS)){
+            inpString += strsPad(entry, 16)
+            inpString += strsPad('REMOVALS', 10)
+            inpString += strsPad(rec.REMOVALS.Pollutant, 10)
+            inpString += strsPad(rec.REMOVALS.PctRemoval, 10)
+            inpString += '\n'
+          }
         }
         return inpString;
       },
@@ -3184,6 +3243,8 @@ export class SwmmConvert {
           thisStr += '[VERTICES]\n;;Link           X-Coord            Y-Coord           \n'
         if(section == 'MAP')
           thisStr += '[MAP]\n'
+        if(section == 'ADJUSTMENTS')
+          thisStr += '[ADJUSTMENTS]\n;;;;Parameter    Subcatchment     Adjustments    \n'
         if(section == 'REPORT')
           thisStr += '[REPORT]\n;;Reporting Options    \n'
         if(section == 'WASHOFF')
@@ -3282,7 +3343,8 @@ export class SwmmConvert {
                           'COVERAGES',      'INFLOWS',      'DWF',          
                           'PATTERNS',       'HYDROGRAPHS',  'RDII',         
                           'LOADINGS',       'CURVES',       'TIMESERIES',
-                          'CONTROLS',       'REPORT',       'MAP',
+                          'CONTROLS',       'ADJUSTMENTS',  'REPORT',
+                          'MAP',
                           'COORDINATES',    'VERTICES',     'POLYGONS', 
                           'SYMBOLS',        'LABELS',       'BACKDROP',
                           'TAGS',           'LID_CONTROLS', 'LID_USAGE'
@@ -3307,7 +3369,8 @@ export class SwmmConvert {
       "INFLOWS",            "DWF",                "PATTERNS",
       "HYDROGRAPHS",        "RDII",               "LOADINGS",
       "TREATMENT",          "CURVES",             "TIMESERIES",
-      "CONTROLS",           "REPORT",             "MAP",
+      "CONTROLS",           "ADJUSTMENTS",        "REPORT",             
+      "MAP",
       "COORDINATES",        "VERTICES",           "POLYGONS",
       "SYMBOLS",            "LABELS",             "BACKDROP",
       "TAGS",               "PROFILE",            "FILE",
