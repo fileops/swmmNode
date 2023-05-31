@@ -5,13 +5,13 @@ Illustration of the difference between OUTLET and PERVIOUS subarea routing optio
 ;[PCS]
 ;;Name           proj      zone                datum              units              defs   
 ;;------------------------------------------------------------------------------------------------------------------
-swmmNode_proj    utm        53                 WGS84              ft                 no_defs    
+swmmNode_proj    utm        19                 WGS84              ft                 no_defs    
 
 
 ;[TRANSFORM]
 ;;Name           x                    y                    size                 rotation  
 ;;------------------------------------------------------------------------------------------------------------------
-swmmNode_t       1536894.7422306438   12270230.03599766    1                    0.35                 
+swmmNode_t       1663563.9226540488   4389967.627853039    1                  0                 
 
 [OPTIONS]
 ;;Option             Value

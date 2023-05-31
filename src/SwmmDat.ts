@@ -10,7 +10,7 @@ export class SwmmDat {
 /**
  * @type {Array<string>} the header of a .dat file.
  */
-header: Array<string>;
+header: Array<string>
 
 /**
  * @type {Map<string, Map<number, number>>} a Map keyed with gage names, 
@@ -155,13 +155,13 @@ static findStorms(dataMap: Map<number, number>, IEP: number, MSV:number):Array<{
       mergedStorms.push({
         begin: storms[i].start,
         end:   storms[i].end
-      });
+      })
     } else {
       // Merge close rain events.
       const mergedStorm = {
         begin: mergedStorms[mergedStorms.length-1].begin,
         end: storms[i].end
-      };
+      }
       mergedStorms.pop()
       mergedStorms.push(mergedStorm)
     }
@@ -191,12 +191,12 @@ static findStormsPretty(dataMap: Map<number, number>, IEP: number, MSV:number):A
       mergedStorms.push({
         begin: storms[i].start,
         end:   storms[i].end
-      });
+      })
     } else {
       const mergedStorm = {
         begin: mergedStorms[mergedStorms.length-1].begin,
         end: storms[i].end
-      };
+      }
       mergedStorms.pop()
       mergedStorms.push(mergedStorm)
     }
@@ -243,10 +243,7 @@ static findSubStorms(dataMap:Map<number, number>, IEP:number, MSV:number):Array<
       let thisTime = substormStart
       let n = i
       let end = theKeys[i]
-      for(; 
-        n < theKeys.length && 
-        theKeys[n] - thisTime < IEP; 
-        n++){
+      for(; n < theKeys.length && theKeys[n] - thisTime < IEP; n++){
           if(dataMap.get(theKeys[n])! > 0){
             rainSum = rainSum + dataMap.get(theKeys[n])!
             end = theKeys[n]
@@ -331,7 +328,7 @@ static sumEvents(dataMap:Map<number, number>, startTime:number, endTime:number, 
   for (; i < theLength && pStart < endTime;){
     let keyTime = theKeys[i]
     let rainSum = 0
-    let updated = 0;
+    let updated = 0
     // If the key is not between the period start and period end
     // push a new object with no sum for the period start and period end
     // update the period start and period end
@@ -354,10 +351,7 @@ static sumEvents(dataMap:Map<number, number>, startTime:number, endTime:number, 
     }
 
     // While the key is between the start time and the end time
-    for(; 
-      i < theKeys.length && 
-      new Date(theKeys[i]).getTime() < pEnd; 
-      ){
+    for(; i < theKeys.length && new Date(theKeys[i]).getTime() < pEnd; ){
         rainSum = rainSum + dataMap.get(theKeys[i])!
         i++
         updated = 1
@@ -493,7 +487,7 @@ static maxEvent(records:Map<number, number>, startDate:number, endDate:number, n
     // Get all of the events that share that same events.vol value as maxEvent.
     events = events.filter(a => a.vol == maxEvent.vol)
       // Update maxEvents.end to be maxEvents.start + nPeriod:
-      .map(a => {return {start:a.start, end: a.start + nPeriod, vol: a.vol}});
+      .map(a => {return {start:a.start, end: a.start + nPeriod, vol: a.vol}})
   }
 
   return events
@@ -535,7 +529,7 @@ static maxEventStrict(records:Map<number, number>, startDate:number, endDate:num
     // Get all of the events that share that same events.vol value as maxEvent.
     events = events.filter(a => a.vol == maxEvent.vol)
       // Update maxEvents.end to be maxEvents.start + nPeriod:
-      .map(a => {return {start:a.start, end: a.start + nPeriod, vol: a.vol}});
+      .map(a => {return {start:a.start, end: a.start + nPeriod, vol: a.vol}})
   }
 
   return events

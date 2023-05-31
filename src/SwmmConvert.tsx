@@ -76,13 +76,13 @@ export class SwmmConvert {
       //==
       RAINGAGES: function(model, section, m) {
         // If the array m is 6 elements, use a timeseries format.
-        if (m && m.length == 6){
+        if (m && (m.length == 6 || m.length == 5)){
           model[section][m[0]] = {
             Format: m[1], 
             Interval: m[2], 
             SCF: m[3], 
             Source: m[4], 
-            SeriesName: m[5], 
+            SeriesName: m[5]?m[5]:'',
             Description: curDesc
           }
         }
@@ -164,10 +164,29 @@ export class SwmmConvert {
       //==
       ADJUSTMENTS: function(model, section, m) {
         if (m && m.length){
-          // Read in 12 numbers
-          model.ADJUSTMENTS[m[0]] = []
-          for (let i = 0; i < 12; i++){
-            model.ADJUSTMENTS[m[0]][i] = parseFloat(m[i+1])
+          // If this is just a 12-number array
+          
+          if(!model.ADJUSTMENTS.MONTHLY) model.ADJUSTMENTS.MONTHLY = {}
+          if(!model.ADJUSTMENTS.PATTERN) model.ADJUSTMENTS.PATTERN = {}
+          if (['TEMPERATURE', 'EVAPORATION', 'RAINFALL', 'CONDUCTIVITY'].includes(m[0])){
+            // Read in 12 numbers or some strings
+            if(!model.ADJUSTMENTS.MONTHLY[m[0]]) 
+              model.ADJUSTMENTS.MONTHLY[m[0]] = []
+            for (let i = 0; i < m.length - 1; i++){
+              model.ADJUSTMENTS.MONTHLY[m[0]][i] = m[i+1]
+            }
+          }
+          // If this is a subcatchment-associated pattern group
+          else{
+            // Read in 12 numbers or some strings
+            if(!model.ADJUSTMENTS.PATTERN[m[1]]){
+              model.ADJUSTMENTS.PATTERN[m[1]] = {
+                "DSTORE": '',
+                "N-PERV": '',
+                "INFIL" : ''
+              }
+            }
+            model.ADJUSTMENTS.PATTERN[m[1]][m[0]] = m[2]
           }
         }
       },
@@ -246,12 +265,15 @@ export class SwmmConvert {
       INFILTRATION: function(model, section, m) {
         let returnObj = {}
         m.forEach((el, i) => {
-          if (i > 0 && parseFloat(m[i]) !== NaN){
+          if (i > 0 && !isNaN(parseFloat(m[i]))){
             returnObj['Param'+i] = m[i]
           } else if (i > 0) {
             returnObj.InfilMethod = m[i]
           }
         })
+        if(!returnObj.InfilMethod){
+          returnObj.InfilMethod = model.OPTIONS.INFILTRATION
+        }
         model[section][m[0]] = returnObj
       },
 
@@ -283,19 +305,19 @@ export class SwmmConvert {
         if (array && array.length){
           model[section][array[0]] = {
             Aquifer: array[1].trim(),
-            Node: array[2].trim(),
-            Esurf: parseFloat(array[3]),
-            A1: parseFloat(array[4]),
-            B1: parseFloat(array[5]),
-            A2: parseFloat(array[6]),
-            B2: parseFloat(array[7]),
-            A3: parseFloat(array[8]),
-            Dsw: parseFloat(array[9]),
+            Node:  array[2].trim(),
+            Esurf: array[3],
+            A1:    array[4],
+            B1:    array[5],
+            A2:    array[6],
+            B2:    array[7],
+            A3:    array[8],
+            Dsw:   array[9],
             // There is some special parsing used here. keep it a string.
-            Egwt: array.length === 11 ? array[10].trim() : '',
-            Ebot: array.length === 12 ? parseFloat(array[11]) : null,
-            Egw: array.length === 13 ? parseFloat(array[12]) : null,
-            Umc: array.length === 14 ? parseFloat(array[13]) : null
+            Egwt: array.length >= 11 ? array[10].trim() : '',
+            Ebot: array.length >= 12 ? array[11].trim() : '',
+            Egw:  array.length >= 13 ? array[12].trim() : '',
+            Umc:  array.length >= 14 ? array[13].trim() : ''
           }
         }
       },
@@ -426,39 +448,40 @@ export class SwmmConvert {
       //==
       STORAGE: function(model, section, m) {
         if (m && m.length){
-          if(m[4].trim() === 'FUNCTIONAL'){
+          if (m[4].trim() === 'TABULAR'){
             model[section][m[0]] = {
-              Elev: parseFloat(m[1]), 
-              Ymax: parseFloat(m[2]), 
-              Y0: parseFloat(m[3]), 
-              Curve: m[4].trim(), 
-              Coefficient: parseFloat(m[5]), 
-              Exponent: parseFloat(m[6]), 
-              Constant: parseFloat(m[7]),
-              CurveName: '',
-              Aponded: m[8]?parseFloat(m[8]):0,
-              Fevap:  m[9]?parseFloat(m[9]):0,  
-              Psi: m[10]?m[10]:'', 
-              Ksat: m[11]?m[11]:'', 
-              IMD: m[12]?m[12]:'', 
-              Description: curDesc}
-          } else if (m[4].trim() === 'TABULAR'){
-            model[section][m[0]] = {
-              Elev: parseFloat(m[1]), 
-              Ymax: parseFloat(m[2]), 
-              Y0: parseFloat(m[3]), 
+              Invert: parseFloat(m[1]),
+              Dmax: parseFloat(m[2]), 
+              Dinit: parseFloat(m[3]), 
               Curve: m[4].trim(),
-              Coefficient: 0, 
-              Exponent: 0, 
-              Constant: 0,
+              P1: 0,  
+              P2: 0,  
+              P3: 0,  
               CurveName: m[5].trim(),
-              Aponded: m[6]?parseFloat(m[6]):0, 
+              Dsurch: m[6]?parseFloat(m[6]):0, 
               Fevap: m[7]?parseFloat(m[7]):0, 
               Psi: m[8]?m[8]:'', 
               Ksat: m[9]?m[9]:'', 
               IMD: m[10]?m[10]: '',
               Description: curDesc}
           }
+          else {//(m[4].trim() === 'FUNCTIONAL'){ + PYRAMIDAL, PARABOLIC, CONICAL, CYLINDRICAL (Cylindrical uses '0' only for P3)
+            model[section][m[0]] = {
+              Invert: parseFloat(m[1]),
+              Dmax: parseFloat(m[2]), 
+              Dinit: parseFloat(m[3]), 
+              Curve: m[4].trim(), 
+              P1: parseFloat(m[5]),  
+              P2: parseFloat(m[6]),    
+              P3: parseFloat(m[7]),    
+              CurveName: '',
+              Dsurch: m[8]?parseFloat(m[8]):0,
+              Fevap:  m[9]?parseFloat(m[9]):0,  
+              Psi: m[10]?m[10]:'', 
+              Ksat: m[11]?m[11]:'', 
+              IMD: m[12]?m[12]:'', 
+              Description: curDesc}
+          } 
         }
       },
 
@@ -467,48 +490,48 @@ export class SwmmConvert {
         if (m && m.length){
           if(m[3].trim() === 'WEIR'){
             model[section][m[0]] = {
-              Elev: parseFloat(m[1]), 
-              DivLink: m[2].trim(), 
-              Type: m[3].trim(), 
-              Qmin: parseFloat(m[4]), 
-              Ht: parseFloat(m[5]), 
-              Cd: parseFloat(m[6]), 
-              Ymax: m[7]?parseFloat(m[7]):0, 
-              Y0: m[8]?parseFloat(m[8]):0, 
-              Ysur: m[9]?parseFloat(m[9]):0, 
-              Apond: m[10]?parseFloat(m[10]):0, 
+              Invert: parseFloat(m[1]), 
+              DivLink: m[2].trim(),     
+              Type: m[3].trim(),        
+              Qmin: parseFloat(m[4]),   
+              Ht: parseFloat(m[5]),     
+              Cd: parseFloat(m[6]),     
+              Dmax: m[7]?parseFloat(m[7]):0, 
+              Dinit: m[8]?parseFloat(m[8]):0,   
+              Dsurch: m[9]?parseFloat(m[9]):0, 
+              Aponded: m[10]?parseFloat(m[10]):0,
               Description: curDesc}
           } else if (m[3].trim() === 'CUTOFF'){
             model[section][m[0]] = {
-              Elev: parseFloat(m[1]), 
-              DivLink: m[2].trim(), 
-              Type: m[3].trim(), 
-              Qmin: parseFloat(m[4]),
-              Ymax: m[5]?parseFloat(m[5]):0, 
-              Y0: m[6]?parseFloat(m[6]):0, 
-              Ysur: m[7]?parseFloat(m[7]):0, 
-              Apond: m[8]?parseFloat(m[8]):0, 
+              Invert: parseFloat(m[1]), 
+              DivLink: m[2].trim(),  
+              Type: m[3].trim(),     
+              Qmax: parseFloat(m[4]),
+              Dmax: m[5]?parseFloat(m[5]):0, 
+              Dinit: m[6]?parseFloat(m[6]):0,   
+              Dsurch: m[7]?parseFloat(m[7]):0, 
+              Aponded: m[8]?parseFloat(m[8]):0, 
               Description: curDesc}
           } else if (m[3].trim() === 'TABULAR'){
             model[section][m[0]] = {
-              Elev: parseFloat(m[1]), 
-              DivLink: m[2].trim(), 
-              Type: m[3].trim(), 
-              Dcurve: m[4].trim(), 
-              Ymax: m[5]?parseFloat(m[5]):0, 
-              Y0: m[6]?parseFloat(m[6]):0, 
-              Ysur: m[7]?parseFloat(m[7]):0, 
-              Apond: m[8]?parseFloat(m[8]):0, 
+              Invert: parseFloat(m[1]), 
+              DivLink: m[2].trim(),   
+              Type: m[3].trim(),      
+              Dcurve: m[4].trim(),    
+              Dmax: m[5]?parseFloat(m[5]):0,
+              Dinit: m[6]?parseFloat(m[6]):0,  
+              Dsurch: m[7]?parseFloat(m[7]):0, 
+              Aponded: m[8]?parseFloat(m[8]):0,
               Description: curDesc}
           } else if (m[3].trim() === 'OVERFLOW'){
             model[section][m[0]] = {
-              Elev: parseFloat(m[1]), 
-              DivLink: m[2].trim(), 
-              Type: m[3].trim(), 
-              Ymax: m[4]?parseFloat(m[4]):0, 
-              Y0: m[5]?parseFloat(m[5]):0, 
-              Ysur: m[6]?parseFloat(m[6]):0, 
-              Apond: m[7]?parseFloat(m[7]):0, 
+              Invert: parseFloat(m[1]), 
+              DivLink: m[2].trim(),   
+              Type: m[3].trim(),      
+              Dmax: m[4]?parseFloat(m[4]):0, 
+              Dinit: m[5]?parseFloat(m[5]):0,  
+              Dsurch: m[6]?parseFloat(m[6]):0, 
+              Aponded: m[7]?parseFloat(m[7]):0,
               Description: curDesc}
           }
         }
@@ -528,7 +551,16 @@ export class SwmmConvert {
             InitFlow: array[7]?array[7]:'0', 
             MaxFlow: array[8]?array[8]:'', 
             Description: curDesc
-          };
+          }
+
+          // Default losses values
+          model['LOSSES'][array[0]] = {
+            Kin: 0, 
+            Kout: 0, 
+            Kavg: 0, 
+            Flap: 'NO', 
+            Seepage: 0
+          }
         }
       },
 
@@ -576,6 +608,7 @@ export class SwmmConvert {
             Surcharge: m[9]?m[9]:'YES',
             Width: m[10]?m[10]:'',
             Surface: m[11]?m[11]:'',
+            Wcurve: m[12]?m[12]:'',
             Description: curDesc
         }
       },
@@ -887,26 +920,27 @@ export class SwmmConvert {
       //==
       COVERAGES: function(model, section, m) {
         if (m && m.length)
-          // If there is not a COVERAGE array for this 
+          // If there is not a COVERAGE object for this 
           // subcatchment, create one.
           if(!model[section][m[0]]){
-            model[section][m[0]] = []
+            model[section][m[0]] = {}
           }
-          // Push all the new COVERAGE objects on to the 
-          // array.
+          // Add all the new COVERAGE objects into
+          // the subcatchment id position.
           for(var i = 1; i<m.length; i=i+2)
-            model[section][m[0]].push({
-              LandUse: m[i].trim(), 
-              Percent: parseFloat(m[i+1])
-            })
+            model[section][m[0]][m[i].trim()] = {
+              Percent: m[i+1]
+            }
       },
 
       //==
       INFLOWS: function(model, section, m) {
         if (m && m.length){
-          model[section][m[0]] = {
-            Parameter: m[1].trim(), 
-            Timeseries: m[2].trim(),
+          if(!([m[0]] in model[section])){
+            model[section][m[0]] = {}
+          }
+          model[section][m[0]][m[1]] = {
+            Timeseries: m[2].trim()==='""'?'':m[2].trim(),
             Type: m[3] ? m[3].trim() : '',
             UnitsFactor: m[4] ? parseFloat(m[4]) : '',
             ScaleFactor: m[5] ? parseFloat(m[5]) : '',
@@ -919,16 +953,18 @@ export class SwmmConvert {
       //==
       DWF: function(model, section, m) {
         if (m && m.length){
-          model[section][m[0]] = {
-            Type: m[1].trim(), 
+          if(!([m[0]] in model[section])){
+            model[section][m[0]] = {}
+          }
+          model[section][m[0]][m[1]] = {
             Base: m[2] ? parseFloat(m[2]) : 1.0,
-            Pat1: m[3] ? m[3].trim() : '',
-            Pat2: m[4] ? m[4].trim() : '',
-            Pat3: m[5] ? m[5].trim() : '',
-            Pat4: m[6] ? m[6].trim() : '',
-            Pat5: m[7] ? m[7].trim() : '',
-            Pat6: m[8] ? m[8].trim() : '',
-            Pat7: m[9] ? m[9].trim() : ''
+            Pat1: m[3]?m[3].trim()==='""'?'':m[3].replaceAll('"', '').trim():'',
+            Pat2: m[4]?m[4].trim()==='""'?'':m[4].replaceAll('"', '').trim():'',
+            Pat3: m[5]?m[5].trim()==='""'?'':m[5].replaceAll('"', '').trim():'',
+            Pat4: m[6]?m[6].trim()==='""'?'':m[6].replaceAll('"', '').trim():'',
+            Pat5: m[7]?m[7].trim()==='""'?'':m[7].replaceAll('"', '').trim():'',
+            Pat6: m[8]?m[8].trim()==='""'?'':m[8].replaceAll('"', '').trim():'',
+            Pat7: m[9]?m[9].trim()==='""'?'':m[9].replaceAll('"', '').trim():'',
           }
         }
       },
@@ -984,7 +1020,7 @@ export class SwmmConvert {
       RDII: function(model, section, m) {
         if (m && m.length){
           model[section][m[0]] = {
-            UHgroup: m[1].trim(), 
+            UHgroup: m[1].trim()==='""'?'':m[1].trim(),
             SewerArea: m[2] ? parseFloat(m[2]) : 0
           }
         }
@@ -993,18 +1029,17 @@ export class SwmmConvert {
       //==
       LOADINGS: function(model, section, m) {
         if (m && m.length)
-          // If there is not a LOADING array for this 
+          // If there is not a LOADING object for this 
           // subcatchment, create one.
           if(!model[section][m[0]]){
-            model[section][m[0]] = []
+            model[section][m[0]] = {}
           }
-          // Push all the new LOADING objects on to the 
-          // array.
+          // Place all the new LOADING objects in to the 
+          // object.
           for(var i = 1; i<m.length; i=i+2)
-            model[section][m[0]].push({
-              Pollutant: m[i].trim(), 
-              InitLoad: parseFloat(m[i+1])
-            })
+          model[section][m[0]][m[i].trim()] = {
+            InitLoad: m[i+1]
+          }
       }, 
 
       //==
@@ -1024,23 +1059,27 @@ export class SwmmConvert {
           // Index track for lines with 'Type' attribute.
           var i = 1
 
-          // If there is not a CURVE array for this 
-          // subcatchment, create one.
-          if(!model[section][m[0]]){
-            model[section][m[0]] = {
-              Type: m[1],
-              Curve: []
+          // If there are 4 entries for this line, that means the
+          // second entry is a TYPE. Create a new property using the new type's name.
+          if(m.length === 4){
+            cleanCORData()
+            CORData.Type = 'CURVES'
+            // Capitalize the translation: this is something people read on UIs,
+            // so all caps is a little extreme.
+            CORData.Name = m[1][0].toUpperCase() + m[1].substr(1).toLowerCase()
+            if(!model[section][CORData.Name]){
+              model[section][CORData.Name] = Object.create(null)
             }
             i = 2
+            // Since this is the first line a of a new curve, create a new property using
+            // the curve's name
+            model[section][CORData.Name][m[0]] = []
           }
-
-          // Push all the new CURVE objects on to the 
-          // array.
-          for(;i<m.length; i=i+2)
-            model[section][m[0]].Curve.push({
-              x: parseFloat(m[i]), 
-              y: parseFloat(m[i+1])
-            })
+          // Push all the new CURVE objects on to the array.
+          model[section][CORData.Name][m[0]].push({
+            x: parseFloat(m[i]), 
+            y: parseFloat(m[i+1])
+          })
         }
       },
 
@@ -1204,6 +1243,8 @@ export class SwmmConvert {
             }
           }
       },
+
+      
 
       //==
       REPORT: function(model, section, m) {
@@ -1414,6 +1455,12 @@ export class SwmmConvert {
                 Rough: m[4]
               }
               break
+              case('REMOVALS'):
+              obj.REMOVALS = {
+                Pollutant: m[2],
+                PctRemoval: m[3]
+              }
+              break
           }
         }
       }, 
@@ -1467,6 +1514,7 @@ export class SwmmConvert {
       PATTERNS: {},           RDII: {},               HYDROGRAPHS: {},
       LOADINGS: {},           TREATMENT: {},          CURVES: {},
       TIMESERIES: {},         CONTROLS: {},           REPORT: {},
+      ADJUSTMENTS: {},
       MAP: {},                COORDINATES: {},        VERTICES: {},
       POLYGONS: {},           SYMBOLS: {},            LABELS: {},
       BACKDROP: [],           TAGS: {},               PROFILE: {},
@@ -1986,22 +2034,22 @@ export class SwmmConvert {
           // If there is a description, save it.
           inpString += validDescription(rec)
           inpString += strsPad(entry, 16)
-          inpString += numsPad(rec.Elev, 10)
-          inpString += numsPad(rec.Ymax, 10)
-          inpString += numsPad(rec.Y0, 10)
+          inpString += numsPad(rec.Invert, 10)
+          inpString += numsPad(rec.Dmax, 10)
+          inpString += numsPad(rec.Dinit, 10)
           inpString += strsPad(rec.Curve, 16)
           switch(rec.Curve){
             case ('TABULAR'):
               inpString += strsPad(rec.CurveName, 16)
               break
-            case ('FUNCTIONAL'):
-              inpString += numsPad(rec.Coefficient, 10)
-              inpString += numsPad(rec.Exponent, 10)
-              inpString += numsPad(rec.Constant, 10)
+            default:
+              inpString += numsPad(rec.P1, 10)
+              inpString += numsPad(rec.P2, 10)
+              inpString += numsPad(rec.P3, 10)
               break
           }
-          if(isValidData(rec.Aponded))
-            inpString += numsPad(rec.Aponded, 10)
+          if(isValidData(rec.Dsurch))
+            inpString += numsPad(rec.Dsurch, 10)
           if(isValidData(rec.Fevap))
             inpString += numsPad(rec.Fevap, 10)
           if(isValidData(rec.Psi))
@@ -2025,14 +2073,14 @@ export class SwmmConvert {
           // If there is a description, save it.
           inpString += validDescription(rec)
           inpString += strsPad(entry, 16)
-          inpString += numsPad(rec.Elev, 10)
+          inpString += numsPad(rec.Invert, 10)
           inpString += strsPad(rec.DivLink, 16)
           inpString += strsPad(rec.Type, 10)
           switch(rec.Type){
             case ('OVERFLOW'):
               break
             case ('CUTOFF'):
-              inpString += numsPad(rec.Qmin, 10)
+              inpString += numsPad(rec.Qmax, 10)
               break
             case ('TABULAR'):
               inpString += strsPad(rec.Dcurve, 10)
@@ -2044,14 +2092,14 @@ export class SwmmConvert {
               break
               
           }
-          if(isValidData(rec.Ymax))
-            inpString += numsPad(rec.Ymax, 10)
-          if(isValidData(rec.Y0))
-            inpString += numsPad(rec.Y0, 10)
-          if(isValidData(rec.Ysur))
-            inpString += numsPad(rec.Ysur, 10)
-          if(isValidData(rec.Apond))
-            inpString += numsPad(rec.Apond, 10)
+          if(isValidData(rec.Dmax))
+            inpString += numsPad(rec.Dmax, 10)
+          if(isValidData(rec.Dinit))
+            inpString += numsPad(rec.Dinit, 10)
+          if(isValidData(rec.Dsurch))
+            inpString += numsPad(rec.Dsurch, 10)
+          if(isValidData(rec.Aponded))
+            inpString += numsPad(rec.Aponded, 10)
 
           inpString += '\n';
         }
@@ -2159,6 +2207,8 @@ export class SwmmConvert {
             inpString += strsPad(rec.Surcharge, 10)
           if(isValidData(rec.Width))
             inpString += numsPad(rec.Width, 10)
+          if(isValidData(rec.Wcurve))
+            inpString += numsPad(rec.Wcurve, 10)
 
           inpString += '\n';
         }
@@ -2455,10 +2505,8 @@ export class SwmmConvert {
         var rec = model[secStr][entry]
         for (let el in model[secStr][entry]){
           inpString += strsPad(entry, 16)
-          if(isValidData(rec[el].LandUse))
-            inpString += strsPad(rec[el].LandUse, 16)
-          if(isValidData(rec[el].Percent))
-            inpString += numsPad(rec[el].Percent, 10)
+          inpString += strsPad(el, 16)
+          inpString += strsPad(rec[el].Percent, 10)
 
           inpString += '\n';
         }
@@ -2471,24 +2519,26 @@ export class SwmmConvert {
       let inpString = sectionCap(secStr)
       //
       for (let entry in model[secStr]) {
-        var rec = model[secStr][entry]
-        // If there is a description, save it.
-        inpString += validDescription(rec)
-        inpString += strsPad(entry, 16)
-        inpString += strsPad(rec.Parameter, 16)
-        inpString += strsPad(rec.Timeseries, 16)
-        if(isValidData(rec.Type))
-          inpString += strsPad(rec.Type, 10)
-        if(isValidData(rec.UnitsFactor))
-          inpString += numsPad(rec.UnitsFactor, 10)
-        if(isValidData(rec.ScaleFactor))
-          inpString += numsPad(rec.ScaleFactor, 10)
-        if(isValidData(rec.Baseline))
-          inpString += numsPad(rec.Baseline, 10)
-        if(isValidData(rec.Pattern))
-          inpString += strsPad(rec.Pattern, 10)
-
-        inpString += '\n';
+        for (let constituent in model[secStr][entry]){
+          var rec = model[secStr][entry][constituent]
+          // If there is a description, save it.
+          inpString += validDescription(rec)
+          inpString += strsPad(entry, 16)
+          inpString += strsPad(constituent, 16)
+          inpString += strsPad(rec.Timeseries===''?'""':rec.Timeseries, 16)
+          if(isValidData(rec.Type))
+            inpString += strsPad(rec.Type, 10)
+          if(isValidData(rec.UnitsFactor))
+            inpString += numsPad(rec.UnitsFactor, 10)
+          if(isValidData(rec.ScaleFactor))
+            inpString += numsPad(rec.ScaleFactor, 10)
+          if(isValidData(rec.Baseline))
+            inpString += numsPad(rec.Baseline, 10)
+          if(isValidData(rec.Pattern))
+            inpString += strsPad(rec.Pattern, 10)
+          
+          inpString += '\n';
+        }
       }
       return inpString;
     },
@@ -2498,29 +2548,31 @@ export class SwmmConvert {
       let inpString = sectionCap(secStr)
       //
       for (let entry in model[secStr]) {
-        var rec = model[secStr][entry]
-        // If there is a description, save it.
-        inpString += validDescription(rec)
-        inpString += strsPad(entry, 16)
-        inpString += strsPad(rec.Type, 16)
-        if(isValidData(rec.Pat1))
-        inpString += numsPad(rec.Base, 10)
-        if(isValidData(rec.Pat1))
-          inpString += strsPad(rec.Pat1, 16)
-        if(isValidData(rec.Pat2))
-          inpString += strsPad(rec.Pat2, 16)
-        if(isValidData(rec.Pat3))
-          inpString += strsPad(rec.Pat3, 16)
-        if(isValidData(rec.Pat4))
-          inpString += strsPad(rec.Pat4, 16)
-        if(isValidData(rec.Pat5))
-          inpString += strsPad(rec.Pat5, 16)
-        if(isValidData(rec.Pat6))
-          inpString += strsPad(rec.Pat6, 16)
-        if(isValidData(rec.Pat7))
-          inpString += strsPad(rec.Pat7, 16)
+        for (let constituent in model[secStr][entry]){
+          var rec = model[secStr][entry][constituent]
+          // If there is a description, save it.
+          inpString += validDescription(rec)
+          inpString += strsPad(entry, 16)
+          inpString += strsPad(constituent, 16)
+          if(isValidData(rec.Base))
+            inpString += numsPad(rec.Base, 10)
+          if(isValidData(rec.Pat1))
+            inpString += strsPad(rec.Pat1===''?'""':'"'+rec.Pat1+'"', 16)
+          if(isValidData(rec.Pat2))
+            inpString += strsPad(rec.Pat2===''?'""':'"'+rec.Pat2+'"', 16)
+          if(isValidData(rec.Pat3))
+            inpString += strsPad(rec.Pat3===''?'""':'"'+rec.Pat3+'"', 16)
+          if(isValidData(rec.Pat4))
+            inpString += strsPad('"'+rec.Pat4+'"', 16)
+          if(isValidData(rec.Pat5))
+            inpString += strsPad('"'+rec.Pat5+'"', 16)
+          if(isValidData(rec.Pat6))
+            inpString += strsPad('"'+rec.Pat6+'"', 16)
+          if(isValidData(rec.Pat7))
+            inpString += strsPad('"'+rec.Pat7+'"', 16)
 
-        inpString += '\n';
+          inpString += '\n';
+        }
       }
       return inpString;
     },
@@ -2586,15 +2638,20 @@ export class SwmmConvert {
       //
       for (let entry in model[secStr]) {
         var rec = model[secStr][entry]
-        // If there is a description, save it.
-        inpString += validDescription(rec)
-        inpString += strsPad(entry, 16)
-        inpString += strsPad(rec.UHgroup, 16)
-        inpString += numsPad(rec.SewerArea, 10)
+        // If this is an invalid entry, do nothing:
+        if(rec.UHgroup===''||rec.UHgroup==='""'||rec.UHgroup == null|| rec.SewerArea === 0){
 
-        inpString += '\n';
+        } else {
+          // If there is a description, save it.
+          inpString += validDescription(rec)
+          inpString += strsPad(entry, 16)
+          inpString += strsPad(rec.UHgroup===''?'""':rec.UHgroup, 16)
+          inpString += numsPad(rec.SewerArea, 10)
+  
+          inpString += '\n'
+        }
       }
-      return inpString;
+      return inpString
     },
 
     //==
@@ -2606,20 +2663,35 @@ export class SwmmConvert {
         var rec = model[secStr][entry]
         for (let el in model[secStr][entry]){
           inpString += strsPad(entry, 16)
-          inpString += strsPad(rec[el].Pollutant, 16)
+          inpString += strsPad(el, 16)
           inpString += numsPad(rec[el].InitLoad, 16)
-          inpString += '\n';
+
+          inpString += '\n'
         }
       }
-      return inpString;
+      return inpString
     },
 
     //==
     CURVES: function(model) {
       let secStr = 'CURVES'
       let inpString = sectionCap(secStr)
+
+      for (let curveType in model[secStr]) {
+        for (let curveName in model[secStr][curveType]){
+          let start = true
+          for (let el in model[secStr][curveType][curveName]){
+            inpString += strsPad(curveName, 16)
+            if(start === true) {inpString += strsPad(curveType, 16); start = false}
+            else {inpString += strsPad('', 16)}
+            inpString += numsPad(model[secStr][curveType][curveName][el].x, 10)
+            inpString += numsPad(model[secStr][curveType][curveName][el].y, 10)
+            inpString += '\n'
+          }
+        }
+      }
       //
-      for (let entry in model[secStr]) {
+      /*for (let entry in model[secStr]) {
         var rec = model[secStr][entry]
         inpString += strsPad(entry, 16)
         inpString += strsPad(rec.Type, 16)
@@ -2627,9 +2699,9 @@ export class SwmmConvert {
           inpString += numsPad(rec.Curve[el].x, 10)
           inpString += numsPad(rec.Curve[el].y, 10)
         }
-        inpString += '\n';
-      }
-      return inpString;
+        inpString += '\n'
+      }*/
+      return inpString
     },
 
     //==
@@ -2643,10 +2715,10 @@ export class SwmmConvert {
           inpString += strsPad(entry, 16)
           inpString += strsPad(el, 16)
           inpString += strsPad(rec[el], 10)
-          inpString += '\n';
+          inpString += '\n'
         }
       }
-      return inpString;
+      return inpString
     },
 
     //==
@@ -2777,6 +2849,33 @@ export class SwmmConvert {
               inpString += '\n';
             }
           } 
+        }
+        return inpString;
+      },
+
+      //==
+      ADJUSTMENTS: function(model) {
+        let secStr = 'ADJUSTMENTS'
+        let inpString = sectionCap(secStr)
+        
+        // If this is just a 12-number array
+        for (let entry in model[secStr].MONTHLY) {
+          var rec = model[secStr].MONTHLY[entry]
+          inpString += strsPad(entry, 16)
+          for(let val in rec){
+            inpString += strsPad(rec[val], 10)
+          }
+          inpString += '\n'
+        }
+        // If this is a subcatchment-associated pattern group
+        for (let subcatch in model[secStr].PATTERN) {
+          var rec = model[secStr].PATTERN[subcatch]
+          for (let type in model[secStr].PATTERN[subcatch]) {
+            inpString += strsPad(type, 16)
+            inpString += strsPad(subcatch, 16)
+            inpString += strsPad(rec[type], 10)
+            inpString += '\n'
+          }
         }
         return inpString;
       },
@@ -2991,6 +3090,13 @@ export class SwmmConvert {
             inpString += numsPad(rec.DRAINMAT.Rough, 10)
             inpString += '\n'
           }
+          if(isValidData(rec.REMOVALS)){
+            inpString += strsPad(entry, 16)
+            inpString += strsPad('REMOVALS', 10)
+            inpString += strsPad(rec.REMOVALS.Pollutant, 10)
+            inpString += strsPad(rec.REMOVALS.PctRemoval, 10)
+            inpString += '\n'
+          }
         }
         return inpString;
       },
@@ -3137,6 +3243,8 @@ export class SwmmConvert {
           thisStr += '[VERTICES]\n;;Link           X-Coord            Y-Coord           \n'
         if(section == 'MAP')
           thisStr += '[MAP]\n'
+        if(section == 'ADJUSTMENTS')
+          thisStr += '[ADJUSTMENTS]\n;;;;Parameter    Subcatchment     Adjustments    \n'
         if(section == 'REPORT')
           thisStr += '[REPORT]\n;;Reporting Options    \n'
         if(section == 'WASHOFF')
@@ -3235,7 +3343,8 @@ export class SwmmConvert {
                           'COVERAGES',      'INFLOWS',      'DWF',          
                           'PATTERNS',       'HYDROGRAPHS',  'RDII',         
                           'LOADINGS',       'CURVES',       'TIMESERIES',
-                          'CONTROLS',       'REPORT',       'MAP',
+                          'CONTROLS',       'ADJUSTMENTS',  'REPORT',
+                          'MAP',
                           'COORDINATES',    'VERTICES',     'POLYGONS', 
                           'SYMBOLS',        'LABELS',       'BACKDROP',
                           'TAGS',           'LID_CONTROLS', 'LID_USAGE'
@@ -3260,7 +3369,8 @@ export class SwmmConvert {
       "INFLOWS",            "DWF",                "PATTERNS",
       "HYDROGRAPHS",        "RDII",               "LOADINGS",
       "TREATMENT",          "CURVES",             "TIMESERIES",
-      "CONTROLS",           "REPORT",             "MAP",
+      "CONTROLS",           "ADJUSTMENTS",        "REPORT",             
+      "MAP",
       "COORDINATES",        "VERTICES",           "POLYGONS",
       "SYMBOLS",            "LABELS",             "BACKDROP",
       "TAGS",               "PROFILE",            "FILE",
