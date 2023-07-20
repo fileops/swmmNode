@@ -1,0 +1,32 @@
+Date : 2023-05-24 23:14:15
+Directory : c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src
+Total : 7 files,  5282 codes, 1644 comments, 575 blanks, all 7501 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| TypeScript JSX |          2 |      2,787 |        450 |        213 |      3,450 |
+| TypeScript     |          5 |      2,495 |      1,194 |        362 |      4,051 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                            | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                               |          7 |      5,282 |      1,644 |        575 |      7,501 |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                        | language       | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src\DisplaySupport.tsx | TypeScript JSX |          4 |          2 |          1 |          7 |
+| c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src\SwmmConvert.tsx    | TypeScript JSX |      2,783 |        448 |        212 |      3,443 |
+| c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src\SwmmDat.ts         | TypeScript     |        328 |        330 |         70 |        728 |
+| c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src\SwmmGeoJSON.ts     | TypeScript     |        304 |        136 |         59 |        499 |
+| c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src\SwmmOut.ts         | TypeScript     |      1,203 |        611 |        176 |      1,990 |
+| c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src\WordsnKeys.ts      | TypeScript     |        555 |        117 |         55 |        727 |
+| c:\Users\datap\Documents\GitHub\__new_swmmReact\swmmNode\src\index.ts           | TypeScript     |        105 |          0 |          2 |        107 |
+| Total                                                                           |                |      5,282 |      1,644 |        575 |      7,501 |
++---------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

@@ -1890,6 +1890,9 @@ CreateGeoJSONTimestep(objNames:Array<string>, objectType:number, resultType:numb
  * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
  */
 nodeResults(objName:string, outputPos:number, timeStep:number){
+  if (this.nodeMap.get(objName) == undefined){
+    return {}
+  }
   let section = 
     this.timeOuput(objName, this.nodeMap.get(objName)||0,
       this.totalNodes, 
@@ -1910,7 +1913,10 @@ nodeResults(objName:string, outputPos:number, timeStep:number){
  * @param {timeStep} int the positional timestep of the results. 0 for all time steps.
  * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
  */
-linkResults(objName:string, outputPos:number, timeStep:number){
+linkResults(objName:string, outputPos:number, timeStep:number){// Check if there is an object by this name
+  if (this.linkMap.get(objName) == undefined){
+    return {}
+  }
   let section = 
   this.timeOuput(objName, this.linkMap.get(objName)||0,
     this.totalLinks, 
@@ -1932,6 +1938,10 @@ linkResults(objName:string, outputPos:number, timeStep:number){
  * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
  */
 subcatchmentResults(objName:string, outputPos:number, timeStep:number){
+  // Check if there is an object by this name
+  if (this.subcatchmentMap.get(objName) == undefined){
+    return {}
+  }
   let section = 
     this.timeOuput(objName, this.subcatchmentMap.get(objName)||0,
       this.subcatchmentCount(), 

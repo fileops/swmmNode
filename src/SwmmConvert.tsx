@@ -70,7 +70,7 @@ export class SwmmConvert {
         // If there is an array, and it has contents,
         if (m && m.length)
           // Create a new subsection in OPTIONS and give it those contents.
-          model[section][m[0]] = m[1]
+          model[section][m[0]] = m[1].toUpperCase()
       },
 
       //==
@@ -113,10 +113,11 @@ export class SwmmConvert {
               model.TEMPERATURE.TIMESERIES = m[1].trim()
               break
             case 'FILE':
-              model.TEMPERATURE.FILE = {}
-              model.TEMPERATURE.FILE.Fname = m[1].trim()
-              if(m[2]) model.TEMPERATURE.FILE.Start = m[2].trim()
-              else model.TEMPERATURE.FILE.Start = null
+              model.TEMPERATURE.FILE = m[1].trim()
+              if(m[2]) model.TEMPERATURE.Start = m[2].trim()==='*'?'':m[2].trim()
+              else model.TEMPERATURE.Start = ''
+              if(m[3]) model.TEMPERATURE.Units = m[3].trim()
+              else model.TEMPERATURE.Units = ''
               break
             case 'WINDSPEED':
               switch(m[1].trim()){
@@ -133,6 +134,7 @@ export class SwmmConvert {
                   break;
               }
             case 'SNOWMELT':
+              // Do not write to .inp if there is no data
               model.TEMPERATURE.SNOWMELT = {};
               model.TEMPERATURE.SNOWMELT.DivideTemp     = parseFloat(m[1])
               model.TEMPERATURE.SNOWMELT.ATIWeight      = parseFloat(m[2])
@@ -209,7 +211,7 @@ export class SwmmConvert {
               model.EVAPORATION.TimeSeries = m[1].trim();
               break;
             case 'TEMPERATURE':
-              model.EVAPORATION.Temperature = m[1].trim();
+              model.EVAPORATION.TEMPERATURE = '';
               break;
             case 'FILE':
               model.EVAPORATION.FILE = [];
@@ -351,7 +353,7 @@ export class SwmmConvert {
               FWF: parseFloat(m[5]),
               SD0: parseFloat(m[6]),
               FW0: parseFloat(m[7]),
-              SNN0: parseFloat(m[8])
+              SD100: parseFloat(m[8])
             }
           }
           else if(m[1] == 'IMPERVIOUS'){
@@ -648,6 +650,7 @@ export class SwmmConvert {
           if(m[1] == 'CUSTOM'){
             model[section][m[0]] = {
               swmmType: 'CUSTOM',
+              Shape: 'CUSTOM',
               Geom1: parseFloat(m[2]),
               Curve: m[3],
               Geom2: m[4], // not used, but necessary
@@ -658,12 +661,14 @@ export class SwmmConvert {
           else if(m[1] == 'IRREGULAR'){
             model[section][m[0]] = {
               swmmType: 'IRREGULAR',
+              Shape: 'IRREGULAR',
               Tsect: m[2]
             }
           }
           else if(m[1] == 'STREET'){
             model[section][m[0]] = {
               swmmType: 'STREET',
+              Shape: 'STREET',
               Street: m[2]
             }
           }
@@ -715,7 +720,9 @@ export class SwmmConvert {
             }
           }
           else if(m[0] == 'GR'){
-            model[section][CORData.Name].GR = []
+            if(model[section][CORData.Name].GR == null){
+              model[section][CORData.Name].GR = []
+            }
             // Parse the station/elevation array {'Elev': 204.4, 'Station': 101.5}
             for(var i = 1; i<m.length; i=i+2)
             model[section][CORData.Name].GR.push({
@@ -986,7 +993,7 @@ export class SwmmConvert {
 
           // Push all the new PATTERNS objects on to the 
           // array.
-          for(;i<m.length; i=i+2)
+          for(;i<m.length; i=i+1)
             model[section][m[0]].Factors.push(parseFloat(m[i]))
         }
       },
@@ -1048,7 +1055,7 @@ export class SwmmConvert {
           // If there is not a TREATMENT array for this 
           // subcatchment, create one.
           if(!model[section][m[0]]){
-            model[section][m[0]] = []
+            model[section][m[0]] = {}
           }
           model[section][m[0]][m[1]] = m.slice(2).join(' ')
       }, 
@@ -1426,7 +1433,9 @@ export class SwmmConvert {
                 Vratio: m[3],
                 FracImp: m[4],
                 Perm: m[5],
-                Vclog: m[6]
+                Vclog: m[6],
+                regenInterval: m[7]?parseFloat(m[7]):0,
+                regenFrac: m[8]?parseFloat(m[8]):0,
               }
               break
               case('STORAGE'):
@@ -1434,7 +1443,8 @@ export class SwmmConvert {
                 Height: m[2],
                 Vratio: m[3],
                 Seepage: m[4],
-                Vclog: m[5]
+                Vclog: m[5], 
+                Covered: m[6]?(m[6]==='YES'?true:false):false
               }
               break
               case('DRAIN'):
@@ -1470,10 +1480,11 @@ export class SwmmConvert {
         if (m && m.length){
           // If there is not a LID_USAGE object, make one.
           if(!isValidData(model[section][m[0]])){
-            model[section][m[0]] = {}
+            model[section][m[0]] = []
           }
           var obj = model[section][m[0]]
-          obj[m[1]] = {
+          obj.push({
+            Name: m[1],
             Number: parseFloat(m[2]),
             Area: parseFloat(m[3]),
             Width: parseFloat(m[4]),
@@ -1483,7 +1494,7 @@ export class SwmmConvert {
             RptFile: m[8]?m[8]:'*',
             DrainTo: m[9]?m[9]:'*',
             FromPerv: m[10]?parseFloat(m[10]):0
-          }
+          })
         }
       },
 
@@ -1667,15 +1678,15 @@ export class SwmmConvert {
             inpString += numsPad(rec, 11)
           if(entry == 'MONTHLY'){
             for(let val in rec)
-              inpString += numsPad(val, 0)
+              inpString += numsPad(rec[val], 0)
           }
           if(entry == 'TimeSeries')
             inpString += strsPad(rec, 11)
-          if(entry == 'Temperature')
-            inpString += strsPad(rec, 11)
+          if(entry == 'TEMPERATURE')
+            inpString += strsPad('', 11)
           if(entry == 'FILE'){
             for(let val in rec)
-              inpString += numsPad(val, 0)
+              inpString += numsPad(rec[val], 0)
           }
           if(entry == 'Recovery')
             inpString += strsPad(rec, 11)
@@ -1716,45 +1727,54 @@ export class SwmmConvert {
       TEMPERATURE: function(model){
         let secStr = 'TEMPERATURE'
         let inpString = sectionCap(secStr)
-        if(model.TEMPERATURE.File) inpString += 'FILE ' + model.TEMPERATURE.File + ' ' + model.TEMPERATURE.FileStart || '' + '\n';
-          if(model.TEMPERATURE.TIMESERIES) inpString += 'TIMESERIES ' + model.TEMPERATURE.TIMESERIES + '\n';
-          if(model.TEMPERATURE.WINDSPEED){
-            inpString += 'WINDSPEED '
-            inpString += model.TEMPERATURE.WINDSPEED.Type
-            if(model.TEMPERATURE.WINDSPEED.AWS){
-              for (let entry in model.TEMPERATURE.WINDSPEED.AWS) {
-                inpString += ' ' + model.TEMPERATURE.WINDSPEED.AWS[entry].toString();
-              }
+        // Do not write this section if there is no file or timeseries associated with it.
+        if(!model.TEMPERATURE.FILE && !model.TEMPERATURE.TIMESERIES){
+          return ''
+        }
+        if(model.TEMPERATURE.FILE) {
+          inpString += 'FILE ' 
+            + model.TEMPERATURE.FILE + ' ' 
+            + ((model.TEMPERATURE.Start&&model.TEMPERATURE.Start!=='')?model.TEMPERATURE.Start:'*') + ' ' 
+            + (model.TEMPERATURE.Units || '') + '\n';
+        }
+        if(model.TEMPERATURE.TIMESERIES) inpString += 'TIMESERIES ' + model.TEMPERATURE.TIMESERIES + '\n';
+        if(model.TEMPERATURE.WINDSPEED ){
+          inpString += 'WINDSPEED '
+          inpString += model.TEMPERATURE.WINDSPEED.Type
+          if(model.TEMPERATURE.WINDSPEED.AWS){
+            for (let entry in model.TEMPERATURE.WINDSPEED.AWS) {
+              inpString += ' ' + model.TEMPERATURE.WINDSPEED.AWS[entry].toString();
             }
-            inpString += '\n'
           }
-          if(model.TEMPERATURE.SNOWMELT){
-            inpString += 'SNOWMELT '
-            inpString += model.TEMPERATURE.SNOWMELT.DivideTemp     + ' '
-            inpString += model.TEMPERATURE.SNOWMELT.ATIWeight      + ' '
-            inpString += model.TEMPERATURE.SNOWMELT.NegMeltRatio   + ' '
-            inpString += model.TEMPERATURE.SNOWMELT.MSLElev        + ' '
-            inpString += model.TEMPERATURE.SNOWMELT.DegLatitude    + ' '
-            inpString += model.TEMPERATURE.SNOWMELT.LongCorrection;
-            inpString += '\n'
-          }
-          if(model.TEMPERATURE.ADC){
-            if(model.TEMPERATURE.ADC.IMPERVIOUS){
-              inpString += 'ADC IMPERVIOUS'
-              for (let entry in model.TEMPERATURE.ADC.IMPERVIOUS) {
-                inpString += ' ' + model.TEMPERATURE.ADC.IMPERVIOUS[entry].toString()
-              }
+          inpString += '\n'
+        }
+        if(model.TEMPERATURE.SNOWMELT){
+          inpString += 'SNOWMELT '
+          inpString += model.TEMPERATURE.SNOWMELT.DivideTemp     + ' '
+          inpString += model.TEMPERATURE.SNOWMELT.ATIWeight      + ' '
+          inpString += model.TEMPERATURE.SNOWMELT.NegMeltRatio   + ' '
+          inpString += model.TEMPERATURE.SNOWMELT.MSLElev        + ' '
+          inpString += model.TEMPERATURE.SNOWMELT.DegLatitude    + ' '
+          inpString += model.TEMPERATURE.SNOWMELT.LongCorrection;
+          inpString += '\n'
+        }
+        if(model.TEMPERATURE.ADC){
+          if(model.TEMPERATURE.ADC.IMPERVIOUS){
+            inpString += 'ADC IMPERVIOUS'
+            for (let entry in model.TEMPERATURE.ADC.IMPERVIOUS) {
+              inpString += ' ' + model.TEMPERATURE.ADC.IMPERVIOUS[entry].toString()
             }
-            inpString += '\n'
-            if(model.TEMPERATURE.ADC.PERVIOUS){
-              inpString += 'ADC PERVIOUS'
-              for (let entry in model.TEMPERATURE.ADC.PERVIOUS) {
-                inpString += ' ' + model.TEMPERATURE.ADC.PERVIOUS[entry].toString()
-              }
-            }
-            inpString += '\n'
           }
-          return inpString
+          inpString += '\n'
+          if(model.TEMPERATURE.ADC.PERVIOUS){
+            inpString += 'ADC PERVIOUS'
+            for (let entry in model.TEMPERATURE.ADC.PERVIOUS) {
+              inpString += ' ' + model.TEMPERATURE.ADC.PERVIOUS[entry].toString()
+            }
+          }
+          inpString += '\n'
+        }
+        return inpString
       },
 
       SUBCATCHMENTS: function(model) {
@@ -1766,7 +1786,7 @@ export class SwmmConvert {
           // If there is a description, save it.
           inpString += validDescription(rec)
           inpString += strsPad(entry, 16)
-          inpString += strsPad(rec.RainGage, 16)
+          inpString += strsPad(rec.RainGage?rec.RainGage:'*', 16)
           inpString += strsPad(rec.Outlet, 16)
           inpString += numsPad(rec.Area, 8)
           inpString += numsPad(rec.PctImperv, 8)
@@ -1931,7 +1951,7 @@ export class SwmmConvert {
           inpString += numsPad(rec.PLOWABLE.FWF, 10)
           inpString += numsPad(rec.PLOWABLE.SD0, 10)
           inpString += numsPad(rec.PLOWABLE.FW0, 10)
-          inpString += numsPad(rec.PLOWABLE.SNN0, 10)
+          inpString += numsPad(rec.PLOWABLE.SD100, 10)
           inpString +=   '\n'
           inpString += strsPad(entry, 16)
           inpString += strsPad('IMPERVIOUS', 16)
@@ -2313,8 +2333,8 @@ export class SwmmConvert {
 
           inpString += strsPad('GR', 4)
           for(let el in rec.GR){
-            inpString += numsPad(rec.GR[el].Elev, 18)
-            inpString += numsPad(rec.GR[el].Station, 18)
+            inpString += numsPad(rec.GR[el].Elev, 5)
+            inpString += numsPad(rec.GR[el].Station, 5)
           }
           
           inpString += '\n'
@@ -2712,10 +2732,13 @@ export class SwmmConvert {
       for (let entry in model[secStr]) {
         var rec = model[secStr][entry]
         for (let el in model[secStr][entry]){
-          inpString += strsPad(entry, 16)
-          inpString += strsPad(el, 16)
-          inpString += strsPad(rec[el], 10)
-          inpString += '\n'
+          // Do not write to .inp if there is no function
+          if(rec[el] !== ''){
+            inpString += strsPad(entry, 16)
+            inpString += strsPad(el, 16)
+            inpString += strsPad(rec[el], 10)
+            inpString += '\n'
+          }
         }
       }
       return inpString
@@ -3059,6 +3082,8 @@ export class SwmmConvert {
             inpString += numsPad(rec.PAVEMENT.FracImp, 10)
             inpString += numsPad(rec.PAVEMENT.Perm, 10)
             inpString += numsPad(rec.PAVEMENT.Vclog, 10)
+            inpString += numsPad(rec.PAVEMENT.regenInterval, 10)
+            inpString += numsPad(rec.PAVEMENT.regenFrac, 10)
             inpString += '\n'
           }
           if(isValidData(rec.STORAGE)){
@@ -3068,6 +3093,7 @@ export class SwmmConvert {
             inpString += numsPad(rec.STORAGE.Vratio, 10)
             inpString += numsPad(rec.STORAGE.Seepage, 10)
             inpString += numsPad(rec.STORAGE.Vclog, 10)
+            inpString += numsPad(rec.STORAGE.Covered?'YES':'NO', 10)
             inpString += '\n'
           }
           if(isValidData(rec.DRAIN)){
@@ -3109,7 +3135,7 @@ export class SwmmConvert {
           for (let entry2 in rec){
             let rec2 = rec[entry2]
             inpString += strsPad(entry, 16)
-            inpString += strsPad(entry2, 16)
+            inpString += strsPad(rec2.Name, 16)
             inpString += numsPad(rec2.Number, 7)
             inpString += numsPad(rec2.Area, 10)
             inpString += numsPad(rec2.Width, 10)
@@ -3172,7 +3198,7 @@ export class SwmmConvert {
     // takes a string and a pad length and pads it,
     // with an extra space at the end.
     function strsPad(data, padLength){
-      return data.padEnd(padLength, ' ') + ' '
+      return data.toString().padEnd(padLength, ' ') + ' '
     }
 
     // sectionCap
@@ -3200,7 +3226,7 @@ export class SwmmConvert {
         if(section == 'LOADINGS')
           thisStr += '[LOADINGS]\n;;Subcatchment   Pollutant        Buildup   \n'
         if(section == 'HYDROGRAPHS')
-          thisStr += '[HYDROGRAPHS]\n;;Hydrograph     Rain Gage/Month  Response R        T        K        Dmax     Drecov   Dinit   \n'
+          thisStr += '[HYDROGRAPHS]\n;;Hydrograph     Rain Gage/Month  Response         R        T        K        Dmax     Drecov   Dinit   \n'
         if(section == 'RDII')
           thisStr += '[RDII]\n;;Node           Unit Hydrograph  Sewer Area\n'
         if(section == 'PATTERNS')
@@ -3400,12 +3426,12 @@ export class SwmmConvert {
     // and manage keys for those objects.
     knownSecArray.forEach((element, index) => {
       if(validSecArray.includes(element) && element !== 'TITLE'){
-        if(model !== undefined && model[element] !== undefined && Object.keys(model[element]).length > 0){
+        if(model != null && model[element] !== undefined && Object.keys(model[element]).length > 0){
           fullString += parser[element](model) + '\n'
           fullString += '\n';
         }
       } else if (validSecArray.includes(element) && element === 'TITLE') { 
-        if(model !== undefined && model[element] !== undefined && Object.keys(model[element]).length > 0){
+        if(model != null && model[element] !== undefined && Object.keys(model[element]).length > 0){
           TITLE_string += parser[element](model) + '\n'
           TITLE_string += '\n';
         }
@@ -3413,7 +3439,7 @@ export class SwmmConvert {
         // This is the portion that handles unknown sections. Let's use
         // these as arrays so we dont create and manage keys.
         // 
-        if(model !== undefined && model[element] !== undefined)
+        if(model != null && model[element] !== undefined)
           // If the section is for swmmNode, place it at the end of the TITLE section string.
           if(swmmNodeSectionArray.includes(element)){
             TITLE_string += parser[element](model) + '\n'

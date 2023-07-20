@@ -1,4 +1,5 @@
 import { SwmmOut } from './SwmmOut'
+import { SwmmModel } from './SwmmModel'
 import { SwmmConvert } from './SwmmConvert'
 import { SwmmDat } from './SwmmDat'
 import { SwmmGeoJSON } from './SwmmGeoJSON'
@@ -102,5 +103,6 @@ export { outputDataWords, outputDataUnitsWords,
   XsectTypeWords  }
 export { SwmmGeoJSON }
 export { SwmmOut }
+export { SwmmModel }
 export { SwmmConvert }
 export { SwmmDat }
