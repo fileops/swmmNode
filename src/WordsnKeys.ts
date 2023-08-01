@@ -107,54 +107,123 @@ export const outputDataWords = {
 // Despite this being the only property of a pollut, it should still
 // be an array to match the object structure of links, nodes, and areas.
 // 
-export const outputDataUnitsWords = {
-  SUBCATCH: [
-    { US: ()=>'in/hr', SI: ()=>'mm/hr' },
-    { US: ()=>'inches', SI: ()=>'mm' },
-    { US: ()=>'in/day', SI: ()=>'mm/day' },
-    { US: ()=>'in/hr', SI: ()=>'mm/hr' },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: ()=>'feet', SI: ()=>'meters' },
-    { US: ()=>'unitless', SI: ()=>'unitless' },
-    { US: (d:number)=>{return QualUnitsWords[d]}, SI: (d:number)=>{return QualUnitsWords[d]} }
-  ],
-  NODE: [
-    { US: ()=>'feet', SI: ()=>'meters' },
-    { US: ()=>'feet', SI:()=> 'meters' },
-    { US: ()=>'ft^3', SI: ()=>'m^3' },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} }
-  ],
-  LINK: [
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: ()=>'feet', SI: ()=>'meters' },
-    { US: ()=>'ft/s', SI: ()=>'m/s' },
-    { US: ()=>'ft^3', SI: ()=>'m^3' },
-    { US: ()=>'unitless', SI: ()=>'unitless' },
-    { US: (d:number)=>{return QualUnitsWords[d]}, SI: (d:number)=>{return QualUnitsWords[d]} }
-  ],
-  SYS: [
-    { US: ()=>'F', SI: ()=>'C' },
-    { US: ()=>'in/hr', SI: ()=>'mm/hr' },
-    { US: ()=>'inches', SI: ()=>'mm' },
-    { US: ()=>'in/hr', SI: ()=>'mm/hr' },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: (d:number)=>{return FlowUnitWords[d]}, SI: (d:number)=>{return FlowUnitWords[d]} },
-    { US: ()=>'ft^3', SI: ()=>'m^3' },
-    { US: ()=>'in/hr', SI: ()=>'mm/hr' },
-    { US: ()=>'in/hr', SI: ()=>'mm/hr' }
-  ]
+interface OutputDataUnit {
+  [resultType: string]: OutputDataUnitFunction;
 }
+
+interface OutputDataUnitFunction {
+  (d: number): string;
+}
+
+interface OutputDataUnitType {
+  [unitSystem: number]: OutputDataUnit;
+}
+
+interface OutputDataUnitsWords {
+  [objectType: string]: OutputDataUnitType;
+}
+
+
+export const outputDataUnitsWords: OutputDataUnitsWords = {
+  'SUBCATCH': [
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': ()=>'inches', 'SI': ()=>'mm' },
+    { 'US': ()=>'in/day', 'SI': ()=>'mm/day' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': ()=>'feet', 'SI': ()=>'meters' },
+    { 'US': ()=>'unitless', 'SI': ()=>'unitless' },
+    { 'US': (d)=>{return QualUnitsWords[d]}, 'SI': (d)=>{return QualUnitsWords[d]} }
+  ],
+  'NODE': [
+    { 'US': ()=>'feet', 'SI': ()=>'meters' },
+    { 'US': ()=>'feet', 'SI':()=> 'meters' },
+    { 'US': ()=>'ft^3', 'SI': ()=>'m^3' },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} }
+  ],
+  'LINK': [
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': ()=>'feet', 'SI': ()=>'meters' },
+    { 'US': ()=>'ft/s', 'SI': ()=>'m/s' },
+    { 'US': ()=>'ft^3', 'SI': ()=>'m^3' },
+    { 'US': ()=>'unitless', 'SI': ()=>'unitless' },
+    { 'US': (d)=>{return QualUnitsWords[d]}, 'SI': (d)=>{return QualUnitsWords[d]} }
+  ],
+  'SYS': [
+    { 'US': ()=>'F', 'SI': ()=>'C' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': ()=>'inches', 'SI': ()=>'mm' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': ()=>'ft^3', 'SI': ()=>'m^3' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' }
+  ],
+  ///////////////////////////////////////////////////////////////////////////////////
+  // The previous unit return functions are being deprecated to reduce the number
+  // of calling strings. The following are intended to replace the previous functions:
+  ////////////////////////////////////////////////////////////////////////////////////
+  'SUBCATCHMENT_RESULTS': [
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': ()=>'inches', 'SI': ()=>'mm' },
+    { 'US': ()=>'in/day', 'SI': ()=>'mm/day' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': ()=>'feet', 'SI': ()=>'meters' },
+    { 'US': ()=>'unitless', 'SI': ()=>'unitless' },
+    { 'US': (d)=>{return QualUnitsWords[d]}, 'SI': (d)=>{return QualUnitsWords[d]} }
+  ],
+  'NODE_RESULTS': [
+    { 'US': ()=>'feet', 'SI': ()=>'meters' },
+    { 'US': ()=>'feet', 'SI':()=> 'meters' },
+    { 'US': ()=>'ft^3', 'SI': ()=>'m^3' },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} }
+  ],
+  'LINK_RESULTS': [
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': ()=>'feet', 'SI': ()=>'meters' },
+    { 'US': ()=>'ft/s', 'SI': ()=>'m/s' },
+    { 'US': ()=>'ft^3', 'SI': ()=>'m^3' },
+    { 'US': ()=>'unitless', 'SI': ()=>'unitless' },
+    { 'US': (d)=>{return QualUnitsWords[d]}, 'SI': (d)=>{return QualUnitsWords[d]} }
+  ],
+  'SYS_RESULTS': [
+    { 'US': ()=>'F', 'SI': ()=>'C' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': ()=>'inches', 'SI': ()=>'mm' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': (d)=>{return FlowUnitWords[d]}, 'SI': (d)=>{return FlowUnitWords[d]} },
+    { 'US': ()=>'ft^3', 'SI': ()=>'m^3' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' },
+    { 'US': ()=>'in/hr', 'SI': ()=>'mm/hr' }
+  ],
+}
+
+
 
 // Analysis Option Keywords
 var  w_FLOW_UNITS        = "FLOW_UNITS"
@@ -608,7 +677,7 @@ export const EvapTypeWords      = [ w_CONSTANT, w_MONTHLY, w_TIMESERIES,
 export const FileTypeWords      = [ w_RAINFALL, w_RUNOFF, w_HOTSTART, w_RDII,
                                w_INFLOWS, w_OUTFLOWS, '']
 export const FileModeWords      = [ w_NO, w_SCRATCH, w_USE, w_SAVE, '']
-export const FlowUnitWords      = [ w_CFS, w_GPM, w_MGD, w_CMS, w_LPS, w_MLD, '']
+export const FlowUnitWords: string[]      = [ w_CFS, w_GPM, w_MGD, w_CMS, w_LPS, w_MLD, '']
 export const ForceMainEqnWords  = [ w_H_W, w_D_W, '']
 export const GageDataWords      = [ w_TIMESERIES, w_FILE, '']
 export const InfilModelWords    = [ w_HORTON, w_MOD_HORTON, w_GREEN_AMPT,

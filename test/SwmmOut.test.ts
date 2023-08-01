@@ -32,6 +32,10 @@ test('flowUnitCode', () =>{
   expect((global as any).example1.flowUnitCode()).toBe(0)
 })
 
+test('unitString', () =>{
+    expect((global as any).example1.unitString('LINK_RESULTS', 2)).toBe(0)
+  })
+
 /*test('subcatchmentCount', () =>{
   expect((global as any).example1.subcatchmentCount()).toBe(8)
 })*/
