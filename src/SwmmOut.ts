@@ -1,5 +1,16 @@
 // SwmmOut.ts
 
+import { outputDataUnitsWords } from "./WordsnKeys"
+
+
+interface ResultsSets {
+  [objectType: string]: ResultsType;
+}
+
+interface ResultsType {
+  [resultsType: number]: string;
+}
+
 /**
 * Class for storing and working with .out file contents.
 * This class expects a standard ArrayBuffer type, which
@@ -655,7 +666,7 @@ static SUBCATCHMENT_RESULTS = [
 * @type {Array}
 * Description strings structure for node results.
 */
-static NODE_RESULTS = [
+static NODE_RESULTS: Array<string> = [
   "Depth", "Head", "Volume", "Lat. Flow", "Inflow", "Overflow"//, "Quality"
 ]
 
@@ -674,6 +685,28 @@ static LINK_RESULTS = [
 static SYS_RESULTS = [
   "Temperature", "Rainfall", "Snow Depth", "Infil", "Runoff", "DW Flow", "GW Flow", "RDII", "External Inflow", "Lateral Inflow", "Flooding", "Outflow", "Storage", "Evap", "Potential ET"
 ]
+
+/**
+* @type {Array}
+* Description strings structure for subcatchment results.
+* Should replace SUBCATCHMENT_RESULTS, NODE_RESULTS, LINK_RESULTS, SYS_RESULTS
+* because those systems are easier to access with string identifiers if given a base
+* object for SwmmOut to reference, like 'RESULTS'.
+*/
+static RESULTS: ResultsSets = {
+  SUBCATCHMENT_RESULTS : [
+    "Rainfall", "Snow Depth", "Evap", "Infiltration", "Runoff", "GW Flow", "GW Elev", "Soil Moisture"//, "Washoff"
+  ],
+  NODE_RESULTS: [
+    "Depth", "Head", "Volume", "Lat. Flow", "Inflow", "Overflow"//, "Quality"
+  ],
+  LINK_RESULTS: [
+    "Flow", "Depth", "Velocity", "Volume", "Capacity"//, "Quality"
+  ],
+  SYS_RESULTS: [
+    "Temperature", "Rainfall", "Snow Depth", "Infil", "Runoff", "DW Flow", "GW Flow", "RDII", "External Inflow", "Lateral Inflow", "Flooding", "Outflow", "Storage", "Evap", "Potential ET"
+  ]
+}
 
 /**
 * @type {Array}
@@ -723,7 +756,7 @@ version(): number{
 /**
 * Returns the object's first magic number.
 *
-* @returns {number} Integer. Flow unit code.
+* @returns {number} Integer. Magic number.
 */
 magic1(): number{
   return this.readInt(0)
@@ -834,6 +867,36 @@ errorCode(): number{
 */
 magic2(): number{
   return this.readInt(this.value.byteLength - SwmmOut.RECORD_SIZE * 1)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Unit strings for charts and displays.
+////////////////////////////////////////////////////////////////////////////////////////
+    
+/**
+* Returns a unit string for a given data value ('Volume, cf', or 'Area, m^2').
+*
+* @param {string} objectType Type of an object, e.g.: 'NODE_RESULTS'
+* @param {number} resultIndex Index of a result from e.g.: NODE_RESULTS[]
+* @returns {string} subcatchment's name.
+*/
+unitString(objectType:string, resultIndex:number): string {
+  // First, get the flowUnitCode, which is an integer that represents CMS, GPM, GPD, etc.
+  let flowUnits = this.flowUnitCode()
+  let unitSystem = 'US'
+  // The flowUnits lets us determine the unit system, 'US' or 'SI'.
+  if ( flowUnits <= SwmmOut.FLOW_UNIT_VALUES.indexOf("MGD")){
+    unitSystem = 'US'
+  }
+  else {
+    unitSystem = 'SI'
+  }
+
+  let descriptionStrings = SwmmOut.RESULTS[objectType][resultIndex]
+  let outString = descriptionStrings +
+                  ' ' + 
+                  outputDataUnitsWords[objectType][resultIndex][unitSystem](flowUnits)
+  return outString
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1890,6 +1953,9 @@ CreateGeoJSONTimestep(objNames:Array<string>, objectType:number, resultType:numb
  * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
  */
 nodeResults(objName:string, outputPos:number, timeStep:number){
+  if (this.nodeMap.get(objName) == undefined){
+    return {}
+  }
   let section = 
     this.timeOuput(objName, this.nodeMap.get(objName)||0,
       this.totalNodes, 
@@ -1910,7 +1976,10 @@ nodeResults(objName:string, outputPos:number, timeStep:number){
  * @param {timeStep} int the positional timestep of the results. 0 for all time steps.
  * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
  */
-linkResults(objName:string, outputPos:number, timeStep:number){
+linkResults(objName:string, outputPos:number, timeStep:number){// Check if there is an object by this name
+  if (this.linkMap.get(objName) == undefined){
+    return {}
+  }
   let section = 
   this.timeOuput(objName, this.linkMap.get(objName)||0,
     this.totalLinks, 
@@ -1932,6 +2001,10 @@ linkResults(objName:string, outputPos:number, timeStep:number){
  * @returns {JSON} object representation of the Computed Results section of a swmm.out file.
  */
 subcatchmentResults(objName:string, outputPos:number, timeStep:number){
+  // Check if there is an object by this name
+  if (this.subcatchmentMap.get(objName) == undefined){
+    return {}
+  }
   let section = 
     this.timeOuput(objName, this.subcatchmentMap.get(objName)||0,
       this.subcatchmentCount(), 
