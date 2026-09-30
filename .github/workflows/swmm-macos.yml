@@ -108,7 +108,7 @@ jobs:
           for path in files:
               if not path.is_file():
                   raise RuntimeError(f'Missing required binary: {path}')
-              subprocess.run(['lipo', '-verify_arch', os.environ['SWMM_ARCH'], str(path)], check=True)
+              subprocess.run(['lipo', str(path), '-verify_arch', os.environ['SWMM_ARCH']], check=True)
 
           def dependencies(path):
               output = subprocess.check_output(['otool', '-L', str(path)], text=True)
