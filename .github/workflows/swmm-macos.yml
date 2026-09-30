@@ -8,6 +8,7 @@
 # Keep runswmm and all .dylib files together in the extracted bin directory.
 # The binaries are signed ad hoc for testing; production app signing comes later.
 
+# Build host: fileops/swmmNode; the solver is compiled on native Mac runners.
 name: Build SWMM for macOS
 
 on:
