@@ -1,0 +1,261 @@
+# Push changes to this workflow on codex/swmm-macos-binaries-20260930 to build.
+# After merging to the default branch, it also supports Actions > Run workflow.
+# Select the same SWMM source tag/commit as the native API your package uses.
+# Default: upstream SWMM 5.2.4. Outputs: separate Apple Silicon and Intel builds.
+# Baseline: macOS 15 or later. OpenMP stays enabled and its runtime is bundled.
+# This builds the solver/API libraries, not Electron or Node native addons.
+# Each download is a tar.gz; extract with tar -xzf to preserve executable bits.
+# Keep runswmm and all .dylib files together in the extracted bin directory.
+# The binaries are signed ad hoc for testing; production app signing comes later.
+
+name: Build SWMM for macOS
+
+on:
+  push:
+    branches: [codex/swmm-macos-binaries-20260930]
+    paths: [.github/workflows/swmm-macos.yml]
+  workflow_dispatch:
+    inputs:
+      swmm_ref:
+        description: SWMM tag or commit used by your package
+        required: true
+        default: v5.2.4
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: SWMM / ${{ matrix.package_arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            compiler_arch: arm64
+            package_arch: arm64
+          - runner: macos-15-intel
+            compiler_arch: x86_64
+            package_arch: x64
+    env:
+      SWMM_ARCH: ${{ matrix.compiler_arch }}
+      SWMM_PACKAGE_ARCH: ${{ matrix.package_arch }}
+      MACOSX_DEPLOYMENT_TARGET: '15.0'
+      SWMM_BINARY_DIR: ${{ github.workspace }}/bundle/bin
+
+    steps:
+      - name: Check out the requested EPA SWMM source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: USEPA/Stormwater-Management-Model
+          ref: ${{ inputs.swmm_ref || 'v5.2.4' }}
+          path: solver-source
+          persist-credentials: false
+
+      - name: Install the build tools and OpenMP
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(uname -s)" = Darwin
+          test "$(uname -m)" = "$SWMM_ARCH"
+          brew list cmake >/dev/null 2>&1 || brew install cmake
+          brew list libomp >/dev/null 2>&1 || brew install libomp
+          cmake --version
+          xcrun --find clang
+
+      - name: Compile and install the SWMM binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          swmm_omp_prefix="$(brew --prefix libomp)"
+          cmake -S solver-source -B solver-build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF \
+            -DBUILD_DEF=OFF \
+            -DCMAKE_C_COMPILER="$(xcrun --find clang)" \
+            -DCMAKE_CXX_COMPILER="$(xcrun --find clang++)" \
+            -DCMAKE_OSX_ARCHITECTURES="$SWMM_ARCH" \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET" \
+            -DCMAKE_INSTALL_PREFIX="$PWD/bundle" \
+            -DCMAKE_EXE_LINKER_FLAGS='-Wl,-headerpad_max_install_names' \
+            -DCMAKE_SHARED_LINKER_FLAGS='-Wl,-headerpad_max_install_names' \
+            -DCMAKE_INSTALL_NAME_DIR='@rpath' \
+            -DCMAKE_INSTALL_RPATH='@loader_path' \
+            -DOpenMP_C_FLAGS='-Xpreprocessor -fopenmp' \
+            -DOpenMP_C_INCLUDE_DIR="$swmm_omp_prefix/include" \
+            -DOpenMP_C_LIB_NAMES=omp \
+            -DOpenMP_omp_LIBRARY="$swmm_omp_prefix/lib/libomp.dylib"
+          cmake --build solver-build --config Release --parallel 3
+          cmake --install solver-build --config Release
+
+      - name: Bundle OpenMP and make the library paths portable
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, pathlib, re, shutil, subprocess, urllib.request
+
+          binary_dir = pathlib.Path(os.environ['SWMM_BINARY_DIR'])
+          bundle = binary_dir.parent
+          omp_prefix = subprocess.check_output(['brew', '--prefix', 'libomp'], text=True).strip()
+          shutil.copy2(pathlib.Path(omp_prefix) / 'lib/libomp.dylib', binary_dir / 'libomp.dylib')
+          names = ['runswmm', 'libswmm5.dylib', 'libswmm-output.dylib', 'libomp.dylib']
+          files = [binary_dir / name for name in names]
+          for path in files:
+              if not path.is_file():
+                  raise RuntimeError(f'Missing required binary: {path}')
+              subprocess.run(['lipo', '-verify_arch', os.environ['SWMM_ARCH'], str(path)], check=True)
+
+          def dependencies(path):
+              output = subprocess.check_output(['otool', '-L', str(path)], text=True)
+              return [line.strip().split(' (compatibility version', 1)[0]
+                      for line in output.splitlines()[1:] if line.strip()]
+
+          if not any(pathlib.PurePosixPath(dep).name == 'libomp.dylib'
+                     for dep in dependencies(binary_dir / 'libswmm5.dylib')):
+              raise RuntimeError('SWMM was not linked with the requested OpenMP runtime')
+
+          for path in files:
+              if path.suffix == '.dylib':
+                  subprocess.run(['install_name_tool', '-id', f'@rpath/{path.name}', str(path)], check=True)
+              for dependency in dependencies(path):
+                  name = pathlib.PurePosixPath(dependency).name
+                  if path.suffix == '.dylib' and name == path.name:
+                      continue  # LC_ID_DYLIB is the library's own identifier.
+                  if name in names:
+                      replacement = f'@loader_path/{name}'
+                      if dependency != replacement:
+                          subprocess.run(['install_name_tool', '-change', dependency, replacement, str(path)], check=True)
+                  elif not dependency.startswith(('/usr/lib/', '/System/Library/')):
+                      raise RuntimeError(f'Unbundled dependency in {path.name}: {dependency}')
+              subprocess.run(['codesign', '--force', '--sign', '-', str(path)], check=True)
+              subprocess.run(['codesign', '--verify', '--strict', str(path)], check=True)
+
+          brew_info = json.loads(subprocess.check_output(['brew', 'info', '--json=v2', 'libomp'], text=True))
+          omp_version = re.sub(r'_\d+$', '', brew_info['formulae'][0]['installed'][0]['version'])
+          license_url = f'https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-{omp_version}/openmp/LICENSE.TXT'
+          with urllib.request.urlopen(license_url, timeout=30) as response:
+              (bundle / 'OpenMP-LICENSE.txt').write_bytes(response.read())
+          shutil.copy2('solver-source/Readme.txt', bundle / 'SWMM-Readme.txt')
+          revision = subprocess.check_output(['git', '-C', 'solver-source', 'rev-parse', 'HEAD'], text=True).strip()
+          manifest = {
+              'source_repository': 'USEPA/Stormwater-Management-Model',
+              'source_commit': revision,
+              'architecture': os.environ['SWMM_PACKAGE_ARCH'],
+              'minimum_macos': os.environ['MACOSX_DEPLOYMENT_TARGET'],
+              'openmp_version': omp_version,
+              'binaries': names,
+          }
+          (bundle / 'build-info.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          PY
+
+      - name: Test the executable, solver API and output API after relocation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import ctypes, json, os, pathlib, re, shutil, subprocess, tempfile
+
+          source = pathlib.Path(os.environ['SWMM_BINARY_DIR'])
+          suffix = os.environ.get('SWMM_LIBRARY_SUFFIX', '.dylib')
+          model = '''[TITLE]
+          Native SWMM build smoke test
+          [OPTIONS]
+          FLOW_UNITS CFS
+          INFILTRATION HORTON
+          FLOW_ROUTING DYNWAVE
+          START_DATE 01/01/2020
+          START_TIME 00:00:00
+          END_DATE 01/01/2020
+          END_TIME 02:00:00
+          REPORT_STEP 00:05:00
+          WET_STEP 00:01:00
+          DRY_STEP 00:05:00
+          ROUTING_STEP 00:00:10
+          THREADS 2
+          [RAINGAGES]
+          R1 INTENSITY 0:05 1.0 TIMESERIES Rain
+          [SUBCATCHMENTS]
+          S1 R1 J1 1 50 100 1 0
+          [SUBAREAS]
+          S1 0.01 0.1 0.05 0.05 25 OUTLET
+          [INFILTRATION]
+          S1 3.0 0.5 4 7 0
+          [JUNCTIONS]
+          J1 10 3 0 0 0
+          [OUTFALLS]
+          O1 0 FREE NO
+          [CONDUITS]
+          C1 J1 O1 100 0.015 0 0 0 0
+          [XSECTIONS]
+          C1 CIRCULAR 2 0 0 0 1
+          [TIMESERIES]
+          Rain 01/01/2020 00:00 1.0
+          Rain 01/01/2020 01:00 0.0
+          [REPORT]
+          SUBCATCHMENTS ALL
+          NODES ALL
+          LINKS ALL
+          '''
+
+          with tempfile.TemporaryDirectory(prefix='swmm moved ') as directory:
+              root = pathlib.Path(directory)
+              relocated = root / 'bin'
+              shutil.copytree(source, relocated)
+              inp = root / 'smoke.inp'
+              inp.write_text(model)
+              subprocess.run([str(relocated / 'runswmm'), '--version'], check=True)
+              cli_report, cli_output = root / 'cli.rpt', root / 'cli.out'
+              subprocess.run([str(relocated / 'runswmm'), str(inp), str(cli_report), str(cli_output)], check=True)
+              if re.search(r'\bERROR\s+\d+', cli_report.read_text()):
+                  raise RuntimeError(cli_report.read_text())
+              if cli_output.stat().st_size == 0:
+                  raise RuntimeError('The executable did not write simulation output')
+
+              solver = ctypes.CDLL(str(relocated / f'libswmm5{suffix}'))
+              solver.swmm_getVersion.restype = ctypes.c_int
+              solver.swmm_run.argtypes = [ctypes.c_char_p] * 3
+              solver.swmm_run.restype = ctypes.c_int
+              report, output = root / 'api.rpt', root / 'api.out'
+              status = solver.swmm_run(*(os.fsencode(p) for p in (inp, report, output)))
+              if status:
+                  raise RuntimeError(f'swmm_run failed with code {status}: {report.read_text()}')
+
+              reader = ctypes.CDLL(str(relocated / f'libswmm-output{suffix}'))
+              reader.SMO_init.argtypes = [ctypes.POINTER(ctypes.c_void_p)]
+              reader.SMO_open.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+              reader.SMO_getVersion.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
+              reader.SMO_close.argtypes = [ctypes.POINTER(ctypes.c_void_p)]
+              for name in ('SMO_init', 'SMO_open', 'SMO_getVersion', 'SMO_close'):
+                  getattr(reader, name).restype = ctypes.c_int
+              handle, version = ctypes.c_void_p(), ctypes.c_int()
+              for name, args in (
+                  ('SMO_init', (ctypes.byref(handle),)),
+                  ('SMO_open', (handle, os.fsencode(output))),
+                  ('SMO_getVersion', (handle, ctypes.byref(version))),
+                  ('SMO_close', (ctypes.byref(handle),)),
+              ):
+                  status = getattr(reader, name)(*args)
+                  if status:
+                      raise RuntimeError(f'{name} failed with code {status}')
+              if version.value != solver.swmm_getVersion():
+                  raise RuntimeError('Solver and binary output versions differ')
+              print(f'SWMM {version.value}: executable, solver API, output API and relocation passed')
+          PY
+
+      - name: Archive the binaries with executable permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -czf "swmm-macos-$SWMM_PACKAGE_ARCH.tar.gz" -C bundle .
+
+      - name: Make the compiled binaries downloadable
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: swmm-macos-${{ matrix.package_arch }}
+          path: swmm-macos-${{ matrix.package_arch }}.tar.gz
+          if-no-files-found: error
+          retention-days: 14
